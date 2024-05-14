@@ -1,0 +1,7 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.fi-sidebar {
+    @apply bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-white via-gray-100 to-gray-200 dark:bg-transparent;
+}
