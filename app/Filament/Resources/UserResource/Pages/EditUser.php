@@ -18,16 +18,12 @@ class EditUser extends EditRecord
         ];
     }
 
-    protected function beforeSave(): void
+    protected function afterSave(): void
     {
         $recipient = auth()->user();
 
         Notification::make()
             ->title('User updated successfully')
             ->sendToDatabase($recipient);
-
-        Notification::make()
-            ->title('User updated successfully')
-            ->broadcast($recipient);
     }
 }

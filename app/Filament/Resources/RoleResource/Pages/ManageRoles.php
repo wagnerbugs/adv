@@ -17,22 +17,4 @@ class ManageRoles extends ManageRecords
             Actions\CreateAction::make(),
         ];
     }
-
-    protected function beforeCreate(): void
-    {
-        $recipient = auth()->user();
-
-        Notification::make()
-            ->title('Role created successfully')
-            ->sendToDatabase($recipient);
-    }
-
-    protected function beforeSave(): void
-    {
-        $recipient = auth()->user();
-
-        Notification::make()
-            ->title('Role updated successfully')
-            ->sendToDatabase($recipient);
-    }
 }
