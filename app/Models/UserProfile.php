@@ -17,37 +17,47 @@ class UserProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'is_lawyer',
         'gender',
         'birth_date',
-        'phone',
-        'contract',
-        'employment_type',
-        'cbo_code',
-        'cbo_title',
-        'cbo_description',
-        'documents',
-        'attachments',
+        'phones',
         'marital_status',
         'education_level',
+        'documents',
+        'contract',
+        'employment_type',
+        'cbos',
+        'attachments',
+        'salaries',
         'hire_date',
         'termination_date',
+        'annotations',
+        'is_active',
     ];
 
     protected function casts(): array
     {
         return [
             'gender' => GenderEnum::class,
-            'phone' => 'array',
-            'contract_type' => EmploymentTypeEnum::class,
-            'documents' => 'array',
-            'attachments' => 'array',
+            'phones' => 'array',
             'marital_status' => MaritalStatusEnum::class,
             'education_level' => EducationLevelEnum::class,
+            'documents' => 'array',
+            'employment_type' => EmploymentTypeEnum::class,
+            'cbos' => 'array',
+            'attachments' => 'array',
+            'salaries' => 'array',
+            'annotations' => 'array',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(UserAddress::class, 'user_id', 'user_id');
     }
 }

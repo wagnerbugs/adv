@@ -19,6 +19,8 @@ class UserAddress extends Model
         'neighborhood',
         'city',
         'state',
+        'longitude',
+        'latitude',
     ];
 
     public function user(): BelongsTo

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Permission;
+use App\Models\UserAddress;
+use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
@@ -44,6 +46,13 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_permissions']);
         Permission::create(['name' => 'delete_permissions']);
 
+        //PERMISSION
+        Permission::create(['name' => 'view_any_user_profiles']);
+        Permission::create(['name' => 'view_user_profiles']);
+        Permission::create(['name' => 'create_user_profiles']);
+        Permission::create(['name' => 'update_user_profiles']);
+        Permission::create(['name' => 'delete_user_profiles']);
+
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
             $role->givePermissionTo('access_admin_panel');
@@ -66,6 +75,11 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('update_permissions');
             $role->givePermissionTo('delete_permissions');
 
+            $role->givePermissionTo('view_any_user_profiles');
+            $role->givePermissionTo('view_user_profiles');
+            $role->givePermissionTo('create_user_profiles');
+            $role->givePermissionTo('update_user_profiles');
+            $role->givePermissionTo('delete_user_profiles');
 
             $user = User::create([
                 'name' => 'Wagner Bugs',
@@ -73,6 +87,14 @@ class RootSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => Hash::make('123456789'),
             ])->assignRole($role);
+
+            UserProfile::create([
+                'user_id' => $user->id,
+            ]);
+
+            UserAddress::create([
+                'user_id' => $user->id,
+            ]);
         });
     }
 }
