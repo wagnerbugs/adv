@@ -36,7 +36,7 @@ class UserProfileResource extends Resource
 
     protected static ?string $navigationGroup = 'RECURSOS HUMANOS';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
