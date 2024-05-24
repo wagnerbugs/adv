@@ -2,12 +2,20 @@
 
 namespace App\Services\ZApi\Endpoints;
 
-use App\Services\ZApi\ChatbotService;
-
+/**
+ * Trait CanSendMessages
+ *
+ * Provides message sending capabilities.
+ */
 trait CanSendMessages
 {
+    /**
+     * Get the Messages endpoint instance.
+     *
+     * @return Messages
+     */
     public function messages(): Messages
     {
-        return new Messages($this);
+        return new Messages($this->service);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum TreatmentPronounEnum: int implements HasLabel, HasColor
+enum TreatmentPronounEnum: int implements HasColor, HasLabel
 {
     case MR = 1;
     case MRS = 2;

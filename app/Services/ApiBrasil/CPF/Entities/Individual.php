@@ -2,9 +2,9 @@
 
 namespace App\Services\ApiBrasil\CPF\Entities;
 
-use Carbon\Carbon;
 use App\Enums\GenderEnum;
 use App\Traits\CapitalizeTrait;
+use Carbon\Carbon;
 
 class Individual
 {
@@ -38,6 +38,7 @@ class Individual
                 return null;
             }
         }
+
         return null;
     }
 

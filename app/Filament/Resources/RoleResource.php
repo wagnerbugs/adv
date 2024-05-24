@@ -2,17 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\Role;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\RoleResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Models\Role;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 
 class RoleResource extends Resource
 {
@@ -47,7 +43,7 @@ class RoleResource extends Resource
                             ->multiple()
                             ->relationship('permissions', 'name')
                             ->preload(),
-                    ])
+                    ]),
             ]);
     }
 

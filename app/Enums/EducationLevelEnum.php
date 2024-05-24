@@ -5,16 +5,16 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum EducationLevelEnum: int implements HasLabel, HasColor
+enum EducationLevelEnum: int implements HasColor, HasLabel
 {
     case NONE = 1;
-    case ELEMENTARY_INCOMPLETE  = 2;
-    case ELEMENTARY_COMPLETE  = 3;
-    case HIGH_SCHOOL_INCOMPLETE  = 4;
-    case HIGH_SCHOOL_COMPLETE  = 5;
-    case TECHNICAL  = 6;
-    case GRADUATE_INCOMPLETE  = 7;
-    case GRADUATE_COMPLETE  = 8;
+    case ELEMENTARY_INCOMPLETE = 2;
+    case ELEMENTARY_COMPLETE = 3;
+    case HIGH_SCHOOL_INCOMPLETE = 4;
+    case HIGH_SCHOOL_COMPLETE = 5;
+    case TECHNICAL = 6;
+    case GRADUATE_INCOMPLETE = 7;
+    case GRADUATE_COMPLETE = 8;
     case POSTGRADUATE = 9;
     case MASTER = 10;
     case DOCTORATE = 11;

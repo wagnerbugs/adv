@@ -4,9 +4,8 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
-use SebastianBergmann\Type\NullType;
 
-enum EmploymentTypeEnum: int implements HasLabel, HasColor
+enum EmploymentTypeEnum: int implements HasColor, HasLabel
 {
     case CLT = 1;
     case PJ = 2;

@@ -21,7 +21,7 @@ class ApiBrasilCPFService
         $this->api = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . config('services.apibrasil.token'),
+            'Authorization' => 'Bearer '.config('services.apibrasil.token'),
         ])->baseUrl(config('services.apibrasil.base_url'));
     }
 }

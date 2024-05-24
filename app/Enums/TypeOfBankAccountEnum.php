@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum TypeOfBankAccountEnum: int implements HasLabel, HasColor
+enum TypeOfBankAccountEnum: int implements HasColor, HasLabel
 {
     case CURRENT_ACCOUNT = 1;
     case SAVINGS_ACCOUNT = 2;

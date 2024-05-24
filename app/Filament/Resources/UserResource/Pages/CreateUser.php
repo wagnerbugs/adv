@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
-use Filament\Actions;
 use App\Filament\Resources\UserResource;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;

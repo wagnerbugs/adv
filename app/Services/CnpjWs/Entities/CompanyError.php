@@ -5,7 +5,9 @@ namespace App\Services\CnpjWs\Entities;
 class CompanyError
 {
     public int $status;
+
     public string $title;
+
     public string $details;
 
     public function __construct(array $data)

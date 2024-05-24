@@ -1,13 +1,13 @@
 <?php
 
+use App\Enums\EducationLevelEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
-use App\Enums\EducationLevelEnum;
 use App\Enums\TreatmentPronounEnum;
 use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {

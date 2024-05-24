@@ -2,20 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Client;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
-use App\Enums\ClientTypeEnum;
-use App\Models\ClientCompany;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ClientCompanyResource\Pages;
-use App\Filament\Resources\ClientCompanyResource\RelationManagers;
+use App\Models\ClientCompany;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClientCompanyResource extends Resource
 {
@@ -40,7 +34,7 @@ class ClientCompanyResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('company')
                             ->required(),
-                    ])
+                    ]),
             ]);
     }
 

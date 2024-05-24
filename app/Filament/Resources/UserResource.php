@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,8 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Spatie\Permission\Traits\HasRoles;
 
 class UserResource extends Resource
 {
@@ -61,8 +58,8 @@ class UserResource extends Resource
                             ->label('Nome da Regra')
                             ->multiple()
                             ->preload()
-                            ->relationship('roles', 'name', fn (Builder $query) => auth()->user()->hasRole('Root') ? null : $query->where('id', '>=', auth()->user()->roles()->first()->id))
-                    ])
+                            ->relationship('roles', 'name', fn (Builder $query) => auth()->user()->hasRole('Root') ? null : $query->where('id', '>=', auth()->user()->roles()->first()->id)),
+                    ]),
             ]);
     }
 

@@ -7,8 +7,9 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Z-API - Chatbot
- * https://developer.z-api.io
+ * Class ChatbotService: Z-API - Chatbot
+ * Service class to handle chatbot API interactions.
+ * Docs.: https://developer.z-api.io
  */
 class ChatbotService
 {
@@ -16,6 +17,9 @@ class ChatbotService
 
     public PendingRequest $api;
 
+    /**
+     * ChatbotService constructor.
+     */
     public function __construct()
     {
         $this->api = Http::withHeaders([

@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum MaritalStatusEnum: int implements HasLabel, HasColor
+enum MaritalStatusEnum: int implements HasColor, HasLabel
 {
     case SINGLE = 1;
     case MARRIED = 2;

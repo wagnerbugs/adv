@@ -2,24 +2,21 @@
 
 namespace App\Filament\Resources\ClientResource\Pages;
 
-use Exception;
-use Filament\Actions;
 use App\Enums\ClientTypeEnum;
-use App\Traits\CapitalizeTrait;
-use Illuminate\Support\Facades\Log;
-use App\Exceptions\CnpjApiException;
-use Illuminate\Support\Facades\Http;
-use App\Services\CnpjWs\CnpjWsService;
-use App\Exceptions\InvalidCpfException;
-use Filament\Notifications\Notification;
-use App\Services\CnpjWs\Entities\Company;
-use App\Filament\Resources\ClientResource;
-use Filament\Resources\Pages\CreateRecord;
-use App\Exceptions\ApiBrasilRequestException;
-use App\Services\CnpjWs\Entities\CompanyError;
 use App\Exceptions\ApiBrasilErrorResponseException;
+use App\Exceptions\ApiBrasilRequestException;
+use App\Exceptions\CnpjApiException;
+use App\Exceptions\InvalidCpfException;
+use App\Filament\Resources\ClientResource;
 use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
 use App\Services\ApiBrasil\CPF\Entities\Individual;
+use App\Services\CnpjWs\CnpjWsService;
+use App\Services\CnpjWs\Entities\Company;
+use App\Services\CnpjWs\Entities\CompanyError;
+use App\Traits\CapitalizeTrait;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Log;
 
 class CreateClient extends CreateRecord
 {
@@ -47,6 +44,7 @@ class CreateClient extends CreateRecord
                         ->title($company->title)
                         ->body($company->details)
                         ->sendToDatabase($recipient);
+
                     return;
                 }
 
@@ -94,7 +92,7 @@ class CreateClient extends CreateRecord
                     ->body($e->getMessage())
                     ->sendToDatabase($recipient);
             }
-        } else if ($client->type === ClientTypeEnum::INDIVIDUAL) {
+        } elseif ($client->type === ClientTypeEnum::INDIVIDUAL) {
             $document = preg_replace('/[^0-9]/', '', $client->document);
 
             try {
@@ -122,6 +120,7 @@ class CreateClient extends CreateRecord
             }
         }
     }
+
     private function notifyUser(string $title, string $message): void
     {
         $recipient = auth()->user();

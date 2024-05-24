@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientIndividualResource\Pages;
-use App\Filament\Resources\ClientIndividualResource\RelationManagers;
 use App\Models\ClientIndividual;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClientIndividualResource extends Resource
 {
@@ -36,7 +33,7 @@ class ClientIndividualResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Nome')
                             ->required(),
-                    ])
+                    ]),
             ]);
     }
 

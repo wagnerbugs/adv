@@ -2,27 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-use Filament\Tables\Table;
-use App\Models\UserProfile;
-use Filament\Support\RawJs;
 use App\Enums\DocumentTypeEnum;
-use App\Enums\MaritalStatusEnum;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\Actions\Action;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Filament\Resources\UserProfileResource\Pages;
-use App\Filament\Resources\UserProfileResource\RelationManagers;
+use App\Models\UserProfile;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\HtmlString;
 
 class UserProfileResource extends Resource
 {
@@ -46,7 +42,6 @@ class UserProfileResource extends Resource
                 Forms\Components\Group::make()
                     ->columnSpan(2)
                     ->schema([
-
 
                         Forms\Components\Tabs::make('Tabs')
                             ->tabs([
@@ -90,7 +85,6 @@ class UserProfileResource extends Resource
                                                 Forms\Components\DatePicker::make('termination_date')
                                                     ->label('Data da demissão'),
                                             ]),
-
 
                                         Forms\Components\Repeater::make('phones')
                                             ->label('Telefones')
@@ -139,7 +133,7 @@ class UserProfileResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -185,8 +179,7 @@ class UserProfileResource extends Resource
                                                             ->label('Latitude'),
                                                     ]),
 
-
-                                            ])
+                                            ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Contrato')
                                     ->columns(2)
@@ -222,7 +215,6 @@ class UserProfileResource extends Resource
                                                             ->required(),
                                                     ]),
 
-
                                             ]),
 
                                         Forms\Components\Repeater::make('salaries')
@@ -244,7 +236,6 @@ class UserProfileResource extends Resource
                                                             ->rule('regex: /^\d+(\.\d{1,2})?$/')
                                                             ->required(),
                                                     ]),
-
 
                                             ]),
                                     ]),
@@ -287,7 +278,7 @@ class UserProfileResource extends Resource
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(!auth()->user()->hasRole('Root'))
+                                                    ->disabled(! auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),

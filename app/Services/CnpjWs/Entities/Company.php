@@ -132,7 +132,7 @@ class Company
             'state' => $this->state,
             'partner_name' => $this->partner_name,
             'partner_type' => $this->partner_type,
-            'partner_qualification' => $this->partner_qualification
+            'partner_qualification' => $this->partner_qualification,
         ];
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Services\ApiBrasil\CPF\Endpoints;
 
-use App\Exceptions\InvalidCpfException;
-use App\Exceptions\ApiBrasilRequestException;
 use App\Exceptions\ApiBrasilErrorResponseException;
+use App\Exceptions\ApiBrasilRequestException;
+use App\Exceptions\InvalidCpfException;
 use App\Services\ApiBrasil\CPF\Entities\Individual;
-use Illuminate\Support\Facades\Log;
 
 class Individuals extends BaseEndpoint
 {
@@ -14,7 +13,7 @@ class Individuals extends BaseEndpoint
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
-        if (!$this->isValidCpf($cpf)) {
+        if (! $this->isValidCpf($cpf)) {
             throw new InvalidCpfException();
         }
 

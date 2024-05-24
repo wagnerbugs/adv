@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Permission;
 use App\Models\UserAddress;
 use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RootSeeder extends Seeder
 {

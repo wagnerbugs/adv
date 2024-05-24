@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\ClientResource\Pages;
 
-use Filament\Actions;
 use App\Enums\ClientTypeEnum;
+use App\Filament\Resources\ClientResource;
+use App\Filament\Resources\ClientResource\Widgets\StatsOverview;
+use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ClientResource;
-use App\Filament\Resources\ClientResource\Widgets\StatsOverview;
 
 class ListClients extends ListRecords
 {

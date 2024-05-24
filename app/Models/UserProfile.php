@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\Json;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\GenderEnum;
