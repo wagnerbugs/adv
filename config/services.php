@@ -14,6 +14,20 @@ return [
     |
     */
 
+    'zapi' => [
+        'base_url' => env('ZAPI_BASE_URL') . '/instances/' . env('ZAPI_INSTANCE') . '/token/' . env('ZAPI_TOKEN'),
+        'token_secure' => env('ZAPI_TOKEN_SECURE'),
+    ],
+
+    'apibrasil' => [
+        'base_url' => env('APIBRASIL_BASE_URL'),
+        'token' => env('APIBRASIL_TOKEN'),
+    ],
+
+    'cnpj_ws' => [
+        'base_url' => env('CNPJWS_BASE_URL'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
