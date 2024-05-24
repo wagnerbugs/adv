@@ -10,9 +10,11 @@ Sistema de gestão para escritórios de advocacia.
 - **Flowbite** (https://flowbite.com/docs/getting-started/quickstart/)
 
 ## Bibliotecas
-- SAAS **Tenancy for Laravel** (https://tenancyforlaravel.com)
-    - composer require stancl/tenancy
 - ACL **Spatie Permission** (https://spatie.be/docs/laravel-permission/v6/introduction)
     -  composer require spatie/laravel-permission
-- Log Viewer (https://log-viewer.opcodes.io)
+- **Log Viewer** (https://log-viewer.opcodes.io)
     - composer require opcodesio/log-viewer
+- **Validações** (https://github.com/LaravelLegends/pt-br-validator)
+    - composer require laravellegends/pt-br-validator
+- Traduções (https://github.com/lucascudo/laravel-pt-BR-localization)
+    - composer require lucascudo/laravel-pt-br-localization --dev
