@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Services\ZApi\ChatbotService;
 use Illuminate\Console\Command;
+use App\Services\ZApi\ChatbotService;
+use App\Services\ZApi\Endpoints\ChatbotWithMessages;
 
 class Zapi extends Command
 {
@@ -24,9 +25,10 @@ class Zapi extends Command
     /**
      * Execute the console command.
      */
-    public function handle(ChatbotService $service)
+    public function handle()
     {
-        $response = $service->messages()->sendText('5548988061915', 'test');
+        $service = new ChatbotService();
+        $response = $service->messages()->sendText('5548988061915', 'Finalizando o registro de vendas');
 
         dd($response);
     }

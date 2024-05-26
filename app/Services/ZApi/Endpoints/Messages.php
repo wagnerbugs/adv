@@ -2,6 +2,8 @@
 
 namespace App\Services\ZApi\Endpoints;
 
+use App\Services\ZApi\Entities\Message;
+
 /**
  * Class Messages
  *
@@ -26,19 +28,39 @@ class Messages extends BaseEndpoint
         ?int $delay_message = null,
         ?int $delay_typing = null,
         ?string $edit_message_id = null
-    ): array {
-        return $this->service->api->post('/send-text', [
+    ): Message {
+        $response = $this->service->api->post('/send-text', [
             'phone' => $phone,
             'message' => $message,
             'delayMessage' => $delay_message,
             'delayTyping' => $delay_typing,
             'editMessageId' => $edit_message_id,
         ])->json();
+
+        return new Message($response);
     }
 
-    public function sendImage(string $phone, string $image, ?string $caption = null, ?string $message_id = null, ?int $delay_message = null, ?string $view_once = null): array
-    {
-        return $this->service->api->post('/send-image', [
+    /**
+     * Send an image.
+     *
+     * @param string $phone
+     * @param string $image
+     * @param string|null $caption
+     * @param string|null $message_id
+     * @param int|null $delay_message
+     * @param string|null $view_once
+     *
+     * @return array
+     */
+    public function sendImage(
+        string $phone,
+        string $image,
+        ?string $caption = null,
+        ?string $message_id = null,
+        ?int $delay_message = null,
+        ?string $view_once = null
+    ): Message {
+        $response = $this->service->api->post('/send-image', [
             'phone' => $phone,
             'image' => $image,
             'caption' => $caption,
@@ -46,5 +68,7 @@ class Messages extends BaseEndpoint
             'delayMessage' => $delay_message,
             'viewOnce' => $view_once,
         ])->json();
+
+        return new Message($response);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Services\ZApi;
 
-use App\Services\ZApi\Endpoints\CanSendMessages;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use App\Services\ZApi\Endpoints\Messages;
+use Illuminate\Http\Client\PendingRequest;
 
 /**
  * Class ChatbotService: Z-API - Chatbot
@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Http;
  */
 class ChatbotService
 {
-    use CanSendMessages;
-
+    /**
+     * @var PendingRequest
+     */
     public PendingRequest $api;
 
     /**
@@ -26,5 +27,15 @@ class ChatbotService
             'Content-Type' => 'application/json',
             'Client-Token' => config('services.zapi.token_secure'),
         ])->baseUrl(config('services.zapi.base_url'));
+    }
+
+    /**
+     * Get the Messages endpoint instance.
+     *
+     * @return Messages
+     */
+    public function messages(): Messages
+    {
+        return new Messages($this);
     }
 }
