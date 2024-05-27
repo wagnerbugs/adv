@@ -2,12 +2,12 @@
 
 namespace App\Handlers;
 
-use App\Models\ChatbotUser;
 use App\Models\ChatbotHistory;
+use App\Models\ChatbotUser;
 
 class LegalHandler extends BaseStepHandler
 {
-    public function handle(ChatbotHistory $history, ChatbotUser $user, string $message = null)
+    public function handle(ChatbotHistory $history, ChatbotUser $user, ?string $message = null)
     {
         $phone = $user->phone;
         $responseMessage = "Ok {$user->name}. Por favor, informe o número do pedido:";

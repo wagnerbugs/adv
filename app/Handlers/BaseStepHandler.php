@@ -2,8 +2,8 @@
 
 namespace App\Handlers;
 
-use App\Models\ChatbotUser;
 use App\Models\ChatbotHistory;
+use App\Models\ChatbotUser;
 use App\Services\ZApi\ChatbotService;
 
 abstract class BaseStepHandler implements StepHandlerInterface
@@ -15,5 +15,5 @@ abstract class BaseStepHandler implements StepHandlerInterface
         $this->chatbotService = $chatbotService;
     }
 
-    abstract public function handle(ChatbotHistory $history, ChatbotUser $user, string $message = null);
+    abstract public function handle(ChatbotHistory $history, ChatbotUser $user, ?string $message = null);
 }

@@ -11,15 +11,10 @@ use App\Services\ZApi\ChatbotService;
  */
 class BaseEndpoint
 {
-    /**
-     * @var ChatbotService
-     */
     protected ChatbotService $service;
 
     /**
      * BaseEndpoint constructor.
-     *
-     * @param ChatbotService $service
      */
     public function __construct(ChatbotService $service)
     {

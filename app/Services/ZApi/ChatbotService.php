@@ -2,9 +2,9 @@
 
 namespace App\Services\ZApi;
 
-use Illuminate\Support\Facades\Http;
 use App\Services\ZApi\Endpoints\Messages;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class ChatbotService: Z-API - Chatbot
@@ -13,9 +13,6 @@ use Illuminate\Http\Client\PendingRequest;
  */
 class ChatbotService
 {
-    /**
-     * @var PendingRequest
-     */
     public PendingRequest $api;
 
     /**
@@ -31,8 +28,6 @@ class ChatbotService
 
     /**
      * Get the Messages endpoint instance.
-     *
-     * @return Messages
      */
     public function messages(): Messages
     {

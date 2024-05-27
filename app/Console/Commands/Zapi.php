@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\ZApi\ChatbotService;
-use App\Services\ZApi\Endpoints\ChatbotWithMessages;
+use Illuminate\Console\Command;
 
 class Zapi extends Command
 {
@@ -38,16 +37,15 @@ class Zapi extends Command
             [
                 'id' => '1',
                 'title' => 'Opção 1',
-                'description' => 'Descrição da opção 1'
+                'description' => 'Descrição da opção 1',
             ],
             [
                 'id' => '2',
                 'title' => 'Opção 2',
-                'description' => 'Descrição da opção 2'
-            ]
+                'description' => 'Descrição da opção 2',
+            ],
 
         ];
-
 
         $response = $service->messages()->sendOptionList($phone, $message, $title, $buttonLabel, $options);
 

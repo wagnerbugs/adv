@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChatbotUser;
-use App\Models\ChatbotHistory;
 use App\Enums\ChatbotStepsEnum;
+use App\Handlers\StepHandlerInterface;
+use App\Models\ChatbotHistory;
+use App\Models\ChatbotUser;
 use App\Services\ZApi\ChatbotService;
 use Illuminate\Http\Request;
-use App\Handlers\StepHandlerInterface;
 
 class WebhookController extends Controller
 {
@@ -68,7 +68,7 @@ class WebhookController extends Controller
         $history->save();
     }
 
-    protected function processMessage(ChatbotHistory $history, ChatbotUser $user, string $message = null)
+    protected function processMessage(ChatbotHistory $history, ChatbotUser $user, ?string $message = null)
     {
         $handler = $this->getHandler($history->step);
         $handler->handle($history, $user, $message);

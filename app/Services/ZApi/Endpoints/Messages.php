@@ -14,11 +14,6 @@ class Messages extends BaseEndpoint
     /**
      * Send a text message.
      *
-     * @param string $phone
-     * @param string $message
-     * @param int|null $delay_message
-     * @param int|null $delay_typing
-     * @param string|null $edit_message_id
      *
      * @return array
      */
@@ -43,12 +38,6 @@ class Messages extends BaseEndpoint
     /**
      * Send an image.
      *
-     * @param string $phone
-     * @param string $image
-     * @param string|null $caption
-     * @param string|null $message_id
-     * @param int|null $delay_message
-     * @param string|null $view_once
      *
      * @return array
      */
@@ -74,14 +63,6 @@ class Messages extends BaseEndpoint
 
     /**
      * Send an option list message.
-     *
-     * @param string $phone
-     * @param string $message
-     * @param string $title
-     * @param string $buttonLabel
-     * @param array $options
-     *
-     * @return Message
      */
     public function sendOptionList(
         string $phone,
@@ -90,7 +71,7 @@ class Messages extends BaseEndpoint
         string $buttonLabel,
         array $options
     ): Message {
-        $response =  $this->service->api->post('/send-option-list', [
+        $response = $this->service->api->post('/send-option-list', [
             'phone' => $phone,
             'message' => $message,
             'optionList' => [

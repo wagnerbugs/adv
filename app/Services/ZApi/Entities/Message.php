@@ -9,20 +9,12 @@ namespace App\Services\ZApi\Entities;
  */
 class Message
 {
-    /**
-     * @var string
-     */
     public string $zaap_id;
 
-    /**
-     * @var string
-     */
     public string $message_id;
 
     /**
      * Message constructor.
-     *
-     * @param array $data
      */
     public function __construct(array $data)
     {
