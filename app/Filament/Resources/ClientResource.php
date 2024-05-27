@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\ClientTypeEnum;
-use App\Filament\Resources\ClientResource\Pages;
-use App\Models\Client;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
+use App\Models\Client;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
+use App\Enums\ClientTypeEnum;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ClientResource\Pages;
 
 class ClientResource extends Resource
 {
@@ -99,10 +100,22 @@ class ClientResource extends Resource
                     ->sortable()
                     ->badge(),
 
-                Tables\Columns\ViewColumn::make('clients_exists')
+                Tables\Columns\ViewColumn::make('client_name')
                     ->label('Nome do cliente')
                     ->view('tables.columns.client-name')
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query
+                            ->with(['individual', 'company'])
+                            ->where(function ($query) use ($search) {
+                                $query->whereHas('individual', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                    ->orWhereHas('company', function ($query) use ($search) {
+                                        $query->where('company', 'like', "%{$search}%");
+                                    })
+                                    ->orWhere('clients.document', 'like', "%{$search}%");
+                            });
+                    })
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('document')
