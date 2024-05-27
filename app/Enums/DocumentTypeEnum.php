@@ -23,15 +23,6 @@ enum DocumentTypeEnum: int implements HasColor, HasLabel
         return array_column(self::cases(), 'value');
     }
 
-    public static function parse(?string $gender): self
-    {
-        return match (strtolower($gender)) {
-            'masculino' => self::MALE,
-            'feminino' => self::FEMALE,
-            default => self::OTHER,
-        };
-    }
-
     public function getLabel(): ?string
     {
         return match ($this) {
