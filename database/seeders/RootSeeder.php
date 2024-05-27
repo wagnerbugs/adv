@@ -52,6 +52,27 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_user_profiles']);
         Permission::create(['name' => 'delete_user_profiles']);
 
+        //CLIENT
+        Permission::create(['name' => 'view_any_clients']);
+        Permission::create(['name' => 'view_clients']);
+        Permission::create(['name' => 'create_clients']);
+        Permission::create(['name' => 'update_clients']);
+        Permission::create(['name' => 'delete_clients']);
+
+        //CLIENT INDIVIDUAL
+        Permission::create(['name' => 'view_any_client_individuals']);
+        Permission::create(['name' => 'view_client_individuals']);
+        Permission::create(['name' => 'create_client_individuals']);
+        Permission::create(['name' => 'update_client_individuals']);
+        Permission::create(['name' => 'delete_client_individuals']);
+
+        //CLIENT COMPANY
+        Permission::create(['name' => 'view_any_client_companies']);
+        Permission::create(['name' => 'view_client_companies']);
+        Permission::create(['name' => 'create_client_companies']);
+        Permission::create(['name' => 'update_client_companies']);
+        Permission::create(['name' => 'delete_client_companies']);
+
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
             $role->givePermissionTo('access_admin_panel');
@@ -80,18 +101,36 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('update_user_profiles');
             $role->givePermissionTo('delete_user_profiles');
 
-            $user = User::create([
+            $role->givePermissionTo('view_any_clients');
+            $role->givePermissionTo('view_clients');
+            $role->givePermissionTo('create_clients');
+            $role->givePermissionTo('update_clients');
+            $role->givePermissionTo('delete_clients');
+
+            $role->givePermissionTo('view_any_client_individuals');
+            $role->givePermissionTo('view_client_individuals');
+            $role->givePermissionTo('create_client_individuals');
+            $role->givePermissionTo('update_client_individuals');
+            $role->givePermissionTo('delete_client_individuals');
+
+            $role->givePermissionTo('view_any_client_companies');
+            $role->givePermissionTo('view_client_companies');
+            $role->givePermissionTo('create_client_companies');
+            $role->givePermissionTo('update_client_companies');
+            $role->givePermissionTo('delete_client_companies');
+
+            $user = User::updateOrCreate([
                 'name' => 'Wagner Bugs',
                 'email' => 'wagnerbugs@gmail.com',
                 'email_verified_at' => now(),
                 'password' => Hash::make('123456789'),
             ])->assignRole($role);
 
-            UserProfile::create([
+            UserProfile::updateOrCreate([
                 'user_id' => $user->id,
             ]);
 
-            UserAddress::create([
+            UserAddress::updateOrCreate([
                 'user_id' => $user->id,
             ]);
         });
