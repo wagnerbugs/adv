@@ -71,4 +71,35 @@ class Messages extends BaseEndpoint
 
         return new Message($response);
     }
+
+    /**
+     * Send an option list message.
+     *
+     * @param string $phone
+     * @param string $message
+     * @param string $title
+     * @param string $buttonLabel
+     * @param array $options
+     *
+     * @return Message
+     */
+    public function sendOptionList(
+        string $phone,
+        string $message,
+        string $title,
+        string $buttonLabel,
+        array $options
+    ): Message {
+        $response =  $this->service->api->post('/send-option-list', [
+            'phone' => $phone,
+            'message' => $message,
+            'optionList' => [
+                'title' => $title,
+                'buttonLabel' => $buttonLabel,
+                'options' => $options,
+            ],
+        ])->json();
+
+        return new Message($response);
+    }
 }
