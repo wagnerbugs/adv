@@ -28,7 +28,28 @@ class Zapi extends Command
     public function handle()
     {
         $service = new ChatbotService();
-        $response = $service->messages()->sendText('5548988061915', 'Finalizando o registro de vendas');
+
+        $phone = '5548988061915';
+        $message = 'Escolha uma opção da lista:';
+        $title = 'Opções Disponíveis';
+        $buttonLabel = 'Mostrar Opções';
+        $options = [
+
+            [
+                'id' => '1',
+                'title' => 'Opção 1',
+                'description' => 'Descrição da opção 1'
+            ],
+            [
+                'id' => '2',
+                'title' => 'Opção 2',
+                'description' => 'Descrição da opção 2'
+            ]
+
+        ];
+
+
+        $response = $service->messages()->sendOptionList($phone, $message, $title, $buttonLabel, $options);
 
         dd($response);
     }
