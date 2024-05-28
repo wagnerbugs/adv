@@ -17,10 +17,6 @@ class BanksSeeder extends Seeder
     public function run(): void
     {
         $path = database_path('seeders/files/banks.csv');
-        if (!File::exists($path)) {
-            $this->command->error("Arquivo CSV não encontrado em {$path}");
-            return;
-        }
         $csv = Reader::createFromPath($path, 'r');
         $csv->setHeaderOffset(0);
 
