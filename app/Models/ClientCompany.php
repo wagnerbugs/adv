@@ -13,26 +13,26 @@ class ClientCompany extends Model
 
     protected $fillable = [
         'client_id',
-        'company',
-        'fantasy_name',
-        'share_capital',
-        'company_size',
-        'legal_nature',
-        'type',
-        'registration_status',
-        'registration_date',
-        'activity_start_date',
-        'main_activity',
+        'company', //
+        'fantasy_name', //
+        'share_capital', //
+        'company_size', //
+        'legal_nature', //
+        'type', //
+        'registration_status', //
+        'registration_date', //
+        'activity_start_date', //
+        'main_activity', //
         'state_registration',
         'state_registration_location',
         'partner_name',
         'partner_type',
         'partner_qualification',
-        'phone',
+        'phone', //
         'phones',
-        'email',
+        'email', //
         'emails',
-        'website',
+        'website', //
         'websites',
         'contacts',
         'attachments',

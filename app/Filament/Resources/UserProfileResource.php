@@ -2,23 +2,28 @@
 
 namespace App\Filament\Resources;
 
+use Exception;
+use Carbon\Carbon;
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use App\Enums\GenderEnum;
+use App\Models\Ocupation;
+use App\Helpers\CboHelper;
+use Filament\Tables\Table;
+use App\Models\UserProfile;
+use Filament\Support\RawJs;
+use Illuminate\Support\Str;
 use App\Enums\DocumentTypeEnum;
+use App\Models\OcupationFamily;
+use App\Enums\MaritalStatusEnum;
+use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
-use App\Enums\GenderEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Filament\Resources\UserProfileResource\Pages;
-use App\Models\UserProfile;
-use Exception;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Http;
+use Filament\Notifications\Notification;
+use App\Filament\Resources\UserProfileResource\Pages;
 
 class UserProfileResource extends Resource
 {
@@ -133,7 +138,7 @@ class UserProfileResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -202,17 +207,36 @@ class UserProfileResource extends Resource
                                                     ->schema([
                                                         Forms\Components\DatePicker::make('date')
                                                             ->label('Data')
+                                                            ->columnSpan(1)
+                                                            ->default(Carbon::now())
                                                             ->required(),
                                                         Forms\Components\TextInput::make('code')
                                                             ->label('Código CBO')
-                                                            ->placeholder('1234567890')
-                                                            ->required(),
+                                                            ->columnSpan(1)
+                                                            ->disabled()
+                                                            ->dehydrated(),
                                                         Forms\Components\TextInput::make('family')
                                                             ->label('Família CBO')
-                                                            ->required(),
-                                                        Forms\Components\TextInput::make('ocupation')
+                                                            ->columnSpan(2)
+                                                            ->disabled()
+                                                            ->dehydrated(),
+                                                        Forms\Components\Select::make('ocupation')
                                                             ->label('Ocupação CBO')
-                                                            ->required(),
+                                                            ->columnSpanFull()
+                                                            ->live('onBlur', true)
+                                                            ->options(Ocupation::all()->mapWithKeys(function ($ocupation) {
+                                                                return [$ocupation->code => $ocupation->code . ' - ' . $ocupation->description];
+                                                            }))
+                                                            ->searchable()
+                                                            ->required()
+                                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                                $code = CboHelper::cboCode($state);
+                                                                $set('code', $code);
+
+                                                                $codeFamily = CboHelper::convertToFamilyCodeCbo($state);
+                                                                $family = OcupationFamily::where('code', $codeFamily)->first();
+                                                                $set('family', $family->description);
+                                                            }),
                                                     ]),
 
                                             ]),
@@ -278,7 +302,7 @@ class UserProfileResource extends Resource
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(! auth()->user()->hasRole('Root'))
+                                                    // ->disabled(!auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
