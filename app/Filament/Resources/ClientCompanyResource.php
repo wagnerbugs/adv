@@ -2,14 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ClientCompanyResource\Pages;
-use App\Models\ClientCompany;
+use Exception;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Bank;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
+use App\Models\ClientCompany;
+use App\Enums\DocumentTypeEnum;
+use Filament\Resources\Resource;
+use App\Enums\TypeOfBankAccountEnum;
+use Illuminate\Support\Facades\Http;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Leandrocfe\FilamentPtbrFormFields\Money;
+use App\Filament\Resources\ClientCompanyResource\Pages;
 
 class ClientCompanyResource extends Resource
 {
@@ -39,41 +47,40 @@ class ClientCompanyResource extends Resource
                                 Forms\Components\Tabs\Tab::make('Dados da empresa')
                                     ->schema([
                                         Forms\Components\Section::make()
-                                            ->columns(3)
+                                            ->columns(6)
                                             ->schema([
 
                                                 Forms\Components\TextInput::make('company')
                                                     ->label('Empresa')
-                                                    ->columnSpan(2)
+                                                    ->columnSpan(3)
                                                     ->disabled(),
 
                                                 Forms\Components\TextInput::make('fantasy_name')
                                                     ->label('Nome Fantasia')
-                                                    ->columnSpan(2)
+                                                    ->columnSpan(3)
                                                     ->disabled(),
 
                                                 Forms\Components\TextInput::make('email')
                                                     ->label('E-mail')
+                                                    ->columnSpan(2)
                                                     ->email(),
 
                                                 Forms\Components\TextInput::make('phone')
                                                     ->label('Telefone')
+                                                    ->columnSpan(2)
                                                     ->mask(RawJs::make(<<<'JS'
                                                         $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
                                                     JS)),
 
                                                 Forms\Components\TextInput::make('website')
                                                     ->label('Website/Rede Social')
+                                                    ->columnSpan(2)
                                                     ->placeholder('https://www.site.com')
                                                     ->url(),
                                             ]),
                                         Forms\Components\Section::make()
                                             ->columns(4)
                                             ->schema([
-                                                Forms\Components\TextInput::make('share_capital')
-                                                    ->label('Capital social')
-                                                    ->columnSpan(2),
-
                                                 Forms\Components\TextInput::make('company_size')
                                                     ->label('Porte da empresa')
                                                     ->columnSpan(2),
@@ -87,6 +94,9 @@ class ClientCompanyResource extends Resource
                                                     ->helperText('Matriz ou Filial')
                                                     ->columnSpan(2),
 
+                                                Money::make('share_capital')
+                                                    ->label('Capital social')
+                                                    ->columnSpan(2),
                                             ]),
                                         Forms\Components\Fieldset::make('Estabelecimento')
                                             ->columns(2)
@@ -100,95 +110,130 @@ class ClientCompanyResource extends Resource
                                                 Forms\Components\DatePicker::make('activity_start_date')
                                                     ->label('Data de Início de Atividade'),
 
-                                                Forms\Components\DatePicker::make('main_activity')
+                                                Forms\Components\TextInput::make('main_activity')
                                                     ->label('Atividade primária'),
                                             ]),
 
                                         Forms\Components\Fieldset::make('Inscricão Estadual')
                                             ->columns(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('registration_status')
-                                                    ->label('Situação Cadastral'),
+                                                Forms\Components\TextInput::make('state_registration')
+                                                    ->label('Inscrição Estadual'),
 
-                                                Forms\Components\DatePicker::make('registration_date')
-                                                    ->label('Data de Cadastramento'),
+                                                Forms\Components\TextInput::make('state_registration_location')
+                                                    ->label('Estado'),
 
-                                                Forms\Components\DatePicker::make('activity_start_date')
-                                                    ->label('Data de Início de Atividade'),
+                                                Forms\Components\TextInput::make('partner_name')
+                                                    ->label('Sócio responsável'),
 
-                                                Forms\Components\DatePicker::make('main_activity')
-                                                    ->label('Atividade primária'),
+                                                Forms\Components\TextInput::make('partner_qualification')
+                                                    ->label('Cargo'),
+
+                                                Forms\Components\TextInput::make('partner_type')
+                                                    ->label('Tipo de Sócio responsável')
+                                                    ->helperText('Pessoa Física ou Juridica'),
+
+
                                             ]),
 
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Dados adicionais')
                                     ->schema([
 
-                                        Forms\Components\Fieldset::make('Ocupação')
-                                            ->columns(2)
+                                        Forms\Components\Fieldset::make()
                                             ->schema([
-                                                Forms\Components\TextInput::make('workplace')
-                                                    ->label('Empresa'),
-                                                Forms\Components\TextInput::make('ocupation')
-                                                    ->label('Profissão'),
+
+                                                Forms\Components\Repeater::make('contacts')
+                                                    ->label('Contatos na empresa')
+                                                    ->columnSpanFull()
+                                                    ->columns(2)
+                                                    ->grid(2)
+                                                    ->collapsed()
+                                                    ->schema([
+
+                                                        Forms\Components\TextInput::make('sector')
+                                                            ->label('Setor')
+                                                            ->required(),
+
+                                                        Forms\Components\TextInput::make('name')
+                                                            ->label('Nome')
+                                                            ->required(),
+
+                                                        Forms\Components\TextInput::make('phone')
+                                                            ->label('Número')
+                                                            ->mask(RawJs::make(<<<'JS'
+                                                                    $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                                JS)),
+
+                                                        Forms\Components\TextInput::make('email')
+                                                            ->label('E-mail'),
+
+                                                    ]),
                                             ]),
 
-                                        Forms\Components\Repeater::make('phones')
-                                            ->label('Telefones')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
+                                        Forms\Components\Fieldset::make()
                                             ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'whatsapp' => 'Whatsapp',
-                                                        'residential' => 'Residencial',
-                                                        'commercial' => 'Comercial',
-                                                        'cellphone' => 'Celular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->mask(RawJs::make(<<<'JS'
+
+                                                Forms\Components\Repeater::make('phones')
+                                                    ->label('Telefones')
+                                                    ->columnSpanFull()
+                                                    ->columns(3)
+                                                    ->grid(2)
+                                                    ->collapsed()
+                                                    ->schema([
+                                                        Forms\Components\Select::make('sector')
+                                                            ->label('Setor')
+                                                            ->columnSpan(1)
+                                                            ->required(),
+                                                        Forms\Components\TextInput::make('number')
+                                                            ->label('Número')
+                                                            ->mask(RawJs::make(<<<'JS'
                                                         $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
                                                     JS))
-                                                    ->required()
-                                                    ->columnSpan(2),
+                                                            ->required()
+                                                            ->columnSpan(2),
+                                                    ]),
                                             ]),
 
-                                        Forms\Components\Repeater::make('emails')
-                                            ->label('E-mails adicionais')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
+                                        Forms\Components\Fieldset::make()
                                             ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'professional' => 'Profissional',
-                                                        'particular' => 'Particular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('email')
-                                                    ->label('E-mail')
-                                                    ->email()
-                                                    ->required()
-                                                    ->columnSpan(2),
+
+                                                Forms\Components\Repeater::make('emails')
+                                                    ->label('E-mails adicionais')
+                                                    ->columnSpanFull()
+                                                    ->columns(3)
+                                                    ->grid(2)
+                                                    ->collapsed()
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('sector')
+                                                            ->label('Setor')
+                                                            ->columnSpan(1)
+                                                            ->required(),
+                                                        Forms\Components\TextInput::make('email')
+                                                            ->label('E-mail')
+                                                            ->email()
+                                                            ->required()
+                                                            ->columnSpan(2),
+                                                    ]),
+
                                             ]),
 
-                                        Forms\Components\Repeater::make('websites')
-                                            ->label('Websites adicionais')
-                                            ->collapsed()
-                                            ->grid(2)
+                                        Forms\Components\Fieldset::make()
                                             ->schema([
-                                                Forms\Components\TextInput::make('link')
-                                                    ->label('Link')
-                                                    ->helperText('Ex: https://google.com')
-                                                    ->url()
-                                                    ->required(),
+                                                Forms\Components\Repeater::make('websites')
+                                                    ->label('Websites adicionais')
+                                                    ->columnSpanFull()
+                                                    ->columns(1)
+                                                    ->grid(2)
+                                                    ->collapsed()
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('link')
+                                                            ->label('Link')
+                                                            ->helperText('Ex: https://google.com')
+                                                            ->url()
+                                                            ->required(),
+                                                    ]),
+
                                             ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Endereço')
