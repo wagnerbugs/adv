@@ -16,5 +16,7 @@ Sistema de gestão para escritórios de advocacia.
     - composer require opcodesio/log-viewer
 - **Validações** (https://github.com/LaravelLegends/pt-br-validator)
     - composer require laravellegends/pt-br-validator
-- Traduções (https://github.com/lucascudo/laravel-pt-BR-localization)
+- **Traduções** (https://github.com/lucascudo/laravel-pt-BR-localization)
     - composer require lucascudo/laravel-pt-br-localization --dev
+- **Brazilian Form Fiels Filament** (https://filamentphp.com/plugins/leandrocfe-brazilian-form-fields#money)
+    - composer require leandrocfe/filament-ptbr-form-fields:"^3.0"
