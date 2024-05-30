@@ -18,12 +18,13 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use App\Filament\Resources\ClientCompanyResource\Pages;
+use App\Filament\Resources\ClientResource\Pages\CreateClient;
 
 class ClientCompanyResource extends Resource
 {
     protected static ?string $model = ClientCompany::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-building-office-2';
 
     protected static ?string $modelLabel = 'Pessoa Jurídica';
 
@@ -585,12 +586,17 @@ class ClientCompanyResource extends Resource
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telefone')
+                    ->icon('heroicon-m-phone')
+                    ->iconColor('primary')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
+                    ->icon('heroicon-m-at-symbol')
+                    ->iconColor('primary')
                     ->searchable(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\Filter::make('is_active')
                     ->label('Clientes ativos')
@@ -621,7 +627,8 @@ class ClientCompanyResource extends Resource
     {
         return [
             'index' => Pages\ListClientCompanies::route('/'),
-            'create' => Pages\CreateClientCompany::route('/create'),
+            // 'create' => Pages\CreateClientCompany::route('/create'),
+            'create' => CreateClient::route('/create'),
             'edit' => Pages\EditClientCompany::route('/{record}/edit'),
         ];
     }

@@ -8,15 +8,17 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use App\Enums\GenderEnum;
-use App\Models\Ocupation;
+
 use App\Helpers\CboHelper;
+use App\Models\Occupation;
 use Filament\Tables\Table;
 use App\Models\UserProfile;
 use Filament\Support\RawJs;
 use Illuminate\Support\Str;
 use App\Enums\DocumentTypeEnum;
-use App\Models\OcupationFamily;
+
 use App\Enums\MaritalStatusEnum;
+use App\Models\OccupationFamily;
 use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
@@ -220,12 +222,12 @@ class UserProfileResource extends Resource
                                                             ->columnSpan(2)
                                                             ->disabled()
                                                             ->dehydrated(),
-                                                        Forms\Components\Select::make('ocupation')
+                                                        Forms\Components\Select::make('occupation')
                                                             ->label('Ocupação CBO')
                                                             ->columnSpanFull()
                                                             ->live('onBlur', true)
-                                                            ->options(Ocupation::all()->mapWithKeys(function ($ocupation) {
-                                                                return [$ocupation->code => $ocupation->code . ' - ' . $ocupation->description];
+                                                            ->options(Occupation::all()->mapWithKeys(function ($occupation) {
+                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
                                                             }))
                                                             ->searchable()
                                                             ->required()
@@ -234,7 +236,7 @@ class UserProfileResource extends Resource
                                                                 $set('code', $code);
 
                                                                 $codeFamily = CboHelper::convertToFamilyCodeCbo($state);
-                                                                $family = OcupationFamily::where('code', $codeFamily)->first();
+                                                                $family = OccupationFamily::where('code', $codeFamily)->first();
                                                                 $set('family', $family->description);
                                                             }),
                                                     ]),

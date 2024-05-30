@@ -73,6 +73,27 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_client_companies']);
         Permission::create(['name' => 'delete_client_companies']);
 
+        //BANK
+        Permission::create(['name' => 'view_any_banks']);
+        Permission::create(['name' => 'view_banks']);
+        Permission::create(['name' => 'create_banks']);
+        Permission::create(['name' => 'update_banks']);
+        Permission::create(['name' => 'delete_banks']);
+
+        //OCCUPATION
+        Permission::create(['name' => 'view_any_occupations']);
+        Permission::create(['name' => 'view_occupations']);
+        Permission::create(['name' => 'create_occupations']);
+        Permission::create(['name' => 'update_occupations']);
+        Permission::create(['name' => 'delete_occupations']);
+
+        //OCCUPATION FAMILY
+        Permission::create(['name' => 'view_any_occupation_families']);
+        Permission::create(['name' => 'view_occupation_families']);
+        Permission::create(['name' => 'create_occupation_families']);
+        Permission::create(['name' => 'update_occupation_families']);
+        Permission::create(['name' => 'delete_occupation_families']);
+
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
             $role->givePermissionTo('access_admin_panel');
@@ -118,6 +139,24 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('create_client_companies');
             $role->givePermissionTo('update_client_companies');
             $role->givePermissionTo('delete_client_companies');
+
+            $role->givePermissionTo('view_any_banks');
+            $role->givePermissionTo('view_banks');
+            $role->givePermissionTo('create_banks');
+            $role->givePermissionTo('update_banks');
+            $role->givePermissionTo('delete_banks');
+
+            $role->givePermissionTo('view_any_occupations');
+            $role->givePermissionTo('view_occupations');
+            $role->givePermissionTo('create_occupations');
+            $role->givePermissionTo('update_occupations');
+            $role->givePermissionTo('delete_occupations');
+
+            $role->givePermissionTo('view_any_occupation_families');
+            $role->givePermissionTo('view_occupation_families');
+            $role->givePermissionTo('create_occupation_families');
+            $role->givePermissionTo('update_occupation_families');
+            $role->givePermissionTo('delete_occupation_families');
 
             $user = User::updateOrCreate([
                 'name' => 'Wagner Bugs',

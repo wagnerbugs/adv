@@ -134,6 +134,7 @@ class ClientResource extends Resource
                     ->sortable(),
 
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Tipo de cliente')

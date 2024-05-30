@@ -2,21 +2,21 @@
 
 namespace Database\Seeders;
 
-use App\Models\OcupationFamily;
+use App\Models\OccupationFamily;
 use League\Csv\Reader;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class OcupationFamiliesSeeder extends Seeder
+class OccupationFamiliesSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = database_path('seeders/files/ocupation-families.csv');
+        $path = database_path('seeders/files/occupation-families.csv');
         $csv = Reader::createFromPath($path, 'r');
         $csv->setHeaderOffset(0);
 
         foreach ($csv as $record) {
-            OcupationFamily::create([
+            OccupationFamily::create([
                 'code' => $record['CODIGO'],
                 'description' => $record['TITULO'],
                 'created_at' => now(),

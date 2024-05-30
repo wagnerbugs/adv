@@ -22,12 +22,13 @@ use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\ClientIndividualResource\Pages;
+use App\Filament\Resources\ClientResource\Pages\CreateClient;
 
 class ClientIndividualResource extends Resource
 {
     protected static ?string $model = ClientIndividual::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-users';
 
     protected static ?string $modelLabel = 'Pessoa Física';
 
@@ -524,10 +525,14 @@ class ClientIndividualResource extends Resource
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telefone')
+                    ->icon('heroicon-m-phone')
+                    ->iconColor('primary')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('E-mail')
+                    ->icon('heroicon-m-at-symbol')
+                    ->iconColor('primary')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('city')
@@ -538,6 +543,7 @@ class ClientIndividualResource extends Resource
                     ->label('UF')
                     ->searchable(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])
@@ -562,7 +568,8 @@ class ClientIndividualResource extends Resource
     {
         return [
             'index' => Pages\ListClientIndividuals::route('/'),
-            'create' => Pages\CreateClientIndividual::route('/create'),
+            // 'create' => Pages\CreateClientIndividual::route('/create'),
+            'create' => CreateClient::route('/create'),
             'edit' => Pages\EditClientIndividual::route('/{record}/edit'),
         ];
     }
