@@ -2,27 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
 use App\Enums\DocumentTypeEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Models\ClientIndividual;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
-use App\Enums\EmploymentTypeEnum;
-use Illuminate\Support\HtmlString;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Enums\TreatmentPronounEnum;
 use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification;
 use App\Filament\Resources\ClientIndividualResource\Pages;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
+use App\Models\Bank;
+use App\Models\ClientIndividual;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Http;
 
 class ClientIndividualResource extends Resource
 {
@@ -209,7 +207,7 @@ class ClientIndividualResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -282,7 +280,7 @@ class ClientIndividualResource extends Resource
                                                                                     }
 
                                                                                     try {
-                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                                         $data = $response->json();
 
                                                                                         $set('street', $data['street']);
@@ -331,7 +329,6 @@ class ClientIndividualResource extends Resource
                                             ]),
                                     ]),
 
-
                                 Forms\Components\Tabs\Tab::make('Dados bancários')
                                     ->schema([
 
@@ -346,7 +343,7 @@ class ClientIndividualResource extends Resource
                                                     ->label('Banco')
                                                     ->columnSpan(3)
                                                     ->options(Bank::all()->map(function ($bank) {
-                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                        return strtoupper($bank->compe.' - '.$bank->long_name);
                                                     }))
                                                     ->searchable(),
                                                 Forms\Components\TextInput::make('bank_agency')
@@ -457,14 +454,12 @@ class ClientIndividualResource extends Resource
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(!auth()->user()->hasRole('Root'))
+                                                    ->disabled(! auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
                                             ]),
                                     ]),
-
-
 
                             ]),
                     ]),
@@ -481,15 +476,12 @@ class ClientIndividualResource extends Resource
                             ])
                             ->directory('clients'),
 
-
                         Forms\Components\Fieldset::make('Status')
                             ->schema([
                                 Forms\Components\Toggle::make('is_active')
                                     ->label('Ativo')
                                     ->default(true),
                             ]),
-
-
 
                         Forms\Components\Repeater::make('documents')
                             ->label('Documentos')

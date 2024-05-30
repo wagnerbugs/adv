@@ -2,17 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Illuminate\Support\HtmlString;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BankResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\BankResource\RelationManagers;
+use App\Models\Bank;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 use Leandrocfe\FilamentPtbrFormFields\Document;
 
 class BankResource extends Resource
@@ -69,8 +66,8 @@ class BankResource extends Resource
                                 Forms\Components\TextInput::make('url')
                                     ->label('Website')
                                     ->maxLength(255),
-                            ])
-                    ])
+                            ]),
+                    ]),
             ]);
     }
 
@@ -89,7 +86,7 @@ class BankResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('short_name')
                     ->label('Nome Abreviado')
-                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">' . $state . '</span>'))
+                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">'.$state.'</span>'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
                     ->label('Website')

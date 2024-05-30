@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\OccupationFamily;
-use League\Csv\Reader;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use League\Csv\Reader;
 
 class OccupationFamiliesSeeder extends Seeder
 {

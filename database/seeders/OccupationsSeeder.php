@@ -3,14 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Occupation;
-use League\Csv\Reader;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use League\Csv\Reader;
 
 class OccupationsSeeder extends Seeder
 {
-
     public function run(): void
     {
         $path = database_path('seeders/files/occupations.csv');

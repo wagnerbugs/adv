@@ -2,23 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
-use App\Models\ClientCompany;
 use App\Enums\DocumentTypeEnum;
-use Filament\Resources\Resource;
 use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
-use Leandrocfe\FilamentPtbrFormFields\Money;
 use App\Filament\Resources\ClientCompanyResource\Pages;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
+use App\Models\Bank;
+use App\Models\ClientCompany;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 
 class ClientCompanyResource extends Resource
 {
@@ -133,7 +133,6 @@ class ClientCompanyResource extends Resource
                                                 Forms\Components\TextInput::make('partner_type')
                                                     ->label('Tipo de Sócio responsável')
                                                     ->helperText('Pessoa Física ou Juridica'),
-
 
                                             ]),
 
@@ -259,7 +258,7 @@ class ClientCompanyResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -332,7 +331,7 @@ class ClientCompanyResource extends Resource
                                                                                     }
 
                                                                                     try {
-                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                                         $data = $response->json();
 
                                                                                         $set('street', $data['street']);
@@ -381,7 +380,6 @@ class ClientCompanyResource extends Resource
                                             ]),
                                     ]),
 
-
                                 Forms\Components\Tabs\Tab::make('Dados bancários')
                                     ->schema([
 
@@ -396,7 +394,7 @@ class ClientCompanyResource extends Resource
                                                     ->label('Banco')
                                                     ->columnSpan(3)
                                                     ->options(Bank::all()->map(function ($bank) {
-                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                        return strtoupper($bank->compe.' - '.$bank->long_name);
                                                     }))
                                                     ->searchable(),
                                                 Forms\Components\TextInput::make('bank_agency')
@@ -507,14 +505,12 @@ class ClientCompanyResource extends Resource
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(!auth()->user()->hasRole('Root'))
+                                                    ->disabled(! auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
                                             ]),
                                     ]),
-
-
 
                             ]),
                     ]),
@@ -531,15 +527,12 @@ class ClientCompanyResource extends Resource
                             ])
                             ->directory('clients'),
 
-
                         Forms\Components\Fieldset::make('Status')
                             ->schema([
                                 Forms\Components\Toggle::make('is_active')
                                     ->label('Ativo')
                                     ->default(true),
                             ]),
-
-
 
                         Forms\Components\Repeater::make('documents')
                             ->label('Documentos')

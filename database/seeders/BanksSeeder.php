@@ -4,11 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Bank;
 use App\Traits\CapitalizeTrait;
-use League\Csv\Reader;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use League\Csv\Reader;
 
 class BanksSeeder extends Seeder
 {

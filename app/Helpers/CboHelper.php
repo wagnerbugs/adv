@@ -19,7 +19,7 @@ class CboHelper
         $start = substr($string, 0, $length - 2);
         $end = substr($string, -2);
 
-        return $start . '-' . $end;
+        return $start.'-'.$end;
     }
 
     public static function convertToFamilyCodeCbo($string)

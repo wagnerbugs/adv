@@ -4,11 +4,9 @@ namespace App\Policies;
 
 use App\Models\ClientCompany;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ClientCompanyPolicy
 {
-
     public function viewAny(User $user): bool
     {
         return $user->hasPermissionTo('view_any_client_companies');

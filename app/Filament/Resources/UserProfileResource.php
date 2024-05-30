@@ -2,30 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Carbon\Carbon;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-
-use App\Helpers\CboHelper;
-use App\Models\Occupation;
-use Filament\Tables\Table;
-use App\Models\UserProfile;
-use Filament\Support\RawJs;
-use Illuminate\Support\Str;
 use App\Enums\DocumentTypeEnum;
-
-use App\Enums\MaritalStatusEnum;
-use App\Models\OccupationFamily;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Filament\Resources\UserProfileResource\Pages;
+use App\Helpers\CboHelper;
+use App\Models\Occupation;
+use App\Models\OccupationFamily;
+use App\Models\UserProfile;
+use Carbon\Carbon;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\HtmlString;
 
 class UserProfileResource extends Resource
 {
@@ -140,7 +137,7 @@ class UserProfileResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -227,7 +224,7 @@ class UserProfileResource extends Resource
                                                             ->columnSpanFull()
                                                             ->live('onBlur', true)
                                                             ->options(Occupation::all()->mapWithKeys(function ($occupation) {
-                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
+                                                                return [$occupation->code => $occupation->code.' - '.$occupation->description];
                                                             }))
                                                             ->searchable()
                                                             ->required()
