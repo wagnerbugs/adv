@@ -3,9 +3,13 @@
 @config 'tailwind.config.js';
 
 /* bg-gradient-to-br dark:from-gray-950 dark:to-amber-700 */
-.fi-layout {
-    @apply  bg-gray-100 bg-repeat bg-[url('http://adv.test/endless-constellation-light.svg')] dark:bg-gray-950 dark:bg-repeat dark:bg-[url('http://adv.test/endless-constellation.svg')];
+.fi-body {
+    @apply  bg-repeat bg-[url('http://adv.test/endless-constellation-light.svg')] dark:bg-gray-950 dark:bg-repeat dark:bg-[url('http://adv.test/endless-constellation.svg')];
 }
+
+/* .fi-body {
+    @apply  bg-gray-300
+} */
 
 .fi-simple-layout {
     @apply  dark:bg-gray-900/50 bg-gray-100/50 bg-repeat bg-[url('http://adv.test/endless-constellation.svg')];
