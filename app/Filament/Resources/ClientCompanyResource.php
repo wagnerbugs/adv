@@ -2,23 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\DocumentTypeEnum;
-use App\Enums\TypeOfBankAccountEnum;
-use App\Filament\Resources\ClientCompanyResource\Pages;
-use App\Filament\Resources\ClientResource\Pages\CreateClient;
-use App\Models\Bank;
-use App\Models\ClientCompany;
 use Exception;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
+use App\Models\Bank;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Support\RawJs;
+use App\Models\ClientCompany;
+use App\Enums\DocumentTypeEnum;
+use Filament\Resources\Resource;
+use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Leandrocfe\FilamentPtbrFormFields\Money;
+use App\Filament\Resources\ClientCompanyResource\Pages;
+use App\Filament\Resources\ClientResource\Pages\CreateClient;
 
 class ClientCompanyResource extends Resource
 {
@@ -258,7 +258,7 @@ class ClientCompanyResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -331,7 +331,7 @@ class ClientCompanyResource extends Resource
                                                                                     }
 
                                                                                     try {
-                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                                         $data = $response->json();
 
                                                                                         $set('street', $data['street']);
@@ -394,7 +394,7 @@ class ClientCompanyResource extends Resource
                                                     ->label('Banco')
                                                     ->columnSpan(3)
                                                     ->options(Bank::all()->map(function ($bank) {
-                                                        return strtoupper($bank->compe.' - '.$bank->long_name);
+                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
                                                     }))
                                                     ->searchable(),
                                                 Forms\Components\TextInput::make('bank_agency')
@@ -501,11 +501,11 @@ class ClientCompanyResource extends Resource
                                                 Forms\Components\TextInput::make('author')
                                                     ->label('Autor')
                                                     ->default(auth()->user()->name)
-                                                    ->disabled()
+                                                    ->disabled(auth()->user()->hasRole('Root') ? false : true)
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
-                                                    ->label('Nota')
-                                                    ->disabled(! auth()->user()->hasRole('Root'))
+                                                    ->label('Anotação')
+                                                    ->disabled(auth()->user()->hasRole('Root') ? false : true)
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
