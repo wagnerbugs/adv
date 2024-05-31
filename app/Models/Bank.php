@@ -16,5 +16,6 @@ class Bank extends Model
         'long_name',
         'short_name',
         'url',
+        'is_active',
     ];
 }

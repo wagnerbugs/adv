@@ -53,7 +53,7 @@ class BankResource extends Resource
                             ]),
 
                         Forms\Components\Fieldset::make()
-                            ->columns(3)
+                            ->columns(4)
                             ->schema([
                                 Forms\Components\TextInput::make('long_name')
                                     ->label('Nome Completo')
@@ -66,6 +66,8 @@ class BankResource extends Resource
                                 Forms\Components\TextInput::make('url')
                                     ->label('Website')
                                     ->maxLength(255),
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label('Ativo?'),
                             ]),
                     ]),
             ]);
@@ -86,7 +88,7 @@ class BankResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('short_name')
                     ->label('Nome Abreviado')
-                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">'.$state.'</span>'))
+                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">' . $state . '</span>'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
                     ->label('Website')
@@ -94,17 +96,19 @@ class BankResource extends Resource
                     ->iconColor('primary')
                     ->url(fn (Bank $record): string => $record->url)
                     ->searchable(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Ativo?'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
@@ -119,8 +123,8 @@ class BankResource extends Resource
     {
         return [
             'index' => Pages\ListBanks::route('/'),
-            // 'create' => Pages\CreateBank::route('/create'),
-            // 'edit' => Pages\EditBank::route('/{record}/edit'),
+            'create' => Pages\CreateBank::route('/create'),
+            'edit' => Pages\EditBank::route('/{record}/edit'),
         ];
     }
 }

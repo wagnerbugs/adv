@@ -13,7 +13,7 @@ class ListBanks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\CreateAction::make()->label('Cadastrar Banco'),
+            Actions\CreateAction::make()->label('Cadastrar Banco'),
         ];
     }
 }

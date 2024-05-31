@@ -18,6 +18,7 @@ class OccupationsSeeder extends Seeder
             Occupation::create([
                 'code' => $record['CODIGO'],
                 'description' => $record['TITULO'],
+                'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

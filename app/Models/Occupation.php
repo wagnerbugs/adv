@@ -12,5 +12,6 @@ class Occupation extends Model
     protected $fillable = [
         'code',
         'description',
+        'is_active',
     ];
 }

@@ -2,23 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\OccupationResource\Pages;
-use App\Models\Occupation;
+use App\Filament\Resources\OccupationFamilyResource\Pages;
+use App\Filament\Resources\OccupationFamilyResource\RelationManagers;
+use App\Models\OccupationFamily;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class OccupationResource extends Resource
+class OccupationFamilyResource extends Resource
 {
-    protected static ?string $model = Occupation::class;
+    protected static ?string $model = OccupationFamily::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-code-bracket-square';
 
-    protected static ?string $modelLabel = 'CBO';
+    protected static ?string $modelLabel = 'CBO - Família';
 
-    protected static ?string $pluralModelLabel = 'CBOs';
+    protected static ?string $pluralModelLabel = 'CBOs - Famílias';
 
     protected static ?string $navigationGroup = 'TABELAS';
 
@@ -29,11 +32,11 @@ class OccupationResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('code')
-                    ->label('CBO')
+                    ->label('Código')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('description')
-                    ->label('Ocupação')
+                    ->label('Descrição')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Ativo?'),
@@ -45,10 +48,10 @@ class OccupationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
-                    ->label('CBO')
+                    ->label('Código')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Ocupação')
+                    ->label('Descrição')
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Ativo?'),
@@ -75,11 +78,10 @@ class OccupationResource extends Resource
 
     public static function getPages(): array
     {
-
         return [
-            'index' => Pages\ListOccupations::route('/'),
-            'create' => Pages\CreateOccupation::route('/create'),
-            'edit' => Pages\EditOccupation::route('/{record}/edit'),
+            'index' => Pages\ListOccupationFamilies::route('/'),
+            'create' => Pages\CreateOccupationFamily::route('/create'),
+            'edit' => Pages\EditOccupationFamily::route('/{record}/edit'),
         ];
     }
 }

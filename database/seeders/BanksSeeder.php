@@ -25,6 +25,7 @@ class BanksSeeder extends Seeder
                 'long_name' => $this->capitalize($record['LongName']),
                 'short_name' => $this->capitalize($record['ShortName']),
                 'url' => $record['Url'] ?? null,
+                'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

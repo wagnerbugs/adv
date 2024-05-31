@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('long_name');  // Long name according to BACEN - STR
             $table->string('short_name');  // Short name according to BACEN - STR
             $table->string('url')->nullable();  // Website
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
