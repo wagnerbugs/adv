@@ -94,6 +94,20 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_occupation_families']);
         Permission::create(['name' => 'delete_occupation_families']);
 
+        //COURT
+        Permission::create(['name' => 'view_any_courts']);
+        Permission::create(['name' => 'view_courts']);
+        Permission::create(['name' => 'create_courts']);
+        Permission::create(['name' => 'update_courts']);
+        Permission::create(['name' => 'delete_courts']);
+
+        //STATE COURT
+        Permission::create(['name' => 'view_any_state_courts']);
+        Permission::create(['name' => 'view_state_courts']);
+        Permission::create(['name' => 'create_state_courts']);
+        Permission::create(['name' => 'update_state_courts']);
+        Permission::create(['name' => 'delete_state_courts']);
+
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
             $role->givePermissionTo('access_admin_panel');
@@ -157,6 +171,18 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('create_occupation_families');
             $role->givePermissionTo('update_occupation_families');
             $role->givePermissionTo('delete_occupation_families');
+
+            $role->givePermissionTo('view_any_courts');
+            $role->givePermissionTo('view_courts');
+            $role->givePermissionTo('create_courts');
+            $role->givePermissionTo('update_courts');
+            $role->givePermissionTo('delete_courts');
+
+            $role->givePermissionTo('view_any_state_courts');
+            $role->givePermissionTo('view_state_courts');
+            $role->givePermissionTo('create_state_courts');
+            $role->givePermissionTo('update_state_courts');
+            $role->givePermissionTo('delete_state_courts');
 
             $user = User::updateOrCreate([
                 'name' => 'Wagner Bugs',
