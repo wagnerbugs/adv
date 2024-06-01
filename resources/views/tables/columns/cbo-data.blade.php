@@ -2,9 +2,9 @@
     @if ($getState())
         @foreach ($getState() as $value)
             @php
-                $ocupation = Str::limit($value['ocupation'], 35, '...');
+                $occupation = Str::limit($value['occupation'], 35, '...');
             @endphp
-            {{ $value['code'] }} - {{ $ocupation }}
+            {{ $occupation }}
         @endforeach
     @endif
 </div>
