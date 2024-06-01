@@ -133,8 +133,13 @@ class ClientResource extends Resource
                     ->dateTime()
                     ->sortable(),
 
+                Tables\Columns\ToggleColumn::make('company.is_active')
+                    ->label('Ativo')
+                    ->sortable(),
+
             ])
             ->defaultSort('id', 'desc')
+
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->label('Tipo de cliente')
@@ -147,7 +152,6 @@ class ClientResource extends Resource
                     ->label('Filtros'),
             )
             ->actions([
-                // Tables\Actions\EditAction::make(),
                 Action::make('Editar')
                     ->url(function (Client $record): string {
                         if ($record->type == ClientTypeEnum::COMPANY) {
@@ -157,7 +161,6 @@ class ClientResource extends Resource
                         }
                     })
                     ->icon('heroicon-m-pencil-square'),
-
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

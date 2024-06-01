@@ -11,12 +11,16 @@ use Filament\Tables\Table;
 use Filament\Support\RawJs;
 use App\Models\ClientCompany;
 use App\Enums\DocumentTypeEnum;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Leandrocfe\FilamentPtbrFormFields\Money;
+use Filament\Infolists\Components\RepeatableEntry;
 use App\Filament\Resources\ClientCompanyResource\Pages;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
 
@@ -490,7 +494,7 @@ class ClientCompanyResource extends Resource
                                             ->label('Anotações')
                                             ->columns(2)
                                             ->collapsed()
-                                            ->deletable(false)
+                                            ->deletable()
                                             ->addActionLabel('Adicionar anotação')
                                             ->schema([
                                                 Forms\Components\DateTimePicker::make('date')
@@ -588,6 +592,9 @@ class ClientCompanyResource extends Resource
                     ->icon('heroicon-m-at-symbol')
                     ->iconColor('primary')
                     ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Ativo'),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
@@ -600,7 +607,11 @@ class ClientCompanyResource extends Resource
                     ->query(fn (Builder $query): Builder => $query->where('company_size', 'Matriz')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make()
+                        ->label('Contatos'),
+                ])->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -620,9 +631,51 @@ class ClientCompanyResource extends Resource
     {
         return [
             'index' => Pages\ListClientCompanies::route('/'),
-            // 'create' => Pages\CreateClientCompany::route('/create'),
             'create' => CreateClient::route('/create'),
             'edit' => Pages\EditClientCompany::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('is_active', true);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make()
+                    ->schema([
+                        TextEntry::make('company')
+                            ->label('Nome da empresa'),
+
+                        RepeatableEntry::make('contacts')
+                            ->label('Empresa')
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('sector')
+                                    ->label('Setor')
+                                    ->badge(),
+                                TextEntry::make('name')
+                                    ->label('Nome')
+                                    ->color('primary'),
+                                TextEntry::make('phone')
+                                    ->label('Telefone')
+                                    ->icon('heroicon-m-phone')
+                                    ->copyable()
+                                    ->copyMessage('Copiado')
+                                    ->copyMessageDuration(1500),
+                                TextEntry::make('email')
+                                    ->label('Email')
+                                    ->icon('heroicon-m-envelope')
+                                    ->copyable()
+                                    ->copyMessage('Copiado')
+                                    ->copyMessageDuration(1500),
+                            ]),
+
+                    ]),
+
+            ]);
     }
 }

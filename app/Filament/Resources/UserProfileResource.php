@@ -137,7 +137,7 @@ class UserProfileResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -219,12 +219,17 @@ class UserProfileResource extends Resource
                                                             ->columnSpan(2)
                                                             ->disabled()
                                                             ->dehydrated(),
-                                                        Forms\Components\Select::make('occupation')
+                                                        Forms\Components\TextInput::make('occupation')
+                                                            ->label('Família CBO')
+                                                            ->columnSpan(2)
+                                                            ->hidden(),
+
+                                                        Forms\Components\Select::make('occupation_search')
                                                             ->label('Ocupação CBO')
                                                             ->columnSpanFull()
                                                             ->live('onBlur', true)
-                                                            ->options(Occupation::all()->mapWithKeys(function ($occupation) {
-                                                                return [$occupation->code => $occupation->code.' - '.$occupation->description];
+                                                            ->options(Occupation::where('is_active', true)->get()->mapWithKeys(function ($occupation) {
+                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
                                                             }))
                                                             ->searchable()
                                                             ->required()
@@ -233,8 +238,12 @@ class UserProfileResource extends Resource
                                                                 $set('code', $code);
 
                                                                 $codeFamily = CboHelper::convertToFamilyCodeCbo($state);
+
                                                                 $family = OccupationFamily::where('code', $codeFamily)->first();
                                                                 $set('family', $family->description);
+
+                                                                $codeOccupation = Occupation::where('code', $state)->first();
+                                                                $set('occupation', $codeOccupation->description);
                                                             }),
                                                     ]),
 
@@ -307,129 +316,6 @@ class UserProfileResource extends Resource
                                                     ->columnSpanFull(),
                                             ]),
                                     ]),
-
-                                Forms\Components\Tabs\Tab::make('Dicas')
-
-                                    ->schema([
-
-                                        Forms\Components\Placeholder::make('')
-                                            ->content(new HtmlString('
-                                                        <h1 class="font-bold pb-2">CBOs mais comuns</h1>
-                                                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                                                    <tr>
-                                                                        <th scope="col" class="px-6 py-3">
-                                                                            Ocupação
-                                                                        </th>
-                                                                        <th scope="col" class="px-6 py-3">
-                                                                            Família
-                                                                        </th>
-                                                                        <th scope="col" class="px-6 py-3">
-                                                                            Código
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-05
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado de empresa
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-10
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado (Direito Civil)
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-15
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado (Direito Médio)
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-20
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado (Direito Penal)
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-25
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Advogado (Áreas Especiais)
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-30
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                        Advogado (Direito do Trabalho)
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-35
-                                                                        </td>
-                                                                    </tr>
-
-                                                                    <tr class="bg-white dark:bg-gray-800">
-                                                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                            Consultor Jurídico
-                                                                        </th>
-                                                                        <td class="px-6 py-4">
-                                                                            2410 - Advogado
-                                                                        </td>
-                                                                        <td class="px-6 py-4">
-                                                                            2410-40
-                                                                        </td>
-                                                                    </tr>
-                                                            </tbody>
-                                                        </table>
-
-                                                    ')),
-
-                                    ]),
-
                             ]),
                     ]),
                 Forms\Components\Group::make()
