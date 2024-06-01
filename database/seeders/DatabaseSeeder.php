@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             OccupationsSeeder::class,
             OccupationFamiliesSeeder::class,
             CourtsSeeder::class,
-            StateCourtsSeeder::class,
+            CourtStatesSeeder::class,
+            CourtDistrictsSeeder::class,
         ]);
     }
 }

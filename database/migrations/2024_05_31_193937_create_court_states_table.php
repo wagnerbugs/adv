@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('state_courts', function (Blueprint $table) {
+        Schema::create('court_states', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->string('abbreviation');
+            $table->string('court');
+            $table->string('state');
             $table->string('description')->nullable();
             $table->string('url')->nullable();
             $table->boolean('is_active')->default(true);
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('state_courts');
+        Schema::dropIfExists('court_states');
     }
 };

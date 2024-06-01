@@ -2,26 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\StateCourt;
+use App\Models\CourtState;
 use League\Csv\Reader;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class StateCourtsSeeder extends Seeder
+class CourtStatesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $path = database_path('seeders/files/state-courts.csv');
+        $path = database_path('seeders/files/court_states.csv');
         $csv = Reader::createFromPath($path, 'r');
         $csv->setHeaderOffset(0);
 
         foreach ($csv as $record) {
-            StateCourt::create([
+            CourtState::create([
                 'code' => $record['CODIGO'],
-                'abbreviation' => $record['SIGLA'],
+                'court' => $record['SIGLA'],
+                'state' => $record['UF'],
                 'description' => $record['DESCRICAO'],
                 'url' => $record['URL'],
                 'is_active' => $record['SITUACAO'],
