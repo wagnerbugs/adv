@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('type')->nullable();
             $table->string('classification')->nullable();
-            $table->string('is_active')->nullable();
+            $table->boolean('is_active')->default(true)->nullable();
             $table->timestamps();
         });
     }

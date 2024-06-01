@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StateCourtResource\Pages;
-use App\Filament\Resources\StateCourtResource\RelationManagers;
-use App\Models\StateCourt;
+use App\Filament\Resources\CourtStateResource\Pages;
+use App\Filament\Resources\CourtStateResource\RelationManagers;
+use App\Models\CourtState;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class StateCourtResource extends Resource
+class CourtStateResource extends Resource
 {
-    protected static ?string $model = StateCourt::class;
+    protected static ?string $model = CourtState::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Tribunal Estatual';
+    protected static ?string $modelLabel = 'Estatual';
 
-    protected static ?string $pluralModelLabel = 'Tribunais Estatais';
+    protected static ?string $pluralModelLabel = 'Estaduais';
 
     protected static ?string $navigationGroup = 'TABELAS';
 
@@ -35,18 +35,18 @@ class StateCourtResource extends Resource
                     ->label('Código')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('abbreviation')
-                    ->label('Sigla')
+                Forms\Components\TextInput::make('court')
+                    ->label('Tribunal')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('state')
+                    ->label('Estado')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('description')
-                    ->label('Descrição')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('url')
-                    ->label('Endpoint')
+                    ->label('Descricão')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
-                    ->label('Ativo?')
                     ->required(),
             ]);
     }
@@ -58,11 +58,14 @@ class StateCourtResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->label('Código')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('abbreviation')
-                    ->label('Sigla')
+                Tables\Columns\TextColumn::make('court')
+                    ->label('Tribunal')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('state')
+                    ->label('UF')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Descrição')
+                    ->label('Descricão')
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Ativo?'),
@@ -90,9 +93,9 @@ class StateCourtResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStateCourts::route('/'),
-            'create' => Pages\CreateStateCourt::route('/create'),
-            'edit' => Pages\EditStateCourt::route('/{record}/edit'),
+            'index' => Pages\ListCourtStates::route('/'),
+            'create' => Pages\CreateCourtState::route('/create'),
+            'edit' => Pages\EditCourtState::route('/{record}/edit'),
         ];
     }
 }
