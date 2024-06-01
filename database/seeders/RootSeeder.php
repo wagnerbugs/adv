@@ -101,12 +101,19 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_courts']);
         Permission::create(['name' => 'delete_courts']);
 
-        //STATE COURT
-        Permission::create(['name' => 'view_any_state_courts']);
-        Permission::create(['name' => 'view_state_courts']);
-        Permission::create(['name' => 'create_state_courts']);
-        Permission::create(['name' => 'update_state_courts']);
-        Permission::create(['name' => 'delete_state_courts']);
+        //COURT STATE
+        Permission::create(['name' => 'view_any_court_states']);
+        Permission::create(['name' => 'view_court_states']);
+        Permission::create(['name' => 'create_court_states']);
+        Permission::create(['name' => 'update_court_states']);
+        Permission::create(['name' => 'delete_court_states']);
+
+        //COURT DISTRICT
+        Permission::create(['name' => 'view_any_court_districts']);
+        Permission::create(['name' => 'view_court_districts']);
+        Permission::create(['name' => 'create_court_districts']);
+        Permission::create(['name' => 'update_court_districts']);
+        Permission::create(['name' => 'delete_court_districts']);
 
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
@@ -178,11 +185,17 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('update_courts');
             $role->givePermissionTo('delete_courts');
 
-            $role->givePermissionTo('view_any_state_courts');
-            $role->givePermissionTo('view_state_courts');
-            $role->givePermissionTo('create_state_courts');
-            $role->givePermissionTo('update_state_courts');
-            $role->givePermissionTo('delete_state_courts');
+            $role->givePermissionTo('view_any_court_states');
+            $role->givePermissionTo('view_court_states');
+            $role->givePermissionTo('create_court_states');
+            $role->givePermissionTo('update_court_states');
+            $role->givePermissionTo('delete_court_states');
+
+            $role->givePermissionTo('view_any_court_districts');
+            $role->givePermissionTo('view_court_districts');
+            $role->givePermissionTo('create_court_districts');
+            $role->givePermissionTo('update_court_districts');
+            $role->givePermissionTo('delete_court_districts');
 
             $user = User::updateOrCreate([
                 'name' => 'Wagner Bugs',
