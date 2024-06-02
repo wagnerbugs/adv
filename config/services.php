@@ -14,8 +14,14 @@ return [
     |
     */
 
+    'cnj' => [
+        'token_secure' => env('CNJ_TOKEN_SECURE'),
+        'base_url' => env('CNJ_BASE_URL'),
+        'procedural_base_url' => env('CNJ_PROCEDURAL_BASE_URL'),
+    ],
+
     'zapi' => [
-        'base_url' => env('ZAPI_BASE_URL').'/instances/'.env('ZAPI_INSTANCE').'/token/'.env('ZAPI_TOKEN'),
+        'base_url' => env('ZAPI_BASE_URL') . '/instances/' . env('ZAPI_INSTANCE') . '/token/' . env('ZAPI_TOKEN'),
         'token_secure' => env('ZAPI_TOKEN_SECURE'),
     ],
 
