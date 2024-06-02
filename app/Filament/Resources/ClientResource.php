@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -133,9 +134,6 @@ class ClientResource extends Resource
                     ->dateTime()
                     ->sortable(),
 
-                Tables\Columns\ToggleColumn::make('company.is_active')
-                    ->label('Ativo')
-                    ->sortable(),
 
             ])
             ->defaultSort('id', 'desc')
@@ -152,15 +150,32 @@ class ClientResource extends Resource
                     ->label('Filtros'),
             )
             ->actions([
-                Action::make('Editar')
-                    ->url(function (Client $record): string {
-                        if ($record->type == ClientTypeEnum::COMPANY) {
-                            return route('filament.admin.resources.client-companies.edit', $record);
-                        } else {
-                            return route('filament.admin.resources.client-individuals.edit', $record);
-                        }
-                    })
-                    ->icon('heroicon-m-pencil-square'),
+                Tables\Actions\ActionGroup::make([
+
+                    Action::make('Editar')
+                        ->url(function (Client $record): string {
+                            if ($record->type == ClientTypeEnum::COMPANY) {
+                                return route('filament.admin.resources.client-companies.edit', $record->company->id);
+                            } else {
+                                return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
+                            }
+                        })
+                        ->icon('heroicon-m-pencil-square'),
+
+                    Action::make('ativar')
+                        ->requiresConfirmation()
+                        ->color('warning')
+                        ->label('Ativar')
+                        ->icon('heroicon-m-check-circle')
+                        ->action(function (Client $record) {
+                            if ($record->type === ClientTypeEnum::INDIVIDUAL && $record->individual) {
+                                $record->individual->update(['is_active' => true]);
+                            } elseif ($record->type === ClientTypeEnum::COMPANY && $record->company) {
+                                $record->company->update(['is_active' => true]);
+                            }
+                        })
+                ])->button(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

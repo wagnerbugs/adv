@@ -9,12 +9,12 @@ trait ProcessNumberParser
         $processNumber = preg_replace('/[^0-9]/', '', $processNumber);
 
         return [
-            'sequential_number' => substr($processNumber, 0, 7),
-            'verification_digit' => substr($processNumber, 7, 2),
-            'year' => substr($processNumber, 9, 4),
-            'court' => substr($processNumber, 13, 1),
-            'state_court' => substr($processNumber, 14, 2),
-            'agency_code' => substr($processNumber, 16, 4),
+            'process_number' => substr($processNumber, 0, 7),
+            'process_digit' => substr($processNumber, 7, 2),
+            'process_year' => substr($processNumber, 9, 4),
+            'court_code' => substr($processNumber, 13, 1),
+            'court_state_code' => substr($processNumber, 14, 2),
+            'court_disctric_code' => substr($processNumber, 16, 4),
         ];
     }
 }

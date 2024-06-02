@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('process_movements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('process_id')->constrained();
+            $table->foreignId('process_id')->constrained()->cascadeOnDelete();
             $table->string('code');
             $table->string('name');
-            $table->string('description');
-            $table->dateTimeTz('date');
+            $table->text('description')->nullable();
+            $table->dateTime('date')->nullable();
             $table->json('complements')->nullable();
             $table->timestamps();
         });

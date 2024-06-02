@@ -34,8 +34,8 @@ class CNJ extends Command
         // dd($response);1116
 
         $service = new ProceduralService();
-        $response = $service->classes()->get(1116);
+        $response = $service->movements()->get(56);
 
-        dd($response);
+        dd($response[0]['natureza']);
     }
 }

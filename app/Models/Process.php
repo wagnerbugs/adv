@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Process extends Model
 {
     use HasFactory;
 
-    protected $filable = [
+    protected $fillable = [
         'client_id',
         'process',
         'process_number',
@@ -28,13 +29,32 @@ class Process extends Model
         'rule',
         'article',
         'publish_date',
+        'last_modification_date',
         'secrecy_level',
         'movements',
         'subjects',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'movements' => 'array',
+            'subjects' => 'array',
+        ];
+    }
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function movements(): HasMany
+    {
+        return $this->hasMany(ProcessMovement::class);
+    }
+
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(ProcessSubject::class);
     }
 }

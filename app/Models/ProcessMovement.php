@@ -10,7 +10,7 @@ class ProcessMovement extends Model
 {
     use HasFactory;
 
-    protected $filable = [
+    protected $fillable = [
         'process_id',
         'code',
         'name',

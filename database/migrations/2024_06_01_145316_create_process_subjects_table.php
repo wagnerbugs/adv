@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('process_subjects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('process_id')->constrained();
+            $table->foreignId('process_id')->constrained()->cascadeOnDelete();
             $table->string('code');
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->string('rule')->nullable();
             $table->string('article')->nullable();
             $table->timestamps();

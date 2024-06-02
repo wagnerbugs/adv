@@ -13,7 +13,7 @@ class Subjects extends BaseEndpoint
     public function get(int $subject)
     {
         return $this->service->api->get(
-            'classes/?assuntos=' . $subject
+            'assuntos/?codigo=' . $subject
         )->json();
     }
 }

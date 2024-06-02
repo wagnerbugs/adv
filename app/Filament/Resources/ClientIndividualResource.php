@@ -36,6 +36,8 @@ class ClientIndividualResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -207,7 +209,7 @@ class ClientIndividualResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -280,7 +282,7 @@ class ClientIndividualResource extends Resource
                                                                                     }
 
                                                                                     try {
-                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                                         $data = $response->json();
 
                                                                                         $set('street', $data['street']);
@@ -343,7 +345,7 @@ class ClientIndividualResource extends Resource
                                                     ->label('Banco')
                                                     ->columnSpan(3)
                                                     ->options(Bank::all()->map(function ($bank) {
-                                                        return strtoupper($bank->compe.' - '.$bank->long_name);
+                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
                                                     }))
                                                     ->searchable(),
                                                 Forms\Components\TextInput::make('bank_agency')
@@ -454,7 +456,7 @@ class ClientIndividualResource extends Resource
                                                     ->dehydrated(),
                                                 Forms\Components\TextInput::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(! auth()->user()->hasRole('Root'))
+                                                    ->disabled(!auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),

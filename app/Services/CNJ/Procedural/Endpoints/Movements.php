@@ -13,7 +13,7 @@ class Movements extends BaseEndpoint
     public function get(int $movement)
     {
         return $this->service->api->get(
-            'classes/?movimentos=' . $movement
+            'movimentos/?codigo=' . $movement
         )->json();
     }
 }
