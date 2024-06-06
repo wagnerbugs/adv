@@ -27,7 +27,7 @@ class CNPJ extends Command
     public function handle()
     {
         $service = new CnpjWsService();
-        $response = $service->companies()->get('07.386.787/0001-10');
+        $response = $service->prospections()->getCNPJ('07.386.787/0001-10');
 
         dd($response);
     }

@@ -33,9 +33,9 @@ class CNJ extends Command
 
         // dd($response);1116
 
-        $service = new ProceduralService();
-        $response = $service->movements()->get(56);
+        $service = new ProcessService();
+        $response = $service->prospections()->getProcess('api_publica_tjto', '50000046720058272711');
 
-        dd($response[0]['natureza']);
+        dd($response);
     }
 }
