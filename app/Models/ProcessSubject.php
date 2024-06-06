@@ -11,7 +11,7 @@ class ProcessSubject extends Model
     use HasFactory;
 
     protected $fillable = [
-        'process_id',
+        'process_detail_id',
         'code',
         'name',
         'description',
@@ -21,6 +21,6 @@ class ProcessSubject extends Model
 
     public function process(): BelongsTo
     {
-        return $this->belongsTo(Process::class);
+        return $this->belongsTo(ProcessDetail::class);
     }
 }

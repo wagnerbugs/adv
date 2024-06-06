@@ -19,9 +19,9 @@ class CourtDistrictResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Comarca';
+    protected static ?string $modelLabel = 'Serventia';
 
-    protected static ?string $pluralModelLabel = 'Comarcas';
+    protected static ?string $pluralModelLabel = 'Serventias';
 
     protected static ?string $navigationGroup = 'TABELAS';
 
@@ -31,27 +31,48 @@ class CourtDistrictResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
-                    ->label('Código')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\TextInput::make('court')
                     ->label('Tribunal')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('district')
-                    ->label('Distrito')
+                Forms\Components\TextInput::make('state')
+                    ->label('UF')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->label('Descrição')
+                Forms\Components\TextInput::make('city')
+                    ->label('Município')
                     ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('service_number')
+                    ->label('Serventia')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('service_name')
+                    ->label('Nome da Serventia')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('district_code')
+                    ->label('Origem')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('type')
                     ->label('Tipo')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('classification')
-                    ->label('Classificação')
+                Forms\Components\TextInput::make('unit')
+                    ->label('Unidade')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->label('Telefone')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->label('E-mail')
+                    ->maxLength(255),
+                Forms\Components\Textarea::make('address')
+                    ->label('Endereço')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('latitude')
+                    ->label('Latitude')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('longitude')
+                    ->label('Longitude')
                     ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Ativo'),
@@ -62,21 +83,23 @@ class CourtDistrictResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')
+                Tables\Columns\TextColumn::make('district_code')
                     ->label('Código')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('court')
                     ->label('Tribunal')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('district')
-                    ->label('Distrito')
+                Tables\Columns\TextColumn::make('city')
+                    ->label('Cidade')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->label('Descrição')
+                Tables\Columns\TextColumn::make('service_number')
+                    ->label('Código Serventia')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('is_active')
-                    ->label('Ativo?')
+                Tables\Columns\TextColumn::make('service_name')
+                    ->label('Nome')
                     ->searchable(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Ativo?'),
 
             ])
             ->filters([

@@ -53,7 +53,7 @@ class Client extends Model
         return $this->hasOne(ClientCompany::class);
     }
 
-    public function process(): HasMany
+    public function processes(): HasMany
     {
         return $this->hasMany(Process::class);
     }

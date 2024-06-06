@@ -14,7 +14,7 @@ trait ProcessNumberParser
             'process_year' => substr($processNumber, 9, 4),
             'court_code' => substr($processNumber, 13, 1),
             'court_state_code' => substr($processNumber, 14, 2),
-            'court_disctric_code' => substr($processNumber, 16, 4),
+            'court_district_code' => substr($processNumber, 16, 4),
         ];
     }
 }

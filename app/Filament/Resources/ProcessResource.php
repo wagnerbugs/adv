@@ -2,18 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\ClientTypeEnum;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Client;
 use App\Models\Process;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
+use App\Enums\ClientTypeEnum;
 use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
 use Illuminate\Database\Eloquent\Builder;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 use App\Filament\Resources\ProcessResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProcessResource\RelationManagers;
+use App\Models\Court;
+use App\Models\CourtDistrict;
+use App\Models\CourtState;
+use Carbon\Carbon;
 
 class ProcessResource extends Resource
 {
@@ -29,37 +36,51 @@ class ProcessResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(3)
             ->schema([
-                Forms\Components\Section::make()
+                Forms\Components\Group::make()
+                    ->columns(1)
+                    ->visibleOn('create')
                     ->schema([
-                        Forms\Components\Select::make('client_id')
-                            ->label('Cliente')
-                            ->options(function () {
-                                $clients = Client::with(['individual', 'company'])->get();
-                                $options = [];
 
-                                foreach ($clients as $client) {
-                                    if ($client->type === ClientTypeEnum::INDIVIDUAL && $client->individual) {
-                                        $options[$client->id] = $client->individual->name;
-                                    } elseif ($client->type === ClientTypeEnum::COMPANY && $client->company) {
-                                        $options[$client->id] = $client->company->company;
-                                    }
-                                }
+                        Forms\Components\Section::make()
+                            ->columnSpan(3)
+                            ->schema([
+                                Forms\Components\Select::make('client_id')
+                                    ->label('Cliente')
+                                    ->options(function () {
+                                        $clients = Client::with(['individual', 'company'])->get();
+                                        $options = [];
 
-                                return $options;
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                                        foreach ($clients as $client) {
+                                            if ($client->type === ClientTypeEnum::INDIVIDUAL && $client->individual) {
+                                                $options[$client->id] = $client->individual->name;
+                                            } elseif ($client->type === ClientTypeEnum::COMPANY && $client->company) {
+                                                $options[$client->id] = $client->company->company;
+                                            }
+                                        }
+
+                                        return $options;
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('process')
+                                    ->required()
+                                    ->mask('9999999-99.9999.9.99.9999')
+                                    ->unique(table: 'processes', column: 'process', ignoreRecord: true)
+                                    ->maxLength(255),
+                            ]),
                     ]),
-
-                Forms\Components\TextInput::make('process')
-                    ->required()
-                    ->mask('9999999-99.9999.9.99.9999')
-                    ->maxLength(255),
             ]);
     }
 
@@ -67,59 +88,37 @@ class ProcessResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('client.id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('process')
+                    ->label('Processo')
+                    ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('process_number')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('process_digit')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('process_year')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('court_code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('court_state_code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('court_disctric_code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('class_code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('class_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nature')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('active_pole')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('passive_pole')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('rule')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('article')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('publish_date')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('last_modification_date')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('secrecy_level')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+
+                Tables\Columns\ViewColumn::make('client_name')
+                    ->label('Cliente')
+                    ->view('tables.columns.client-name-process')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query
+                            ->with(['individual', 'company'])
+                            ->where(function ($query) use ($search) {
+                                $query->whereHas('individual', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                    ->orWhereHas('company', function ($query) use ($search) {
+                                        $query->where('company', 'like', "%{$search}%");
+                                    })
+                                    ->orWhere('clients.document', 'like', "%{$search}%");
+                            });
+                    })
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

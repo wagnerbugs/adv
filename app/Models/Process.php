@@ -19,42 +19,31 @@ class Process extends Model
         'process_year',
         'court_code',
         'court_state_code',
-        'court_disctric_code',
-        'class_code',
-        'class_name',
-        'class_description',
-        'nature',
-        'active_pole',
-        'passive_pole',
-        'rule',
-        'article',
-        'publish_date',
-        'last_modification_date',
-        'secrecy_level',
-        'movements',
-        'subjects',
+        'court_district_code',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'movements' => 'array',
-            'subjects' => 'array',
-        ];
-    }
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function movements(): HasMany
+    public function details(): HasMany
     {
-        return $this->hasMany(ProcessMovement::class);
+        return $this->hasMany(ProcessDetail::class);
     }
 
-    public function subjects(): HasMany
+    public function court(): BelongsTo
     {
-        return $this->hasMany(ProcessSubject::class);
+        return $this->belongsTo(Court::class, 'court_code', 'code');
+    }
+
+    public function courtState(): BelongsTo
+    {
+        return $this->belongsTo(CourtState::class, 'court_state_code', 'code');
+    }
+
+    public function courtDistrict(): BelongsTo
+    {
+        return $this->belongsTo(CourtDistrict::class, 'court_district_code', 'code');
     }
 }

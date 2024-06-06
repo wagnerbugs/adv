@@ -15,6 +15,9 @@ class Helper
      */
     public static function cleanText($input)
     {
+        if (!is_string($input) || empty($input)) {
+            return '';
+        }
         // Remover tags HTML
         $cleaned = strip_tags($input);
 

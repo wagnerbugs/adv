@@ -16,18 +16,25 @@ class CourtDistrictsSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('seeders/files/court_districts.csv');
+        $path = database_path('seeders/files/court_district.csv');
         $csv = Reader::createFromPath($path, 'r');
         $csv->setHeaderOffset(0);
 
         foreach ($csv as $record) {
             CourtDistrict::create([
-                'code' => $record['CODIGO'],
                 'court' => $record['TRIBUNAL'],
-                'district' => $this->capitalize($record['MUNICIPIO']),
-                'description' => $this->capitalize($record['NOME']),
-                'type' => $this->capitalize($record['TIPO']),
-                'classification' => $this->capitalize($record['CLASSIFICACAO']),
+                'state' => $record['UF'],
+                'city' => $record['MUNICIPIO'],
+                'service_number' => $record['SERVENTIA_NUMERO'],
+                'service_name' => $record['SERVENTIA_NOME'],
+                'district_code' => $record['ORIGEM'],
+                'type' => $record['TIPO'],
+                'unit' => $record['UNIDADE'],
+                'phone' => $record['TELEFONE'],
+                'email' => $record['EMAIL'],
+                'address' => $record['ENDERECO'],
+                'latitude' => $record['LATITUDE'],
+                'longitude' => $record['LONGETUDE'],
                 'is_active' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

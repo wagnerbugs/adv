@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('court_districts', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('court');
-            $table->string('district');
-            $table->string('description');
+            $table->string('court')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->string('service_number')->nullable();
+            $table->string('service_name')->nullable();
+            $table->string('district_code')->nullable();
             $table->string('type')->nullable();
-            $table->string('classification')->nullable();
+            $table->string('unit')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->text('address')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->boolean('is_active')->default(true)->nullable();
             $table->timestamps();
         });

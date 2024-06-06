@@ -13,6 +13,7 @@ use App\Models\ClientCompany;
 use App\Enums\DocumentTypeEnum;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
 use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
@@ -22,6 +23,7 @@ use Filament\Infolists\Components\TextEntry;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Infolists\Components\RepeatableEntry;
 use App\Filament\Resources\ClientCompanyResource\Pages;
+use App\Filament\Resources\ClientCompanyResource\RelationManagers\ProcessesRelationManager;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
 
 class ClientCompanyResource extends Resource
@@ -40,6 +42,11 @@ class ClientCompanyResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'company';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -50,8 +57,9 @@ class ClientCompanyResource extends Resource
                     ->schema([
 
                         Forms\Components\Tabs::make('Tabs')
+                            ->contained(true)
                             ->tabs([
-                                Forms\Components\Tabs\Tab::make('Dados da empresa')
+                                Forms\Components\Tabs\Tab::make('Empresa')
                                     ->schema([
                                         Forms\Components\Section::make()
                                             ->columns(6)
@@ -85,7 +93,12 @@ class ClientCompanyResource extends Resource
                                                     ->placeholder('https://www.site.com')
                                                     ->url(),
                                             ]),
-                                        Forms\Components\Section::make()
+
+
+                                    ]),
+                                Forms\Components\Tabs\Tab::make('CNPJ')
+                                    ->schema([
+                                        Forms\Components\Fieldset::make('Detalhes da empresa')
                                             ->columns(4)
                                             ->schema([
                                                 Forms\Components\TextInput::make('company_size')
@@ -130,6 +143,11 @@ class ClientCompanyResource extends Resource
                                                 Forms\Components\TextInput::make('state_registration_location')
                                                     ->label('Estado'),
 
+                                            ]),
+
+                                        Forms\Components\Fieldset::make('Sócios')
+                                            ->columns(2)
+                                            ->schema([
                                                 Forms\Components\TextInput::make('partner_name')
                                                     ->label('Sócio responsável'),
 
@@ -139,12 +157,12 @@ class ClientCompanyResource extends Resource
                                                 Forms\Components\TextInput::make('partner_type')
                                                     ->label('Tipo de Sócio responsável')
                                                     ->helperText('Pessoa Física ou Juridica'),
-
                                             ]),
-
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Dados adicionais')
                                     ->schema([
+
+
 
                                         Forms\Components\Fieldset::make()
                                             ->schema([
@@ -240,6 +258,29 @@ class ClientCompanyResource extends Resource
                                                             ->required(),
                                                     ]),
 
+                                            ]),
+
+                                        Forms\Components\Fieldset::make()
+                                            ->schema([
+
+                                                Forms\Components\Repeater::make('documents')
+                                                    ->label('Documentos')
+                                                    ->columnSpanFull()
+                                                    ->columns(2)
+                                                    ->grid(2)
+                                                    ->collapsed()
+                                                    ->addActionLabel('Adicionar novo documento')
+                                                    ->schema([
+                                                        Forms\Components\Select::make('type')
+                                                            ->label('Tipo')
+                                                            ->options(DocumentTypeEnum::class)
+                                                            ->required(),
+                                                        Forms\Components\TextInput::make('number')
+                                                            ->label('Número')
+                                                            ->placeholder('1234567890')
+                                                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
+                                                            ->required(),
+                                                    ]),
                                             ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Endereço')
@@ -413,65 +454,8 @@ class ClientCompanyResource extends Resource
                                                     ->label('PIX')
                                                     ->columnSpanFull(),
                                             ]),
-
-                                        Forms\Components\Repeater::make('phones')
-                                            ->label('Telefones')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'whatsapp' => 'Whatsapp',
-                                                        'residential' => 'Residencial',
-                                                        'commercial' => 'Comercial',
-                                                        'cellphone' => 'Celular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->mask(RawJs::make(<<<'JS'
-                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                    JS))
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                            ]),
-
-                                        Forms\Components\Repeater::make('emails')
-                                            ->label('E-mails adicionais')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'professional' => 'Profissional',
-                                                        'particular' => 'Particular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('email')
-                                                    ->label('E-mail')
-                                                    ->email()
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                            ]),
-
-                                        Forms\Components\Repeater::make('websites')
-                                            ->label('Websites adicionais')
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->schema([
-                                                Forms\Components\TextInput::make('link')
-                                                    ->label('Link')
-                                                    ->helperText('Ex: https://google.com')
-                                                    ->url()
-                                                    ->required(),
-                                            ]),
                                     ]),
+
                                 Forms\Components\Tabs\Tab::make('Arquivos')
                                     ->schema([
                                         Forms\Components\Repeater::make('attachments')
@@ -524,38 +508,33 @@ class ClientCompanyResource extends Resource
                     ->columns(1)
                     ->schema([
 
-                        Forms\Components\FileUpload::make('image')
-                            ->label('Foto')
-                            ->image()
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '1:1',
-                            ])
-                            ->directory('clients'),
-
-                        Forms\Components\Fieldset::make('Status')
+                        Forms\Components\Section::make()
                             ->schema([
-                                Forms\Components\Toggle::make('is_active')
-                                    ->label('Ativo')
-                                    ->default(true),
+
+                                Forms\Components\Fieldset::make('Imagem')
+                                    ->schema([
+
+                                        Forms\Components\FileUpload::make('image')
+                                            ->label('')
+                                            ->columnSpanFull()
+                                            ->image()
+                                            ->imageEditor()
+                                            ->imageEditorAspectRatios([
+                                                '1:1',
+                                            ])
+                                            ->directory('clients'),
+
+                                    ]),
+
+                                Forms\Components\Fieldset::make('Status')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('is_active')
+                                            ->label('Ativo')
+                                            ->default(true),
+                                    ]),
+
                             ]),
 
-                        Forms\Components\Repeater::make('documents')
-                            ->label('Documentos')
-                            ->columns(2)
-                            ->collapsed()
-                            ->addActionLabel('Adicionar novo documento')
-                            ->schema([
-                                Forms\Components\Select::make('type')
-                                    ->label('Tipo')
-                                    ->options(DocumentTypeEnum::class)
-                                    ->required(),
-                                Forms\Components\TextInput::make('number')
-                                    ->label('Número')
-                                    ->placeholder('1234567890')
-                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
-                                    ->required(),
-                            ]),
 
                     ]),
             ]);
@@ -625,7 +604,7 @@ class ClientCompanyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProcessesRelationManager::class
         ];
     }
 

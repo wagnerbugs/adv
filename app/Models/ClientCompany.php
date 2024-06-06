@@ -6,6 +6,7 @@ use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class ClientCompany extends Model
 {
@@ -74,5 +75,10 @@ class ClientCompany extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function processes(): HasManyThrough
+    {
+        return $this->hasManyThrough(Process::class, Client::class, 'id', 'client_id', 'client_id', 'id');
     }
 }

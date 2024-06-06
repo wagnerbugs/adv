@@ -20,20 +20,7 @@ return new class extends Migration
             $table->string('process_year', 4)->nullable();
             $table->string('court_code', 1)->nullable();
             $table->string('court_state_code', 2)->nullable();
-            $table->string('court_disctric_code', 4)->nullable();
-            $table->string('class_code')->nullable(); //código da classe
-            $table->string('class_name')->nullable(); //nome da classe
-            $table->text('class_description')->nullable(); //descrição da classe
-            $table->string('nature')->nullable(); //natureza
-            $table->string('active_pole')->nullable(); //Polo Ativo
-            $table->string('passive_pole')->nullable(); //Polo Passivo
-            $table->string('rule')->nullable(); //norma
-            $table->string('article')->nullable(); //artigo
-            $table->dateTime('publish_date')->nullable(); //data publicação
-            $table->dateTime('last_modification_date')->nullable(); //data da última alteração
-            $table->string('secrecy_level')->nullable(); //nível sigilo
-            $table->json('movements')->nullable();
-            $table->json('subjects')->nullable();
+            $table->string('court_district_code', 4)->nullable();
             $table->timestamps();
         });
     }

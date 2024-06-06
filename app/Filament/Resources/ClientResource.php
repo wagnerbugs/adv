@@ -83,8 +83,8 @@ class ClientResource extends Resource
                                     ->unique(table: Client::class)
                                     ->required()
                                     ->mask(RawJs::make(<<<'JS'
-                                    $input.length > 14 ? '99.999.999/9999-99' : '999.999.999-99'
-                                JS))
+                                        $input.length > 14 ? '99.999.999/9999-99' : '999.999.999-99'
+                                    JS))
                                     ->rule('cpf_ou_cnpj'),
                             ]),
                     ]),
@@ -102,7 +102,7 @@ class ClientResource extends Resource
                     ->badge(),
 
                 Tables\Columns\ViewColumn::make('client_name')
-                    ->label('Nome do cliente')
+                    ->label('Cliente')
                     ->view('tables.columns.client-name')
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query
