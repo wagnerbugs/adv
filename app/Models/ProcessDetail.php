@@ -30,6 +30,8 @@ class ProcessDetail extends Model
         'grade',
         'movements',
         'subjects',
+        'attachments',
+        'annotations',
     ];
 
     protected function casts(): array
@@ -37,6 +39,8 @@ class ProcessDetail extends Model
         return [
             'movements' => 'array',
             'subjects' => 'array',
+            'attachments' => 'array',
+            'annotations' => 'array',
         ];
     }
 
@@ -53,5 +57,10 @@ class ProcessDetail extends Model
     public function subjects(): HasMany
     {
         return $this->hasMany(ProcessSubject::class);
+    }
+
+    public function chat(): HasMany
+    {
+        return $this->hasMany(ProcessDetailChat::class);
     }
 }

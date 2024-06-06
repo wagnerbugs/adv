@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('process_detail_chats', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('process_detail_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->text('message');
             $table->timestamps();
         });
     }
