@@ -150,10 +150,50 @@ class ProcessDetailResource extends Resource
 
 
                                 Forms\Components\Tabs\Tab::make('Arquivos')
-                                    ->schema([]),
+                                    ->schema([
+                                        Forms\Components\Repeater::make('attachments')
+                                            ->label('Arquivos')
+                                            ->collapsed()
+                                            ->grid(2)
+                                            ->addActionLabel('Anexar arquivo')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Título do arquivo')
+                                                    ->placeholder('Descrição curta do documento')
+                                                    ->maxLength(255),
+                                                Forms\Components\FileUpload::make('file')
+                                                    ->label('Arquivo')
+                                                    ->directory('employees'),
+                                            ]),
+                                    ]),
 
                                 Forms\Components\Tabs\Tab::make('Anotações')
-                                    ->schema([]),
+                                    ->schema([
+                                        Forms\Components\Repeater::make('annotations')
+                                            ->label('Anotações')
+                                            ->columns(2)
+                                            ->collapsed()
+                                            ->deletable(false)
+                                            ->addActionLabel('Adicionar anotação')
+                                            ->schema([
+                                                Forms\Components\DateTimePicker::make('date')
+                                                    ->label('Data')
+                                                    ->default(now())
+                                                    ->disabled()
+                                                    ->dehydrated(),
+                                                Forms\Components\TextInput::make('author')
+                                                    ->label('Autor')
+                                                    ->default(auth()->user()->name)
+                                                    ->disabled()
+                                                    ->dehydrated(),
+                                                Forms\Components\TextInput::make('annotation')
+                                                    ->label('Nota')
+                                                    ->disabled(!auth()->user()->hasRole('Root'))
+                                                    ->required()
+                                                    ->placeholder('Anotação...')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                    ]),
 
                             ]),
                     ]),

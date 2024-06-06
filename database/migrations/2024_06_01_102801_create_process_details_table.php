@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('judging_code')->nullable();
             $table->string('judging_name')->nullable();
             $table->json('subjects')->nullable();
+            $table->json('attachments')->nullable();
+            $table->json('annotations')->nullable();
             $table->timestamps();
         });
     }
