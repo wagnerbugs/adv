@@ -3,6 +3,7 @@
 namespace App\Services\CnpjWs;
 
 use App\Services\CnpjWs\Endpoints\HasCompanies;
+use App\Services\CnpjWs\Endpoints\HasProspections;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Http;
  */
 class CnpjWsService
 {
-    use HasCompanies;
+    use HasCompanies, HasProspections;
 
     public PendingRequest $api;
 

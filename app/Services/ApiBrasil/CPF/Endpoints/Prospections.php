@@ -2,14 +2,13 @@
 
 namespace App\Services\ApiBrasil\CPF\Endpoints;
 
-use App\Exceptions\ApiBrasilErrorResponseException;
-use App\Exceptions\ApiBrasilRequestException;
 use App\Exceptions\InvalidCpfException;
-use App\Services\ApiBrasil\CPF\Entities\Individual;
+use App\Exceptions\ApiBrasilRequestException;
+use App\Exceptions\ApiBrasilErrorResponseException;
 
-class Individuals extends BaseEndpoint
+class Prospections extends BaseEndpoint
 {
-    public function get(string $cpf)
+    public function getCPF(string $cpf): array
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
@@ -20,7 +19,7 @@ class Individuals extends BaseEndpoint
         try {
             $response = $this->service->api
                 ->post('cpf/credits', ['cpf' => $cpf])
-                ->json('response.content');
+                ->json();
 
             if (isset($response['error']) && $response['error'] === true) {
                 $errorMessage = $response['message'] ?? 'API returned an error';

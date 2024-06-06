@@ -3,6 +3,7 @@
 namespace  App\Services\CNJ\Process;
 
 use App\Services\CNJ\Process\Endpoints\Processes;
+use App\Services\CNJ\Process\Endpoints\Prospections;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 
@@ -31,5 +32,10 @@ class ProcessService
     public function processes(): Processes
     {
         return new Processes($this);
+    }
+
+    public function prospections(): Prospections
+    {
+        return new Prospections($this);
     }
 }
