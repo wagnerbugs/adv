@@ -18,12 +18,10 @@ class Client extends Model
         'document',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'type' => ClientTypeEnum::class,
-        ];
-    }
+    protected $casts = [
+        'type' => ClientTypeEnum::class,
+    ];
+
 
     protected static function booted()
     {

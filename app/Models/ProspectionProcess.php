@@ -19,24 +19,29 @@ class ProspectionProcess extends Model
         'court_code',
         'court_state_code',
         'court_district_code',
+        'classe',
+        'sistema',
+        'formato',
+        'tribunal',
+        'dataHoraUltimaAtualizacao',
+        'grau',
+        'dataAjuizamento',
+        'movimentos',
         'process_api_id',
-        'class_code',
-        'class_name',
-        'class_description',
-        'nature',
-        'active_pole',
-        'passive_pole',
-        'rule',
-        'article',
-        'last_modification_date',
-        'grade',
-        'publish_date',
-        'movements',
-        'secrecy_level',
-        'judging_code',
-        'judging_name',
-        'subjects',
+        'nivelSigilo',
+        'orgaoJulgador',
+        'assuntos',
     ];
+
+    protected $casts = [
+        'classe' => 'array',
+        'sistema' => 'array',
+        'formato' => 'array',
+        'movimentos' => 'array',
+        'orgaoJulgador' => 'array',
+        'assuntos' => 'array',
+    ];
+
 
     public function prospection(): BelongsTo
     {

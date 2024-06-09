@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -13,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, HasRoles, Notifiable;
 
@@ -43,13 +44,11 @@ class User extends Authenticatable implements FilamentUser
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
 
     protected static function booted()
     {
@@ -62,11 +61,11 @@ class User extends Authenticatable implements FilamentUser
                 'user_id' => $user->id,
             ]);
 
-            Log::info('User created '.$user->name.'. By '.auth()->user()->name);
+            Log::info('User created ' . $user->name . '. By ' . auth()->user()->name);
         });
 
         static::updated(function ($user) {
-            Log::info('User updated '.$user->name.'. By '.auth()->user()->name);
+            Log::info('User updated ' . $user->name . '. By ' . auth()->user()->name);
         });
     }
 
@@ -78,6 +77,15 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasPermissionTo('access_admin_panel');
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->profile->avatar === null) {
+            return null;
+        }
+
+        return asset('storage/' . $this->profile->avatar);
     }
 
     public function profile(): HasOne

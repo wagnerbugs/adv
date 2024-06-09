@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('process_id')->constrained()->cascadeOnDelete();
             $table->string('process_api_id')->unique()->nullable();
+            $table->json('professionals')->nullable();
             $table->string('class_code')->nullable(); //código da classe
             $table->string('class_name')->nullable(); //nome da classe
             $table->text('class_description')->nullable(); //descrição da classe

@@ -19,6 +19,7 @@ return new class extends Migration
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('avatar')->nullable();
             $table->boolean('is_lawyer')->default(false);
             $table->enum('gender', GenderEnum::getValues())->nullable();
             $table->date('birth_date')->nullable();

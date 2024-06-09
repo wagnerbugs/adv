@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7e8924aa57491b66a33fff61f82573d",
+    "content-hash": "9b23a6af681ed62c47ffc007b15403c2",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -5676,6 +5676,109 @@
             "time": "2024-03-28T08:11:19+00:00"
         },
         {
+            "name": "staudenmeir/eloquent-has-many-deep-contracts",
+            "version": "v1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/eloquent-has-many-deep-contracts.git",
+                "reference": "bcbe1a921caad7201b324e297eddb696d4bd8647"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/eloquent-has-many-deep-contracts/zipball/bcbe1a921caad7201b324e297eddb696d4bd8647",
+                "reference": "bcbe1a921caad7201b324e297eddb696d4bd8647",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^11.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\EloquentHasManyDeepContracts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Contracts for staudenmeir/eloquent-has-many-deep",
+            "support": {
+                "issues": "https://github.com/staudenmeir/eloquent-has-many-deep-contracts/issues",
+                "source": "https://github.com/staudenmeir/eloquent-has-many-deep-contracts/tree/v1.2"
+            },
+            "time": "2024-01-18T01:20:44+00:00"
+        },
+        {
+            "name": "staudenmeir/eloquent-json-relations",
+            "version": "v1.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/eloquent-json-relations.git",
+                "reference": "c3fb84458e4fd552662b97df9b775bded4ae5dad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/eloquent-json-relations/zipball/c3fb84458e4fd552662b97df9b775bded4ae5dad",
+                "reference": "c3fb84458e4fd552662b97df9b775bded4ae5dad",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^11.0",
+                "php": "^8.2",
+                "staudenmeir/eloquent-has-many-deep-contracts": "^1.2"
+            },
+            "require-dev": {
+                "barryvdh/laravel-ide-helper": "^3.0",
+                "orchestra/testbench": "^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.5",
+                "staudenmeir/eloquent-has-many-deep": "^1.20"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Staudenmeir\\EloquentJsonRelations\\IdeHelperServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\EloquentJsonRelations\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Laravel Eloquent relationships with JSON keys",
+            "support": {
+                "issues": "https://github.com/staudenmeir/eloquent-json-relations/issues",
+                "source": "https://github.com/staudenmeir/eloquent-json-relations/tree/v1.12"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/JonasStaudenmeir",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-03-18T16:57:17+00:00"
+        },
+        {
             "name": "symfony/clock",
             "version": "v7.1.1",
             "source": {
@@ -8097,6 +8200,77 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.2.7"
             },
             "time": "2023-12-08T13:03:43+00:00"
+        },
+        {
+            "name": "valentin-morice/filament-json-column",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/valentin-morice/filament-json-column.git",
+                "reference": "c3a05e0c7bcbc5e523cc2b7f7f58d1014119ed63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/valentin-morice/filament-json-column/zipball/c3a05e0c7bcbc5e523cc2b7f7f58d1014119ed63",
+                "reference": "c3a05e0c7bcbc5e523cc2b7f7f58d1014119ed63",
+                "shasum": ""
+            },
+            "require": {
+                "filament/forms": "^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ValentinMorice\\FilamentJsonColumn\\FilamentJsonColumnServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentJsonColumn": "ValentinMorice\\FilamentJsonColumn\\Facades\\FilamentJsonColumn"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ValentinMorice\\FilamentJsonColumn\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "valentin-morice",
+                    "email": "valentinmorice1@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple package to view and edit your JSON columns in Filament",
+            "homepage": "https://github.com/valentin-morice/filament-json-column",
+            "keywords": [
+                "filament-json-column",
+                "laravel",
+                "valentin-morice"
+            ],
+            "support": {
+                "issues": "https://github.com/valentin-morice/filament-json-column/issues",
+                "source": "https://github.com/valentin-morice/filament-json-column"
+            },
+            "time": "2024-05-13T08:31:47+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

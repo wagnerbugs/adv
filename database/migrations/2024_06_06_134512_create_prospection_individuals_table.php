@@ -1,8 +1,11 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Enums\MaritalStatusEnum;
+use App\Enums\EducationLevelEnum;
+use App\Enums\TreatmentPronounEnum;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -45,6 +48,16 @@ return new class extends Migration
             $table->json('alerta_monitore')->nullable();
             $table->json('outros_documentos')->nullable();
             $table->string('protocolo')->nullable();
+
+            $table->enum('title', TreatmentPronounEnum::getValues())->nullable();
+            $table->enum('marital_status', MaritalStatusEnum::getValues())->nullable();
+            $table->enum('education_level', EducationLevelEnum::getValues())->nullable();
+            $table->string('father_name')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('birth_place')->nullable();
+            $table->string('workplace')->nullable();
+            $table->string('ocupation')->nullable();
+
             $table->json('matriz_filial')->nullable();
             $table->timestamps();
         });

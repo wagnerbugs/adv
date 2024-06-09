@@ -13,7 +13,9 @@ class ListUserProfiles extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Cadastrar profissional')
+                ->url(fn (): string => route('filament.admin.resources.users.create')),
         ];
     }
 }

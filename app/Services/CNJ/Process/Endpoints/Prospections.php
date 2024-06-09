@@ -15,6 +15,6 @@ class Prospections extends BaseEndpoint
                     ]
                 ]
             ]
-        )->json();
+        )->json('hits.hits', []);
     }
 }

@@ -322,36 +322,49 @@ class UserProfileResource extends Resource
                     ->columns(1)
                     ->schema([
 
-                        Forms\Components\Fieldset::make('Status')
+                        Forms\Components\Section::make()
                             ->schema([
-                                Forms\Components\Toggle::make('is_active')
-                                    ->label('Ativo')
-                                    ->default(true),
-                            ]),
 
-                        Forms\Components\Fieldset::make('People Keys')
-                            ->schema([
-                                Forms\Components\Toggle::make('is_lawyer')
-                                    ->label('Advogado'),
-                            ]),
+                                Forms\Components\Fieldset::make('Avatar')
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('avatar')
+                                            ->label('')
+                                            ->columnSpanFull()
+                                            ->avatar()
+                                            ->directory('professionals'),
+                                    ]),
 
-                        Forms\Components\Repeater::make('documents')
-                            ->label('Documentos')
-                            ->columns(2)
-                            ->collapsed()
-                            ->addActionLabel('Adicionar novo documento')
-                            ->schema([
-                                Forms\Components\Select::make('type')
-                                    ->label('Tipo')
-                                    ->options(DocumentTypeEnum::class)
-                                    ->required(),
-                                Forms\Components\TextInput::make('number')
-                                    ->label('Número')
-                                    ->placeholder('1234567890')
-                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
-                                    ->required(),
-                            ]),
+                                Forms\Components\Fieldset::make('Status')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('is_active')
+                                            ->label('Ativo')
+                                            ->default(true),
+                                    ]),
 
+                                Forms\Components\Fieldset::make('People Keys')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('is_lawyer')
+                                            ->label('Advogado'),
+                                    ]),
+
+                                Forms\Components\Repeater::make('documents')
+                                    ->label('Documentos')
+                                    ->columns(2)
+                                    ->collapsed()
+                                    ->addActionLabel('Adicionar novo documento')
+                                    ->schema([
+                                        Forms\Components\Select::make('type')
+                                            ->label('Tipo')
+                                            ->options(DocumentTypeEnum::class)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('number')
+                                            ->label('Número')
+                                            ->placeholder('1234567890')
+                                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
+                                            ->required(),
+                                    ]),
+
+                            ]),
                     ]),
             ]);
     }

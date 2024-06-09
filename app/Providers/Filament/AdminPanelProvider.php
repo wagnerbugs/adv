@@ -31,10 +31,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('LEXIFY')
             ->brandLogo(asset('images/lexify-logo.svg'))
-            ->defaultAvatarProvider(GravatarProvider::class)
-            ->plugins([
-                GravatarPlugin::make(),
-            ])
+            // ->defaultAvatarProvider(GravatarProvider::class)
+            // ->plugins([
+            //     GravatarPlugin::make(),
+            // ])
             ->colors([
                 'primary' => Color::Violet,
             ])
@@ -66,7 +66,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->login()
-            ->profile()
+            ->profile(isSimple: true)
             ->passwordReset()
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->maxContentWidth(MaxWidth::Full)

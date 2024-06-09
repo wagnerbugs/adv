@@ -20,7 +20,17 @@ return new class extends Migration
             $table->string('cnpj_digito_verificador')->nullable();
             $table->string('tipo')->nullable();
             $table->string('nome_fantasia')->nullable();
-            $table->string('motivo_situacao_cadastral')->nullable();
+            $table->string('razao_social')->nullable();
+            $table->string('capital_social')->nullable();
+            $table->string('responsavel_federativo')->nullable();
+            $table->date('atualizado_em')->nullable();
+            $table->json('porte')->nullable();
+            $table->json('natureza_juridica')->nullable();
+            $table->json('qualificacao_do_responsavel')->nullable();
+            $table->json('socios')->nullable();
+            $table->string('simples')->nullable();
+            $table->json('atividades_secundarias')->nullable();
+            $table->string('situacao_cadastral')->nullable();
             $table->date('data_situacao_cadastral')->nullable();
             $table->date('data_inicio_atividade')->nullable();
             $table->string('nome_cidade_exterior')->nullable();
@@ -39,21 +49,13 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('situacao_especial')->nullable();
             $table->date('data_situacao_especial')->nullable();
-            $table->date('atualizado_em')->nullable();
             $table->json('atividade_principal')->nullable();
             $table->json('pais')->nullable();
             $table->json('estado')->nullable();
             $table->json('cidade')->nullable();
+            $table->string('motivo_situacao_cadastral')->nullable();
             $table->json('inscricoes_estaduais')->nullable();
-            $table->string('razao_social')->nullable();
-            $table->string('capital_social')->nullable();
-            $table->string('responsavel_federativo')->nullable();
-            $table->json('porte')->nullable();
-            $table->json('natureza_juridica')->nullable();
-            $table->json('qualificacao_do_responsavel')->nullable();
-            $table->json('socios')->nullable();
-            $table->string('simples')->nullable();
-            $table->json('atividades_secundarias')->nullable();
+
             $table->timestamps();
         });
     }

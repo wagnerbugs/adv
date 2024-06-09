@@ -31,7 +31,7 @@ enum ProspectionReactionEnum: int implements HasColor, HasLabel
             self::NO_CONTACT => 'Sem Contato',
             self::BUDGET_SENT => 'Orcamento Enviado',
             self::STAND_BY => 'Stand By',
-            self::TRYING => 'Tentando',
+            self::TRYING => 'Iniciando Prospecção',
         };
     }
 

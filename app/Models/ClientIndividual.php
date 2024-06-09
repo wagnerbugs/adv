@@ -57,23 +57,21 @@ class ClientIndividual extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'title' => TreatmentPronounEnum::class,
-            'phones' => 'array',
-            'emails' => 'array',
-            'websites' => 'array',
-            'gender' => GenderEnum::class,
-            'marital_status' => MaritalStatusEnum::class,
-            'education_level' => EducationLevelEnum::class,
-            'documents' => 'array',
-            'attachments' => 'array',
-            'annotations' => 'array',
-            'type_account_bank' => TypeOfBankAccountEnum::class,
-            'addresses' => 'array',
-        ];
-    }
+    protected $casts = [
+        'title' => TreatmentPronounEnum::class,
+        'phones' => 'array',
+        'emails' => 'array',
+        'websites' => 'array',
+        'gender' => GenderEnum::class,
+        'marital_status' => MaritalStatusEnum::class,
+        'education_level' => EducationLevelEnum::class,
+        'documents' => 'array',
+        'attachments' => 'array',
+        'annotations' => 'array',
+        'type_account_bank' => TypeOfBankAccountEnum::class,
+        'addresses' => 'array',
+    ];
+
 
     public function client(): BelongsTo
     {

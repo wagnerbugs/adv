@@ -54,8 +54,10 @@ class ClientIndividualResource extends Resource
 
                         Forms\Components\Tabs::make('Tabs')
                             ->tabs([
+
                                 Forms\Components\Tabs\Tab::make('Dados pessoais')
                                     ->schema([
+
                                         Forms\Components\Section::make()
                                             ->columns(3)
                                             ->schema([
@@ -467,9 +469,9 @@ class ClientIndividualResource extends Resource
                                                     ->columnSpanFull(),
                                             ]),
                                     ]),
-
                             ]),
                     ]),
+
                 Forms\Components\Group::make()
                     ->columns(1)
                     ->schema([

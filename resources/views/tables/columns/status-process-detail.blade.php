@@ -13,7 +13,7 @@
 
 @endphp
 
-<div class="w-full">
+<div class="w-full px-4">
     <div class="">
         <div class="bg-secondary-200 h-1.5 rounded-full dark:bg-gray-700">
             @if (!is_null($batch))

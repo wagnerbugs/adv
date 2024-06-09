@@ -23,6 +23,7 @@ use App\Jobs\CreateProcessSubject;
 use App\Jobs\CreateProcessMovement;
 use App\Traits\ProcessNumberParser;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;

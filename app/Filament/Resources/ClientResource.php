@@ -162,6 +162,18 @@ class ClientResource extends Resource
                         })
                         ->icon('heroicon-m-pencil-square'),
 
+                    Action::make('process')
+                        ->color('success')
+                        ->label('Cadastrar processo')
+                        ->icon('heroicon-m-check-circle')
+                        ->url(function (Client $record): string {
+                            if ($record->type == ClientTypeEnum::COMPANY) {
+                                return route('filament.admin.resources.processes.create', ['client_id' => $record->company->id]);
+                            } else {
+                                return route('filament.admin.resources.processes.create',  ['client_id' => $record->individual->id]);
+                            }
+                        }),
+
                     Action::make('ativar')
                         ->requiresConfirmation()
                         ->color('warning')

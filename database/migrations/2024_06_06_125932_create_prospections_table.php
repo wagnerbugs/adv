@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('cnpj')->nullable();
-            $table->string('cpf')->nullable();
-            $table->string('process')->nullable();
+            $table->string('cnpj')->unique()->nullable();
+            $table->string('cpf')->unique()->nullable();
+            $table->string('process')->unique()->nullable();
             $table->json('complements')->nullable();
             $table->json('attachments')->nullable();
             $table->json('annotations')->nullable();

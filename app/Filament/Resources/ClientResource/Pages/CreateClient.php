@@ -3,26 +3,32 @@
 namespace App\Filament\Resources\ClientResource\Pages;
 
 use App\Enums\ClientTypeEnum;
-use App\Exceptions\ApiBrasilErrorResponseException;
-use App\Exceptions\ApiBrasilRequestException;
+use App\Traits\CapitalizeTrait;
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\CnpjApiException;
+use App\Services\CnpjWs\CnpjWsService;
 use App\Exceptions\InvalidCpfException;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use App\Services\CnpjWs\Entities\Company;
 use App\Filament\Resources\ClientResource;
+use Filament\Resources\Pages\CreateRecord;
+use App\Exceptions\ApiBrasilRequestException;
+use App\Services\CnpjWs\Entities\CompanyError;
+use App\Exceptions\ApiBrasilErrorResponseException;
 use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
 use App\Services\ApiBrasil\CPF\Entities\Individual;
-use App\Services\CnpjWs\CnpjWsService;
-use App\Services\CnpjWs\Entities\Company;
-use App\Services\CnpjWs\Entities\CompanyError;
-use App\Traits\CapitalizeTrait;
-use Filament\Notifications\Notification;
-use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Log;
 
 class CreateClient extends CreateRecord
 {
     use CapitalizeTrait;
 
     protected static string $resource = ClientResource::class;
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        return static::getModel()::create($data);
+    }
 
     protected function afterCreate(): void
     {

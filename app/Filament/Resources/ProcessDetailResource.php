@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Carbon\Carbon;
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Court;
 use App\Models\Client;
@@ -11,9 +12,14 @@ use App\Models\Process;
 use Filament\Forms\Form;
 use App\Models\CourtState;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use App\Models\CourtDistrict;
 use App\Models\ProcessDetail;
+use App\Models\ProcessSubject;
+use App\Models\ProcessMovement;
 use Filament\Resources\Resource;
+use App\Models\ProcessDetailChat;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\Imports\ImportColumn;
@@ -21,9 +27,7 @@ use Leandrocfe\FilamentPtbrFormFields\Money;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProcessDetailResource\Pages;
 use App\Filament\Resources\ProcessDetailResource\RelationManagers;
-use App\Models\ProcessMovement;
-use App\Models\ProcessSubject;
-use Illuminate\Support\HtmlString;
+use App\Models\UserProfile;
 
 class ProcessDetailResource extends Resource
 {
@@ -52,19 +56,38 @@ class ProcessDetailResource extends Resource
                                             ->columns(2)
                                             ->schema([
 
-                                                Forms\Components\Fieldset::make('CLIENTE')
+                                                Forms\Components\Group::make()
+                                                    ->columnSpan(2)
                                                     ->schema([
 
-                                                        Forms\Components\Placeholder::make('client_process_number')
-                                                            ->label('')
-                                                            ->content(
-                                                                function (ProcessDetail $record): string {
-                                                                    $client = Client::find($record->process->client_id);
-                                                                    return $client->individual
-                                                                        ? $client->individual->name . ' (' . $client->document . ')'
-                                                                        : $client->company->company . ' (' . $client->document . ')';
-                                                                }
-                                                            ),
+                                                        Forms\Components\Fieldset::make()
+                                                            ->columns(2)
+                                                            ->schema([
+
+
+
+                                                                Forms\Components\Placeholder::make('client_process_number')
+                                                                    ->label('Cliente')
+                                                                    ->content(
+                                                                        function (ProcessDetail $record): string {
+                                                                            $client = Client::find($record->process->client_id);
+                                                                            return $client->individual
+                                                                                ? $client->individual->name . ' (' . $client->document . ')'
+                                                                                : $client->company->company . ' (' . $client->document . ')';
+                                                                        }
+                                                                    ),
+
+                                                                Forms\Components\Select::make('professionals')
+                                                                    ->label('Profissionais')
+                                                                    ->multiple()
+                                                                    ->options(
+                                                                        User::join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+                                                                            ->where('user_profiles.is_active', true)
+                                                                            ->pluck('users.name', 'users.id')
+                                                                            ->toArray()
+                                                                    ),
+
+                                                            ]),
                                                     ]),
 
                                                 Forms\Components\Fieldset::make('CAPA DO PROCESSO')
@@ -205,11 +228,22 @@ class ProcessDetailResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
 
-                                Forms\Components\Fieldset::make('Imagem')
-                                    ->schema([]),
+                                Forms\Components\Placeholder::make('chat')
+                                    ->label('Histórico de procedimentos')
+                                    ->live()
+                                    ->content(
+                                        function (ProcessDetail $record): HtmlString {
+                                            $chats = ProcessDetailChat::where('process_detail_id', $record->id)->orderBy('created_at', 'desc')->get();
+                                            $chatList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Data</th><th scope="col" class="px-6 py-3">Código</th><th scope="col" class="px-6 py-3">test</th></tr></thead><tbody>';
+                                            foreach ($chats as $chat) {
+                                                $chatList .=  '
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . Carbon::parse($chat->created_at)->format('d/m/Y H:i:s') . '</th><td class="px-6 py-4">' . $chat->user->name . '</td><td class="px-6 py-4">' . $chat->message . '</td></tr>';
+                                            }
+                                            $chatList .= '</tbody></table></div>';
 
-                                Forms\Components\Fieldset::make('Status')
-                                    ->schema([]),
+                                            return new HtmlString($chatList);
+                                        }
+                                    ),
 
                             ]),
 
@@ -226,13 +260,17 @@ class ProcessDetailResource extends Resource
                 Tables\Columns\ViewColumn::make('status_process_detail')
                     ->label('Progresso')
                     ->view('tables.columns.status-process-detail'),
+
+                Tables\Columns\ViewColumn::make('professionals')
+                    ->label('Profissionais')
+                    ->view('tables.columns.process-detail-professionals'),
+
                 Tables\Columns\TextColumn::make('process.process')
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('class_name')
+                    ->label('Classe processual')
                     ->badge(true)
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('grade')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('judging_name')
                     ->description(fn (ProcessDetail $record): string => $record->process_api_id)
@@ -243,7 +281,8 @@ class ProcessDetailResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('last_modification_date')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->defaultSort('updated_at', 'desc')

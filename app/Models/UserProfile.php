@@ -16,6 +16,7 @@ class UserProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'avatar',
         'is_lawyer',
         'gender',
         'birth_date',
@@ -34,21 +35,19 @@ class UserProfile extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'gender' => GenderEnum::class,
-            'phones' => 'array',
-            'marital_status' => MaritalStatusEnum::class,
-            'education_level' => EducationLevelEnum::class,
-            'documents' => 'array',
-            'employment_type' => EmploymentTypeEnum::class,
-            'cbos' => 'array',
-            'attachments' => 'array',
-            'salaries' => 'array',
-            'annotations' => 'array',
-        ];
-    }
+    protected $casts = [
+        'gender' => GenderEnum::class,
+        'phones' => 'array',
+        'marital_status' => MaritalStatusEnum::class,
+        'education_level' => EducationLevelEnum::class,
+        'documents' => 'array',
+        'employment_type' => EmploymentTypeEnum::class,
+        'cbos' => 'array',
+        'attachments' => 'array',
+        'salaries' => 'array',
+        'annotations' => 'array',
+    ];
+
 
     public function user(): BelongsTo
     {

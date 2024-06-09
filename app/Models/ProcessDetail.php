@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProcessDetail extends Model
 {
@@ -14,6 +15,7 @@ class ProcessDetail extends Model
     protected $fillable = [
         'process_id',
         'process_api_id',
+        'professionals',
         'judging_code',
         'judging_name',
         'class_code',
@@ -34,15 +36,14 @@ class ProcessDetail extends Model
         'annotations',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'movements' => 'array',
-            'subjects' => 'array',
-            'attachments' => 'array',
-            'annotations' => 'array',
-        ];
-    }
+    protected $casts = [
+        'professionals' => 'array',
+        'movements' => 'array',
+        'subjects' => 'array',
+        'attachments' => 'array',
+        'annotations' => 'array',
+    ];
+
 
     public function process(): BelongsTo
     {
@@ -62,5 +63,10 @@ class ProcessDetail extends Model
     public function chat(): HasMany
     {
         return $this->hasMany(ProcessDetailChat::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->wherePivotIn('priority', 'professionals');
     }
 }

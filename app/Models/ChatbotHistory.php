@@ -16,12 +16,10 @@ class ChatbotHistory extends Model
         'step',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'step' => ChatbotStepsEnum::class,
-        ];
-    }
+    protected $casts = [
+        'step' => ChatbotStepsEnum::class,
+    ];
+
 
     public function chatbotUser(): BelongsTo
     {

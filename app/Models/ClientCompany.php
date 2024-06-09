@@ -57,20 +57,18 @@ class ClientCompany extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'partners' => 'array',
-            'phones' => 'array',
-            'emails' => 'array',
-            'websites' => 'array',
-            'contacts' => 'array',
-            'attachments' => 'array',
-            'annotations' => 'array',
-            'type_account_bank' => TypeOfBankAccountEnum::class,
-            'addresses' => 'array',
-        ];
-    }
+    protected $casts = [
+        'partners' => 'array',
+        'phones' => 'array',
+        'emails' => 'array',
+        'websites' => 'array',
+        'contacts' => 'array',
+        'attachments' => 'array',
+        'annotations' => 'array',
+        'type_account_bank' => TypeOfBankAccountEnum::class,
+        'addresses' => 'array',
+    ];
+
 
     public function client(): BelongsTo
     {
