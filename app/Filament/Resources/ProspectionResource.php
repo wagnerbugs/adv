@@ -654,10 +654,13 @@ class ProspectionResource extends Resource
                                                                         Forms\Components\Placeholder::make('atividade_principal')
                                                                             ->label('Atividade Primária')
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
-                                                                                $atividadePrimaria = $record->atividade_principal;
-                                                                                $descricao = $atividadePrimaria['descricao'];
-                                                                                $subclasse = $atividadePrimaria['subclasse'];
-                                                                                return new HtmlString($descricao . ' - ' . $subclasse);
+                                                                                if ($record->atividade_principal) {
+                                                                                    $atividadePrimaria = $record->atividade_principal;
+                                                                                    $descricao = $atividadePrimaria['descricao'];
+                                                                                    $subclasse = $atividadePrimaria['subclasse'];
+                                                                                    return new HtmlString($descricao . ' - ' . $subclasse);
+                                                                                }
+                                                                                return new HtmlString('Não definido');
                                                                             }),
                                                                     ])
 
@@ -679,17 +682,23 @@ class ProspectionResource extends Resource
                                                                         Forms\Components\Placeholder::make('socios')
                                                                             ->label('Informações do Sócio')
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
-                                                                                $socios = json_decode($record->socios, true);
 
-                                                                                $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Sócio</th><th scope="col" class="px-6 py-3">Data de entrada</th><th scope="col" class="px-6 py-3">Idade</th><th scope="col" class="px-6 py-3">Cargo</th></tr></thead><tbody>';
-                                                                                foreach ($socios as $socio) {
-                                                                                    $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $socio['nome'] . ' - <small>' . $socio['cpf_cnpj_socio'] . '</small></th><td class="px-6 py-4">' . Carbon::parse($socio['data_entrada'])->format('d/m/Y') . '</td><td class="px-6 py-4">' . $socio['faixa_etaria'] . '</td><td class="px-6 py-4">' . $socio['qualificacao_socio']['descricao'] . '</td></tr>';
+                                                                                if ($record->socios) {
+                                                                                    $socios = json_decode($record->socios, true);
+
+
+
+                                                                                    $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Sócio</th><th scope="col" class="px-6 py-3">Data de entrada</th><th scope="col" class="px-6 py-3">Idade</th><th scope="col" class="px-6 py-3">Cargo</th></tr></thead><tbody>';
+                                                                                    foreach ($socios as $socio) {
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $socio['nome'] . ' - <small>' . $socio['cpf_cnpj_socio'] . '</small></th><td class="px-6 py-4">' . Carbon::parse($socio['data_entrada'])->format('d/m/Y') . '</td><td class="px-6 py-4">' . $socio['faixa_etaria'] . '</td><td class="px-6 py-4">' . $socio['qualificacao_socio']['descricao'] . '</td></tr>';
+                                                                                    }
+
+                                                                                    $content .= '</tbody></table></div>';
+
+
+                                                                                    return new HtmlString($content);
                                                                                 }
-
-                                                                                $content .= '</tbody></table></div>';
-
-
-                                                                                return new HtmlString($content);
+                                                                                return new HtmlString('Não definido');
                                                                             }),
 
                                                                     ]),
@@ -712,17 +721,20 @@ class ProspectionResource extends Resource
                                                                         Forms\Components\Placeholder::make('atividades_secundarias')
                                                                             ->label('Atividade Secundárias')
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
-                                                                                $atividades = $record->atividades_secundarias;
+                                                                                if ($record->atividades_secundarias) {
+                                                                                    $atividades = $record->atividades_secundarias;
 
-                                                                                $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Descrição</th><th scope="col" class="px-6 py-3">Classe</th></tr></thead><tbody>';
-                                                                                foreach ($atividades as $atividade) {
-                                                                                    $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $atividade['descricao'] . '</small></th><td class="px-6 py-4">' . $atividade['subclasse'] . '</td></tr>';
+                                                                                    $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Descrição</th><th scope="col" class="px-6 py-3">Classe</th></tr></thead><tbody>';
+                                                                                    foreach ($atividades as $atividade) {
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $atividade['descricao'] . '</small></th><td class="px-6 py-4">' . $atividade['subclasse'] . '</td></tr>';
+                                                                                    }
+
+                                                                                    $content .= '</tbody></table></div>';
+
+
+                                                                                    return new HtmlString($content);
                                                                                 }
-
-                                                                                $content .= '</tbody></table></div>';
-
-
-                                                                                return new HtmlString($content);
+                                                                                return new HtmlString('Não definido');
                                                                             }),
                                                                     ]),
                                                             ]),
@@ -782,18 +794,23 @@ class ProspectionResource extends Resource
                                                                         Forms\Components\Placeholder::make('inscricoes_estaduais')
                                                                             ->label('inscricoes_estaduais')
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
-                                                                                $inscricoes = $record->inscricoes_estaduais;
+                                                                                if ($record->inscricoes_estaduais) {
 
-                                                                                $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Ativo?</th><th scope="col" class="px-6 py-3">Inscrição</th></tr></thead><tbody>';
-                                                                                foreach ($inscricoes as $inscricao) {
-                                                                                    $ativo = $inscricao['ativo'] ? 'Sim' : 'Não';
-                                                                                    $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $ativo . '</small></th><td class="px-6 py-4">' . $inscricao['inscricao_estadual'] . ' - ' . $inscricao['estado']['sigla'] . '</td></tr>';
+
+                                                                                    $inscricoes = $record->inscricoes_estaduais;
+
+                                                                                    $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Ativo?</th><th scope="col" class="px-6 py-3">Inscrição</th></tr></thead><tbody>';
+                                                                                    foreach ($inscricoes as $inscricao) {
+                                                                                        $ativo = $inscricao['ativo'] ? 'Sim' : 'Não';
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $ativo . '</small></th><td class="px-6 py-4">' . $inscricao['inscricao_estadual'] . ' - ' . $inscricao['estado']['sigla'] . '</td></tr>';
+                                                                                    }
+
+                                                                                    $content .= '</tbody></table></div>';
+
+
+                                                                                    return new HtmlString($content);
                                                                                 }
-
-                                                                                $content .= '</tbody></table></div>';
-
-
-                                                                                return new HtmlString($content);
+                                                                                return new HtmlString('Não definido');
                                                                             }),
                                                                     ]),
                                                             ]),

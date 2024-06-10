@@ -3,7 +3,7 @@
     use Illuminate\Support\Facades\DB;
 
     $batch_db = DB::table('job_batches')
-        ->where('name', $getRecord()->process_api_id)
+        ->where('name', $getRecord()->details->process_api_id)
         ->first();
 
     $batch = null;
