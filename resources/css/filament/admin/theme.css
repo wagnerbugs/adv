@@ -4,7 +4,7 @@
 
 /* bg-gradient-to-br dark:from-gray-950 dark:to-amber-700 */
 .fi-body {
-    @apply  bg-repeat bg-[url('http://adv.test/endless-constellation-light.svg')] dark:bg-gray-950 dark:bg-repeat dark:bg-[url('http://adv.test/endless-constellation.svg')];
+    @apply  bg-repeat bg-[url('https://lexify.com.br/endless-constellation-light.svg')] dark:bg-gray-950 dark:bg-repeat dark:bg-[url('https://lexify.com.br/endless-constellation.svg')];
 }
 
 /* .fi-body {
@@ -12,7 +12,7 @@
 } */
 
 .fi-simple-layout {
-    @apply  dark:bg-gray-900/50 bg-gray-100/50 bg-repeat bg-[url('http://adv.test/endless-constellation.svg')];
+    @apply  dark:bg-gray-900/50 bg-gray-100/50 bg-repeat bg-[url('https://lexify.com.br/endless-constellation.svg')];
 }
 
 .fi-sidebar {
