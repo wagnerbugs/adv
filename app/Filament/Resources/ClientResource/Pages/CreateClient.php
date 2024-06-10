@@ -105,8 +105,6 @@ class CreateClient extends CreateRecord
                 $service = new ApiBrasilCPFService();
                 $individual = $service->individuals()->get($document);
 
-                Log::debug('Individual retrieved: ', $individual->toArray());
-
                 if ($individual instanceof Individual) {
                     $client->individual()->update([
                         'name' => $individual->name,
