@@ -371,6 +371,8 @@ class UserResource extends Resource
                                                         }
                                                         return new HtmlString($noteList);
                                                     }
+
+                                                    return new HtmlString('Sem anexos');
                                                 }
                                             ),
 
@@ -414,6 +416,7 @@ class UserResource extends Resource
                                                                 }
                                                                 return new HtmlString($noteList);
                                                             }
+                                                            return new HtmlString('Sem anotações');
                                                         }
                                                     ),
 
