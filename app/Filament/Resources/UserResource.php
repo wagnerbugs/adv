@@ -65,9 +65,6 @@ class UserResource extends Resource
                             ->required()
                             ->maxLength(255),
 
-                        Forms\Components\DateTimePicker::make('email_verified_at')
-                            ->label('E-mail Verificado'),
-
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->required()
@@ -83,7 +80,6 @@ class UserResource extends Resource
 
                 Forms\Components\Group::make()
                     ->visibleOn('edit')
-                    ->relationship('profile')
                     ->columnSpan(4)
                     ->schema([
 
@@ -92,18 +88,21 @@ class UserResource extends Resource
                                 Forms\Components\Tabs\Tab::make('Dados pessoais')
                                     ->schema([
                                         Forms\Components\Section::make()
-                                            ->relationship('user')
                                             ->columns(2)
                                             ->schema([
                                                 Forms\Components\TextInput::make('name')
                                                     ->label('Nome')
-                                                    ->disabled(),
+                                                    ->disabled()
+                                                    ->dehydrated(),
 
                                                 Forms\Components\TextInput::make('email')
                                                     ->label('E-mail')
-                                                    ->disabled(),
+                                                    ->email()
+                                                    ->disabled()
+                                                    ->dehydrated(),
                                             ]),
                                         Forms\Components\Section::make()
+                                            ->relationship('profile')
                                             ->columns(4)
                                             ->schema([
                                                 Forms\Components\Select::make('gender')
@@ -122,6 +121,7 @@ class UserResource extends Resource
                                                     ->options(EducationLevelEnum::class),
                                             ]),
                                         Forms\Components\Section::make()
+                                            ->relationship('profile')
                                             ->columns(2)
                                             ->schema([
                                                 Forms\Components\DatePicker::make('hire_date')
@@ -130,45 +130,51 @@ class UserResource extends Resource
                                                     ->label('Data da demissão'),
                                             ]),
 
-                                        Forms\Components\Repeater::make('phones')
-                                            ->label('Telefones')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
+                                        Forms\Components\Section::make()
+                                            ->relationship('profile')
                                             ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'Residencial' => 'Residencial',
-                                                        'Comercial' => 'Comercial',
-                                                        'Celular' => 'Celular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->mask(RawJs::make(<<<'JS'
+
+                                                Forms\Components\Repeater::make('phones')
+                                                    ->label('Telefones')
+                                                    ->columns(3)
+                                                    ->collapsed()
+                                                    ->grid(2)
+                                                    ->schema([
+                                                        Forms\Components\Select::make('type')
+                                                            ->label('Tipo')
+                                                            ->options([
+                                                                'Residencial' => 'Residencial',
+                                                                'Comercial' => 'Comercial',
+                                                                'Celular' => 'Celular',
+                                                            ])
+                                                            ->required()
+                                                            ->columnSpan(1),
+                                                        Forms\Components\TextInput::make('number')
+                                                            ->label('Número')
+                                                            ->mask(RawJs::make(<<<'JS'
                                                             $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
                                                         JS))
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                            ]),
+                                                            ->required()
+                                                            ->columnSpan(2),
+                                                    ]),
 
-                                        Forms\Components\Repeater::make('documents')
-                                            ->label('Documentos')
-                                            ->columns(2)
-                                            ->collapsed()
-                                            ->addActionLabel('Adicionar novo documento')
-                                            ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options(DocumentTypeEnum::class)
-                                                    ->required(),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->placeholder('1234567890')
-                                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
-                                                    ->required(),
+                                                Forms\Components\Repeater::make('documents')
+                                                    ->label('Documentos')
+                                                    ->columns(2)
+                                                    ->collapsed()
+                                                    ->grid(3)
+                                                    ->addActionLabel('Adicionar novo documento')
+                                                    ->schema([
+                                                        Forms\Components\Select::make('type')
+                                                            ->label('Tipo')
+                                                            ->options(DocumentTypeEnum::class)
+                                                            ->required(),
+                                                        Forms\Components\TextInput::make('number')
+                                                            ->label('Número')
+                                                            ->placeholder('1234567890')
+                                                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
+                                                            ->required(),
+                                                    ]),
                                             ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Endereço')
@@ -243,140 +249,165 @@ class UserResource extends Resource
                                             ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Contrato')
-                                    ->columns(2)
+                                    // ->columns(2)
                                     ->schema([
-                                        Forms\Components\TextInput::make('contract')
-                                            ->label('Número do Contrato')
-                                            ->maxLength(255),
-                                        Forms\Components\Select::make('employment_type')
-                                            ->label('Tipo de Contrato')
-                                            ->options(EmploymentTypeEnum::class),
 
-                                        Forms\Components\Repeater::make('cbos')
-                                            ->label('Registro de ocupações')
-                                            ->columnSpanFull()
-                                            ->collapsed()
-                                            ->addActionLabel('Registrar mudança de ocupação')
+                                        Forms\Components\Group::make()
+                                            ->relationship('profile')
                                             ->schema([
-                                                Forms\Components\Group::make()
-                                                    ->columns(4)
-                                                    ->schema([
-                                                        Forms\Components\DatePicker::make('date')
-                                                            ->label('Data')
-                                                            ->columnSpan(1)
-                                                            ->default(Carbon::now())
-                                                            ->required(),
-                                                        Forms\Components\TextInput::make('code')
-                                                            ->label('Código CBO')
-                                                            ->columnSpan(1)
-                                                            ->disabled()
-                                                            ->dehydrated(),
-                                                        Forms\Components\TextInput::make('family')
-                                                            ->label('Família CBO')
-                                                            ->columnSpan(2)
-                                                            ->disabled()
-                                                            ->dehydrated(),
-                                                        Forms\Components\TextInput::make('occupation')
-                                                            ->label('Família CBO')
-                                                            ->columnSpan(2)
-                                                            ->hidden(),
 
-                                                        Forms\Components\Select::make('occupation_search')
-                                                            ->label('Ocupação CBO')
-                                                            ->columnSpanFull()
-                                                            ->live('onBlur', true)
-                                                            ->options(Occupation::where('is_active', true)->get()->mapWithKeys(function ($occupation) {
-                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
-                                                            }))
-                                                            ->searchable()
-                                                            ->required()
-                                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
-                                                                $code = CboHelper::cboCode($state);
-                                                                $set('code', $code);
-
-                                                                $codeFamily = CboHelper::convertToFamilyCodeCbo($state);
-
-                                                                $family = OccupationFamily::where('code', $codeFamily)->first();
-                                                                $set('family', $family->description);
-
-                                                                $codeOccupation = Occupation::where('code', $state)->first();
-                                                                $set('occupation', $codeOccupation->description);
-                                                            }),
-                                                    ]),
-
-                                            ]),
-
-                                        Forms\Components\Repeater::make('salaries')
-                                            ->label('Registro de salários')
-                                            ->columnSpanFull()
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->addActionLabel('Registrar novo salário')
-                                            ->schema([
-                                                Forms\Components\Group::make()
+                                                Forms\Components\Section::make()
                                                     ->columns(2)
                                                     ->schema([
-                                                        Forms\Components\DatePicker::make('date')
-                                                            ->label('Data')
-                                                            ->required(),
-                                                        Forms\Components\TextInput::make('amount')
-                                                            ->label('Quantia')
-                                                            ->numeric()
-                                                            ->rule('regex: /^\d+(\.\d{1,2})?$/')
-                                                            ->required(),
+
+                                                        Forms\Components\TextInput::make('contract')
+                                                            ->label('Número do Contrato')
+                                                            ->maxLength(255),
+                                                        Forms\Components\Select::make('employment_type')
+                                                            ->label('Tipo de Contrato')
+                                                            ->options(EmploymentTypeEnum::class),
                                                     ]),
 
+
+                                                Forms\Components\Section::make()
+                                                    ->schema([
+                                                        Forms\Components\Repeater::make('cbos')
+                                                            ->label('Registro de ocupações')
+                                                            ->columnSpanFull()
+                                                            ->collapsed()
+                                                            ->addActionLabel('Registrar mudança de ocupação')
+                                                            ->schema([
+                                                                Forms\Components\Group::make()
+                                                                    ->columns(4)
+                                                                    ->schema([
+                                                                        Forms\Components\DatePicker::make('date')
+                                                                            ->label('Data')
+                                                                            ->columnSpan(1)
+                                                                            ->default(Carbon::now())
+                                                                            ->required(),
+                                                                        Forms\Components\TextInput::make('code')
+                                                                            ->label('Código CBO')
+                                                                            ->columnSpan(1)
+                                                                            ->disabled()
+                                                                            ->dehydrated(),
+                                                                        Forms\Components\TextInput::make('family')
+                                                                            ->label('Família CBO')
+                                                                            ->columnSpan(2)
+                                                                            ->disabled()
+                                                                            ->dehydrated(),
+                                                                        Forms\Components\TextInput::make('occupation')
+                                                                            ->label('Família CBO')
+                                                                            ->columnSpan(2)
+                                                                            ->hidden(),
+
+                                                                        Forms\Components\Select::make('occupation_search')
+                                                                            ->label('Ocupação CBO')
+                                                                            ->columnSpanFull()
+                                                                            ->live('onBlur', true)
+                                                                            ->options(Occupation::where('is_active', true)->get()->mapWithKeys(function ($occupation) {
+                                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
+                                                                            }))
+                                                                            ->searchable()
+                                                                            ->required()
+                                                                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                                                                $code = CboHelper::cboCode($state);
+                                                                                $set('code', $code);
+
+                                                                                $codeFamily = CboHelper::convertToFamilyCodeCbo($state);
+
+                                                                                $family = OccupationFamily::where('code', $codeFamily)->first();
+                                                                                $set('family', $family->description);
+
+                                                                                $codeOccupation = Occupation::where('code', $state)->first();
+                                                                                $set('occupation', $codeOccupation->description);
+                                                                            }),
+                                                                    ]),
+
+                                                            ]),
+                                                    ]),
+
+                                                Forms\Components\Section::make()
+                                                    ->schema([
+                                                        Forms\Components\Repeater::make('salaries')
+                                                            ->label('Registro de salários')
+                                                            ->columnSpanFull()
+                                                            ->collapsed()
+                                                            ->grid(2)
+                                                            ->addActionLabel('Registrar novo salário')
+                                                            ->schema([
+                                                                Forms\Components\Group::make()
+                                                                    ->columns(2)
+                                                                    ->schema([
+                                                                        Forms\Components\DatePicker::make('date')
+                                                                            ->label('Data')
+                                                                            ->required(),
+                                                                        Forms\Components\TextInput::make('amount')
+                                                                            ->label('Quantia')
+                                                                            ->numeric()
+                                                                            ->rule('regex: /^\d+(\.\d{1,2})?$/')
+                                                                            ->required(),
+                                                                    ]),
+
+                                                            ]),
+                                                    ]),
                                             ]),
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Arquivos')
                                     ->schema([
-                                        Forms\Components\Repeater::make('attachments')
-                                            ->label('Arquivos')
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->addActionLabel('Anexar arquivo')
+                                        Forms\Components\Section::make()
+                                            ->relationship('profile')
                                             ->schema([
-                                                Forms\Components\TextInput::make('title')
-                                                    ->label('Título do arquivo')
-                                                    ->placeholder('Descrição curta do documento')
-                                                    ->maxLength(255),
-                                                Forms\Components\FileUpload::make('file')
-                                                    ->label('Arquivo')
-                                                    ->directory('employees'),
+                                                Forms\Components\Repeater::make('attachments')
+                                                    ->label('Arquivos')
+                                                    ->collapsed()
+                                                    ->grid(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('title')
+                                                            ->label('Título do arquivo')
+                                                            ->placeholder('Descrição curta do documento')
+                                                            ->maxLength(255),
+                                                        Forms\Components\FileUpload::make('file')
+                                                            ->label('Arquivo')
+                                                            ->directory('employees'),
+                                                    ]),
                                             ]),
                                     ]),
 
                                 Forms\Components\Tabs\Tab::make('Anotações')
                                     ->schema([
-                                        Forms\Components\Repeater::make('annotations')
-                                            ->label('Anotações')
-                                            ->columns(2)
-                                            ->collapsed()
-                                            ->deletable(false)
-                                            ->addActionLabel('Adicionar anotação')
+                                        Forms\Components\Section::make()
+                                            ->relationship('profile')
                                             ->schema([
-                                                Forms\Components\DateTimePicker::make('date')
-                                                    ->label('Data')
-                                                    ->default(now())
-                                                    ->disabled()
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('author')
-                                                    ->label('Autor')
-                                                    ->default(auth()->user()->name)
-                                                    ->disabled()
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('annotation')
-                                                    ->label('Nota')
-                                                    // ->disabled(!auth()->user()->hasRole('Root'))
-                                                    ->required()
-                                                    ->placeholder('Anotação...')
-                                                    ->columnSpanFull(),
+                                                Forms\Components\Repeater::make('annotations')
+                                                    ->label('Anotações')
+                                                    ->columns(2)
+                                                    ->collapsed()
+                                                    ->addActionLabel('Adicionar anotação')
+                                                    ->schema([
+                                                        Forms\Components\Hidden::make('date')
+                                                            ->label('Data')
+                                                            ->default(now())
+                                                            ->disabled()
+                                                            ->dehydrated(),
+                                                        Forms\Components\Hidden::make('author')
+                                                            ->label('Autor')
+                                                            ->default(auth()->user()->name)
+                                                            ->disabled()
+                                                            ->dehydrated(),
+                                                        Forms\Components\Textarea::make('annotation')
+                                                            ->label('Nota')
+                                                            ->required()
+                                                            ->placeholder('Anotação...')
+                                                            ->columnSpanFull(),
+                                                    ]),
                                             ]),
                                     ]),
                             ]),
+
                     ]),
                 Forms\Components\Group::make()
                     ->visibleOn('edit')
+                    ->relationship('profile')
                     ->columns(1)
                     ->schema([
 
@@ -438,11 +469,11 @@ class UserResource extends Resource
                     ->view('tables.columns.cbo-data')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_lawyer')
+                Tables\Columns\ToggleColumn::make('profile.is_lawyer')
                     ->label('Advogado')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_active')
+                Tables\Columns\ToggleColumn::make('profile.is_active')
                     ->label('Ativo')
                     ->searchable()
                     ->sortable(),
