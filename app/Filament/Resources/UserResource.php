@@ -458,7 +458,8 @@ class UserResource extends Resource
                                             ->label('')
                                             ->columnSpanFull()
                                             ->avatar()
-                                            ->directory('professionals'),
+                                            ->directory('professionals')
+                                            ->visibility('public'),
                                     ]),
 
                                 Forms\Components\Fieldset::make('Status')
