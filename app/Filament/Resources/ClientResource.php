@@ -119,11 +119,6 @@ class ClientResource extends Resource
                     })
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('document')
-                    ->label('Documento')
-                    ->searchable()
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime()

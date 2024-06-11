@@ -2,25 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\DocumentTypeEnum;
-use App\Enums\EducationLevelEnum;
+use Exception;
+use Carbon\Carbon;
+use Filament\Forms;
+use App\Models\Bank;
+use Filament\Tables;
+use App\Models\Client;
+use Filament\Forms\Form;
 use App\Enums\GenderEnum;
+use Filament\Tables\Table;
+use Filament\Support\RawJs;
+use App\Enums\DocumentTypeEnum;
 use App\Enums\MaritalStatusEnum;
+use App\Models\ClientIndividual;
+use Filament\Resources\Resource;
+use App\Enums\EducationLevelEnum;
+use Illuminate\Support\HtmlString;
 use App\Enums\TreatmentPronounEnum;
 use App\Enums\TypeOfBankAccountEnum;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Notification;
 use App\Filament\Resources\ClientIndividualResource\Pages;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
-use App\Models\Bank;
-use App\Models\ClientIndividual;
-use Exception;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Http;
 
 class ClientIndividualResource extends Resource
 {
@@ -191,6 +195,24 @@ class ClientIndividualResource extends Resource
                                                     ->label('Link')
                                                     ->helperText('Ex: https://google.com')
                                                     ->url()
+                                                    ->required(),
+                                            ]),
+
+                                        Forms\Components\Repeater::make('documents')
+                                            ->label('Documentos')
+                                            ->columns(2)
+                                            ->collapsed()
+                                            ->grid(2)
+                                            ->addActionLabel('Adicionar novo documento')
+                                            ->schema([
+                                                Forms\Components\Select::make('type')
+                                                    ->label('Tipo')
+                                                    ->options(DocumentTypeEnum::class)
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('number')
+                                                    ->label('Número')
+                                                    ->placeholder('1234567890')
+                                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
                                                     ->required(),
                                             ]),
                                     ]),
@@ -426,6 +448,24 @@ class ClientIndividualResource extends Resource
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Arquivos')
                                     ->schema([
+
+                                        Forms\Components\Placeholder::make('attachments_placeholder')
+                                            ->label('Anexos')
+                                            ->content(
+                                                function (ClientIndividual $record): HtmlString {
+                                                    $files = $record->attachments;
+                                                    if ($files) {
+                                                        $filesList = '';
+                                                        foreach ($files as $note) {
+
+                                                            $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
+
+                                                            return new HtmlString($filesList);
+                                                        }
+                                                    }
+                                                }
+                                            ),
+
                                         Forms\Components\Repeater::make('attachments')
                                             ->label('Arquivos')
                                             ->collapsed()
@@ -444,6 +484,24 @@ class ClientIndividualResource extends Resource
 
                                 Forms\Components\Tabs\Tab::make('Anotações')
                                     ->schema([
+
+                                        Forms\Components\Placeholder::make('annotation_placeholder')
+                                            ->label('Anotações')
+                                            ->content(
+                                                function (ClientIndividual $record): HtmlString {
+                                                    $notes = $record->annotations;
+                                                    if ($notes) {
+                                                        $noteList = '';
+                                                        foreach ($notes as $note) {
+
+                                                            $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
+
+                                                            return new HtmlString($noteList);
+                                                        }
+                                                    }
+                                                }
+                                            ),
+
                                         Forms\Components\Repeater::make('annotations')
                                             ->label('Anotações')
                                             ->columns(2)
@@ -451,19 +509,14 @@ class ClientIndividualResource extends Resource
                                             ->deletable(false)
                                             ->addActionLabel('Adicionar anotação')
                                             ->schema([
-                                                Forms\Components\DateTimePicker::make('date')
+                                                Forms\Components\Hidden::make('date')
                                                     ->label('Data')
-                                                    ->default(now())
-                                                    ->disabled()
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('author')
+                                                    ->default(Carbon::now()),
+                                                Forms\Components\Hidden::make('author')
                                                     ->label('Autor')
-                                                    ->default(auth()->user()->name)
-                                                    ->disabled()
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('annotation')
+                                                    ->default(auth()->user()->name),
+                                                Forms\Components\Textarea::make('annotation')
                                                     ->label('Nota')
-                                                    ->disabled(!auth()->user()->hasRole('Root'))
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
@@ -476,39 +529,25 @@ class ClientIndividualResource extends Resource
                     ->columns(1)
                     ->schema([
 
-                        Forms\Components\FileUpload::make('image')
-                            ->label('Foto')
-                            ->image()
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                '1:1',
-                            ])
-                            ->directory('clients'),
-
-                        Forms\Components\Fieldset::make('Status')
+                        Forms\Components\Section::make()
                             ->schema([
-                                Forms\Components\Toggle::make('is_active')
-                                    ->label('Ativo')
-                                    ->default(true),
-                            ]),
 
-                        Forms\Components\Repeater::make('documents')
-                            ->label('Documentos')
-                            ->columns(2)
-                            ->collapsed()
-                            ->addActionLabel('Adicionar novo documento')
-                            ->schema([
-                                Forms\Components\Select::make('type')
-                                    ->label('Tipo')
-                                    ->options(DocumentTypeEnum::class)
-                                    ->required(),
-                                Forms\Components\TextInput::make('number')
-                                    ->label('Número')
-                                    ->placeholder('1234567890')
-                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
-                                    ->required(),
-                            ]),
+                                Forms\Components\FileUpload::make('image')
+                                    ->label('Foto')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        '1:1',
+                                    ])
+                                    ->directory('clients'),
 
+                                Forms\Components\Fieldset::make('Status')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('is_active')
+                                            ->label('Ativo')
+                                            ->default(true),
+                                    ]),
+                            ]),
                     ]),
             ]);
     }
@@ -543,6 +582,9 @@ class ClientIndividualResource extends Resource
                 Tables\Columns\TextColumn::make('state')
                     ->label('UF')
                     ->searchable(),
+
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Ativo?'),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
