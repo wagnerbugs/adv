@@ -364,7 +364,7 @@ class UserResource extends Resource
                                                 function (User $record): HtmlString {
                                                     $notes = $record->attachments;
 
-                                                    if (count($notes) > 0) {
+                                                    if ($notes) {
                                                         $noteList = '';
                                                         foreach ($notes as $note) {
                                                             $noteList .= '<a href="/storage/' . $note->path . '" class="text-violet-500 hover:text-violet-600" target="_blank">' . Carbon::parse($note->created_at)->format('d/m/Y') . ' - '  . $note->name . ' - ' . $note->path . '</a><br/>';
@@ -409,7 +409,7 @@ class UserResource extends Resource
                                                         function (UserProfile $record): HtmlString {
                                                             $notes = $record->annotations;
 
-                                                            if (count($notes) > 0) {
+                                                            if ($notes) {
                                                                 $noteList = '';
                                                                 foreach (array_reverse($notes) as $note) {
                                                                     $noteList .= Carbon::parse($note['date'])->format('d/m/Y') . ' - '  . $note['author'] . ' - ' . $note['annotation'] . '<br/>';
