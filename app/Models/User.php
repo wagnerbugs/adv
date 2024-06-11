@@ -86,7 +86,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
         }
 
-        return url('/storage' . $this->profile->avatar);
+        return url('/storage/' . $this->profile->avatar);
     }
 
     public function profile(): HasOne
