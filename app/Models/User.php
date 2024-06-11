@@ -4,15 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
@@ -82,7 +83,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function getFilamentAvatarUrl(): ?string
     {
         if ($this->profile->avatar === null) {
-            return null;
+            return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
         }
 
         return asset('storage/' . $this->profile->avatar);
@@ -96,5 +97,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function address(): HasOne
     {
         return $this->hasOne(UserAddress::class);
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(UserAttachment::class);
     }
 }

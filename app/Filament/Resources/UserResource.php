@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
+use App\Models\UserProfile;
+use Illuminate\Support\HtmlString;
 
 class UserResource extends Resource
 {
@@ -354,22 +356,41 @@ class UserResource extends Resource
                                     ]),
                                 Forms\Components\Tabs\Tab::make('Arquivos')
                                     ->schema([
-                                        Forms\Components\Section::make()
-                                            ->relationship('profile')
+
+                                        Forms\Components\Placeholder::make('attachmentsList')
+                                            ->label('Lista de Anexos')
+                                            ->live()
+                                            ->content(
+                                                function (User $record): HtmlString {
+                                                    $notes = $record->attachments;
+
+                                                    if (count($notes) > 0) {
+                                                        $noteList = '';
+                                                        foreach ($notes as $note) {
+                                                            $noteList .= '<a href="/storage/' . $note->path . '" class="text-violet-500 hover:text-violet-600" target="_blank">' . Carbon::parse($note->created_at)->format('d/m/Y') . ' - '  . $note->name . ' - ' . $note->path . '</a><br/>';
+                                                        }
+                                                        return new HtmlString($noteList);
+                                                    }
+                                                }
+                                            ),
+
+                                        Forms\Components\Repeater::make('attachments')
+                                            ->label('Arquivos')
+                                            ->relationship('attachments')
+                                            ->collapsed()
+                                            ->grid(2)
                                             ->schema([
-                                                Forms\Components\Repeater::make('attachments')
-                                                    ->label('Arquivos')
-                                                    ->collapsed()
-                                                    ->grid(2)
-                                                    ->schema([
-                                                        Forms\Components\TextInput::make('title')
-                                                            ->label('Título do arquivo')
-                                                            ->placeholder('Descrição curta do documento')
-                                                            ->maxLength(255),
-                                                        Forms\Components\FileUpload::make('file')
-                                                            ->label('Arquivo')
-                                                            ->directory('employees'),
-                                                    ]),
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label('Título do arquivo')
+                                                    ->placeholder('Descrição curta do documento')
+                                                    ->maxLength(255),
+                                                Forms\Components\FileUpload::make('path')
+                                                    ->label('Arquivo')
+                                                    ->openable()
+                                                    ->downloadable()
+                                                    ->previewable(false)
+                                                    ->maxSize('5120')
+                                                    ->directory('employees'),
                                             ]),
                                     ]),
 
@@ -378,6 +399,24 @@ class UserResource extends Resource
                                         Forms\Components\Section::make()
                                             ->relationship('profile')
                                             ->schema([
+
+                                                Forms\Components\Placeholder::make('annotationsList')
+                                                    ->label('Anotações')
+                                                    ->live()
+                                                    ->content(
+                                                        function (UserProfile $record): HtmlString {
+                                                            $notes = $record->annotations;
+
+                                                            if (count($notes) > 0) {
+                                                                $noteList = '';
+                                                                foreach (array_reverse($notes) as $note) {
+                                                                    $noteList .= Carbon::parse($note['date'])->format('d/m/Y') . ' - '  . $note['author'] . ' - ' . $note['annotation'] . '<br/>';
+                                                                }
+                                                                return new HtmlString($noteList);
+                                                            }
+                                                        }
+                                                    ),
+
                                                 Forms\Components\Repeater::make('annotations')
                                                     ->label('Anotações')
                                                     ->columns(2)
@@ -386,14 +425,10 @@ class UserResource extends Resource
                                                     ->schema([
                                                         Forms\Components\Hidden::make('date')
                                                             ->label('Data')
-                                                            ->default(now())
-                                                            ->disabled()
-                                                            ->dehydrated(),
+                                                            ->default(Carbon::now()->format('Y-m-d H:i')),
                                                         Forms\Components\Hidden::make('author')
                                                             ->label('Autor')
-                                                            ->default(auth()->user()->name)
-                                                            ->disabled()
-                                                            ->dehydrated(),
+                                                            ->default(auth()->user()->name),
                                                         Forms\Components\Textarea::make('annotation')
                                                             ->label('Nota')
                                                             ->required()
@@ -435,9 +470,6 @@ class UserResource extends Resource
                                         Forms\Components\Toggle::make('is_lawyer')
                                             ->label('Advogado'),
                                     ]),
-
-
-
                             ]),
                     ]),
             ]);
@@ -447,6 +479,10 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\ImageColumn::make('profile.avatar')
+                    ->label('Foto')
+                    ->circular(),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nome Completo')
@@ -464,7 +500,7 @@ class UserResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\ViewColumn::make('cbos')
+                Tables\Columns\ViewColumn::make('profile.cbos')
                     ->label('Cargo')
                     ->view('tables.columns.cbo-data')
                     ->searchable()
