@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
@@ -82,11 +83,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if ($this->profile->avatar === null) {
-            return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
-        }
+        $avatar =  'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
 
-        return url('/storage/' . $this->profile->avatar);
+        return Storage::url($this->profile->avatar) ?? $avatar;
     }
 
     public function profile(): HasOne
