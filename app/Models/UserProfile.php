@@ -6,11 +6,12 @@ use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\MaritalStatusEnum;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserProfile extends Model
+class UserProfile extends Model implements HasAvatar
 {
     use HasFactory;
 
@@ -48,6 +49,14 @@ class UserProfile extends Model
         'annotations' => 'array',
     ];
 
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->avatar === null) {
+            return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
+        }
+
+        return url("/storage/" . $this->profile->avatar);
+    }
 
     public function user(): BelongsTo
     {
