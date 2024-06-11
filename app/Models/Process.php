@@ -46,4 +46,9 @@ class Process extends Model
     {
         return $this->belongsTo(CourtDistrict::class, 'court_district_code', 'code');
     }
+
+    public function chats(): HasMany
+    {
+        return $this->hasMany(ProcessChat::class);
+    }
 }

@@ -463,6 +463,7 @@ class ClientIndividualResource extends Resource
                                                             return new HtmlString($filesList);
                                                         }
                                                     }
+                                                    return new HtmlString('Nenhum arquivo anexado');
                                                 }
                                             ),
 
@@ -499,6 +500,7 @@ class ClientIndividualResource extends Resource
                                                             return new HtmlString($noteList);
                                                         }
                                                     }
+                                                    return new HtmlString('Nenhuma anotação registrada');
                                                 }
                                             ),
 
@@ -556,6 +558,9 @@ class ClientIndividualResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('image')
+                    ->label('Imagem'),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nome')
                     ->color('primary')

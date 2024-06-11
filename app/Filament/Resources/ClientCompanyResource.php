@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Exception;
+use Carbon\Carbon;
 use Filament\Forms;
 use App\Models\Bank;
 use Filament\Tables;
@@ -16,6 +17,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\Section;
@@ -23,8 +25,8 @@ use Filament\Infolists\Components\TextEntry;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 use Filament\Infolists\Components\RepeatableEntry;
 use App\Filament\Resources\ClientCompanyResource\Pages;
-use App\Filament\Resources\ClientCompanyResource\RelationManagers\ProcessesRelationManager;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
+use App\Filament\Resources\ClientCompanyResource\RelationManagers\ProcessesRelationManager;
 
 class ClientCompanyResource extends Resource
 {
@@ -458,6 +460,26 @@ class ClientCompanyResource extends Resource
 
                                 Forms\Components\Tabs\Tab::make('Arquivos')
                                     ->schema([
+
+                                        Forms\Components\Placeholder::make('attachments_placeholder')
+                                            ->label('Anexos')
+                                            ->content(
+                                                function (ClientCompany $record): HtmlString {
+                                                    $files = $record->attachments;
+                                                    if ($files) {
+                                                        $filesList = '';
+                                                        foreach ($files as $note) {
+
+                                                            $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
+
+                                                            return new HtmlString($filesList);
+                                                        }
+                                                    }
+
+                                                    return new HtmlString('Nenhum arquivo anexado');
+                                                }
+                                            ),
+
                                         Forms\Components\Repeater::make('attachments')
                                             ->label('Arquivos')
                                             ->collapsed()
@@ -476,26 +498,41 @@ class ClientCompanyResource extends Resource
 
                                 Forms\Components\Tabs\Tab::make('Anotações')
                                     ->schema([
+
+                                        Forms\Components\Placeholder::make('annotation_placeholder')
+                                            ->label('Anotações')
+                                            ->content(
+                                                function (ClientCompany $record): HtmlString {
+                                                    $notes = $record->annotations;
+                                                    if ($notes) {
+                                                        $noteList = '';
+                                                        foreach ($notes as $note) {
+
+                                                            $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
+
+                                                            return new HtmlString($noteList);
+                                                        }
+                                                    }
+                                                    return new HtmlString('Nenhuma anotação registrada');
+                                                }
+                                            ),
+
                                         Forms\Components\Repeater::make('annotations')
                                             ->label('Anotações')
                                             ->columns(2)
                                             ->collapsed()
                                             ->deletable()
+                                            ->grid(2)
                                             ->addActionLabel('Adicionar anotação')
                                             ->schema([
-                                                Forms\Components\DateTimePicker::make('date')
+                                                Forms\Components\Hidden::make('date')
                                                     ->label('Data')
-                                                    ->default(now())
-                                                    ->disabled()
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('author')
+                                                    ->default(Carbon::now()),
+                                                Forms\Components\Hidden::make('author')
                                                     ->label('Autor')
-                                                    ->default(auth()->user()->name)
-                                                    ->disabled(auth()->user()->hasRole('Root') ? false : true)
-                                                    ->dehydrated(),
-                                                Forms\Components\TextInput::make('annotation')
+                                                    ->default(auth()->user()->name),
+                                                Forms\Components\Textarea::make('annotation')
                                                     ->label('Anotação')
-                                                    ->disabled(auth()->user()->hasRole('Root') ? false : true)
                                                     ->required()
                                                     ->placeholder('Anotação...')
                                                     ->columnSpanFull(),
@@ -544,6 +581,9 @@ class ClientCompanyResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->label('Logo'),
+
                 Tables\Columns\TextColumn::make('company')
                     ->color('primary')
                     ->label('Empresa')
@@ -556,11 +596,6 @@ class ClientCompanyResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->description(fn (ClientCompany $record): string => $record->legal_nature),
-
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Tipo')
-                    ->searchable()
-                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telefone')
@@ -596,7 +631,7 @@ class ClientCompanyResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
