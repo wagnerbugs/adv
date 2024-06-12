@@ -1,5 +1,5 @@
 <x-filament-panels::page>
     <div>
-        @livewire(\vendor\Filament\Widgets\FilamentFullCalendarPlugin::class)
+        @livewire(\App\Filament\Widgets\Lexify::class)
     </div>
 </x-filament-panels::page>
