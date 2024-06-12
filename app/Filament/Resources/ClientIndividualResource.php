@@ -562,7 +562,8 @@ class ClientIndividualResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('image')
+                Tables\Columns\ImageColumn::make('image')
+
                     ->label('Imagem'),
 
                 Tables\Columns\TextColumn::make('name')
