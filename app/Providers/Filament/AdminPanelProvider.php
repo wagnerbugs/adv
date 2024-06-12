@@ -45,8 +45,8 @@ class AdminPanelProvider extends PanelProvider
                     // ->schedulerLicenseKey()
                     ->selectable()
                     ->editable()
-                    ->timezone('America/Sao_Paulo')
-                    ->locale('pt_BR')
+                    // ->timezone('America/Sao_Paulo')
+                    // ->locale('pt_BR')
                     // ->plugins()
                     ->config([
                         'dayMaxEvents' => true,
