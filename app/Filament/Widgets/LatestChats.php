@@ -27,10 +27,7 @@ class LatestChats extends BaseWidget
                 Tables\Columns\ImageColumn::make('user.profile.avatar')
                     ->label('Usuário')
                     ->circular()
-                    ->stacked()
-                    ->ring(5)
-                    ->limit(3)
-                    ->limitedRemainingText(isSeparate: true),
+                    ->ring(5),
 
                 Tables\Columns\TextColumn::make('message')
                     ->label('Processo')
