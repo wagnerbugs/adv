@@ -20,6 +20,7 @@ class LatestChats extends BaseWidget
     public function table(Table $table): Table
     {
 
+
         return $table
             ->query(ProcessChatResource::getEloquentQuery())
             ->defaultPaginationPageOption(5)
@@ -80,5 +81,10 @@ class LatestChats extends BaseWidget
             ])
             ->poll('10s')
             ->defaultSort('created_at', 'desc');
+    }
+
+    public static function canView(): bool
+    {
+        return  auth()->user()->hasPermissionTo('view_any_widgets');
     }
 }
