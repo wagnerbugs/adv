@@ -17,6 +17,8 @@ class LatestChats extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+
+
     public function table(Table $table): Table
     {
 
@@ -85,6 +87,7 @@ class LatestChats extends BaseWidget
 
     public static function canView(): bool
     {
-        return  auth()->user()->hasPermissionTo('view_any_widgets');
+        return  auth()->user()->hasRole('view_any_widgets');
+        // return  auth()->user()->hasPermissionTo('view_any_widgets');
     }
 }

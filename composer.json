@@ -19,6 +19,7 @@
         "leandrocfe/filament-ptbr-form-fields": "^3.0",
         "livewire/livewire": "^3.4",
         "opcodesio/log-viewer": "^3.9",
+        "saade/filament-fullcalendar": "^3.0",
         "spatie/laravel-permission": "^6.7",
         "spatie/laravel-schedule-monitor": "^3.7",
         "staudenmeir/eloquent-json-relations": "^1.1",

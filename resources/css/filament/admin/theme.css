@@ -18,3 +18,7 @@
 .fi-sidebar {
     @apply bg-gradient-to-b dark:from-gray-900 dark:to-transparent from-white  to-transparent;
 }
+
+.filament-fullcalendar .fc-more-popover {
+    @apply bg-gray-100 dark:bg-gray-900;
+}

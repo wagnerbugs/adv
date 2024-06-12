@@ -21,7 +21,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Filament\Pages\Event;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -34,9 +36,23 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('LEXIFY')
             ->brandLogo(asset('images/lexify-logo.svg'))
             // ->defaultAvatarProvider(GravatarProvider::class)
-            // ->plugins([
-            //     GravatarPlugin::make(),
-            // ])
+            ->plugins([
+                // GravatarPlugin::make(),
+
+            ])
+            ->plugin(
+                FilamentFullCalendarPlugin::make()
+                    // ->schedulerLicenseKey()
+                    ->selectable()
+                    ->editable()
+                    ->timezone('America/Sao_Paulo')
+                    ->locale('pt_BR')
+                    // ->plugins()
+                    ->config([
+                        'dayMaxEvents' => true,
+                        'moreLinkClick' => 'day',
+                    ])
+            )
             ->colors([
                 'primary' => Color::Violet,
             ])
@@ -52,8 +68,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Lexify::class,
-                // Widgets\FilamentInfoWidget::class,
-                LatestChats::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
