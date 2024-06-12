@@ -588,7 +588,7 @@ class ClientCompanyResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->label('Logo'),
 
-                Tables\Columns\TextColumn::make('company')
+                Tables\Columns\TextColumn::make('fantasy_name')
                     ->color('primary')
                     ->label('Empresa')
                     ->searchable()
