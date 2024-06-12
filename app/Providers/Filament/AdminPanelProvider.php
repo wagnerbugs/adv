@@ -42,12 +42,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugin(
                 FilamentFullCalendarPlugin::make()
-                    // ->schedulerLicenseKey()
+
                     ->selectable()
                     ->editable()
-                    // ->timezone('America/Sao_Paulo')
-                    // ->locale('pt_BR')
-                    // ->plugins()
+
                     ->config([
                         'dayMaxEvents' => true,
                         'moreLinkClick' => 'day',
