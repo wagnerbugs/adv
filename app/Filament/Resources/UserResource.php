@@ -445,11 +445,12 @@ class UserResource extends Resource
                     ]),
                 Forms\Components\Group::make()
                     ->visibleOn('edit')
-                    ->relationship('profile')
+
                     ->columns(1)
                     ->schema([
 
                         Forms\Components\Section::make()
+                            ->relationship('profile')
                             ->schema([
 
                                 Forms\Components\Fieldset::make('Avatar')
@@ -474,7 +475,18 @@ class UserResource extends Resource
                                             ->label('Advogado'),
                                     ]),
                             ]),
+
+                        Forms\Components\Section::make()
+                            ->schema([
+                                Forms\Components\Select::make('roles')
+                                    ->label('Funções')
+                                    ->multiple()
+                                    ->preload()
+                                    ->relationship('roles', 'name', fn (Builder $query) => auth()->user()->hasRole('Root') ? null : $query->where('id', '>=', auth()->user()->roles()->first()->id)),
+
+                            ]),
                     ]),
+
             ]);
     }
 
