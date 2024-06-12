@@ -115,6 +115,20 @@ class RootSeeder extends Seeder
         Permission::create(['name' => 'update_court_districts']);
         Permission::create(['name' => 'delete_court_districts']);
 
+        //PROCESS
+        Permission::create(['name' => 'view_any_processes']);
+        Permission::create(['name' => 'view_processes']);
+        Permission::create(['name' => 'create_processes']);
+        Permission::create(['name' => 'update_processes']);
+        Permission::create(['name' => 'delete_processes']);
+
+        //PROSPECTION
+        Permission::create(['name' => 'view_any_prospections']);
+        Permission::create(['name' => 'view_prospections']);
+        Permission::create(['name' => 'create_prospections']);
+        Permission::create(['name' => 'update_prospections']);
+        Permission::create(['name' => 'delete_prospections']);
+
         User::withoutEvents(function () {
             $role = Role::create(['name' => 'Root']);
             $role->givePermissionTo('access_admin_panel');
@@ -196,6 +210,18 @@ class RootSeeder extends Seeder
             $role->givePermissionTo('create_court_districts');
             $role->givePermissionTo('update_court_districts');
             $role->givePermissionTo('delete_court_districts');
+
+            $role->givePermissionTo('view_any_processes');
+            $role->givePermissionTo('view_processes');
+            $role->givePermissionTo('create_processes');
+            $role->givePermissionTo('update_processes');
+            $role->givePermissionTo('delete_processes');
+
+            $role->givePermissionTo('view_any_prospections');
+            $role->givePermissionTo('view_prospections');
+            $role->givePermissionTo('create_prospections');
+            $role->givePermissionTo('update_prospections');
+            $role->givePermissionTo('delete_prospections');
 
             $user = User::updateOrCreate([
                 'name' => 'Wagner Bugs',
