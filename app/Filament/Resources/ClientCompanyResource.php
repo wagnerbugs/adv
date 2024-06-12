@@ -492,7 +492,11 @@ class ClientCompanyResource extends Resource
                                                     ->maxLength(255),
                                                 Forms\Components\FileUpload::make('file')
                                                     ->label('Arquivo')
-                                                    ->directory('employees'),
+                                                    ->openable()
+                                                    ->downloadable()
+                                                    ->previewable()
+                                                    ->maxSize('5120')
+                                                    ->directory('clients/files'),
                                             ]),
                                     ]),
 
@@ -559,7 +563,7 @@ class ClientCompanyResource extends Resource
                                             ->imageEditorAspectRatios([
                                                 '1:1',
                                             ])
-                                            ->directory('clients'),
+                                            ->directory('clients/images'),
 
                                     ]),
 

@@ -390,7 +390,7 @@ class UserResource extends Resource
                                                     ->label('Arquivo')
                                                     ->openable()
                                                     ->downloadable()
-                                                    ->previewable(false)
+                                                    ->previewable()
                                                     ->maxSize('5120')
                                                     ->directory('employees'),
                                             ]),
