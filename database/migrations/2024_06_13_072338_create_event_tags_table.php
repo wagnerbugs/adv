@@ -11,18 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('event_tags', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('color')->nullable();
-            $table->json('professionals')->nullable();
-            $table->foreignId('process_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignId('client_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->dateTime('starts_at');
-            $table->dateTime('ends_at');
-            $table->boolean('is_juridical')->default(false);
+            $table->string('color');
             $table->boolean('is_private')->default(false);
             $table->timestamps();
         });
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('event_tags');
     }
 };

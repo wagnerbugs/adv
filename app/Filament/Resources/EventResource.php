@@ -22,11 +22,11 @@ class EventResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?string $modelLabel = 'Agenda';
+    protected static ?string $modelLabel = 'teste';
 
-    protected static ?string $pluralModelLabel = 'Agendas';
+    protected static ?string $pluralModelLabel = 'teste';
 
-
+    protected static bool $isDiscovered = true;
 
 
     public static function form(Form $form): Form
@@ -37,17 +37,19 @@ class EventResource extends Resource
                     ->columns(2)
                     ->schema([
 
-
                         Forms\Components\Hidden::make('user_id')
                             ->label('Usuário')
                             ->default(auth()->user()->id)
                             ->required(),
+
                         Forms\Components\TextInput::make('title')
                             ->label('Título')
                             ->required()
                             ->maxLength(255),
+
                         Forms\Components\ColorPicker::make('color')
                             ->label('Cor'),
+
                         Forms\Components\Textarea::make('description')
                             ->label('Descrição')
                             ->columnSpanFull(),
@@ -62,12 +64,15 @@ class EventResource extends Resource
                             )
                             ->multiple()
                             ->preload(),
+
                         Forms\Components\DateTimePicker::make('starts_at')
                             ->label('Início')
                             ->required(),
+
                         Forms\Components\DateTimePicker::make('ends_at')
                             ->label('Fim')
                             ->required(),
+
                         Forms\Components\Toggle::make('is_audience')
                             ->label('É audiência?')
                             ->required(),
@@ -129,7 +134,7 @@ class EventResource extends Resource
             'index' => Pages\ListEvents::route('/'),
             'create' => Pages\CreateEvent::route('/create'),
             'edit' => Pages\EditEvent::route('/{record}/edit'),
-            // 'calendar' => Pages\FullCalendar::route('/calendar'),
+            'calendar' => Pages\FullCalendar::route('/calendar'),
         ];
     }
 }

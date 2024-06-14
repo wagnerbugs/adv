@@ -13,7 +13,7 @@ use App\Filament\Resources\ProcessResource;
 use App\Filament\Resources\ProcessChatResource;
 use Filament\Widgets\TableWidget as BaseWidget;
 
-class LatestChats extends BaseWidget
+class LatestChatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
@@ -87,7 +87,6 @@ class LatestChats extends BaseWidget
 
     public static function canView(): bool
     {
-        return  auth()->user()->hasRole('view_any_widgets');
-        // return  auth()->user()->hasPermissionTo('view_any_widgets');
+        return  auth()->user()->hasPermissionTo('widget_latest_chats');
     }
 }

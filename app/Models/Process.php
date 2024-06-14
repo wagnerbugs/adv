@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClientTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,5 +51,18 @@ class Process extends Model
     public function chats(): HasMany
     {
         return $this->hasMany(ProcessChat::class);
+    }
+
+    public function getNameAttribute()
+    {
+        if ($this->client->type === ClientTypeEnum::INDIVIDUAL) {
+            return $this->individual->name;
+        }
+
+        if ($this->client->type === ClientTypeEnum::COMPANY) {
+            return $this->company->company;
+        }
+
+        return null;
     }
 }

@@ -6,10 +6,12 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use App\Filament\Pages\Event;
 use App\Filament\Widgets\Lexify;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
 use App\Filament\Widgets\LatestChats;
+use App\Filament\Widgets\LexifyWidget;
 use Filament\Http\Middleware\Authenticate;
 use Awcodes\FilamentGravatar\GravatarPlugin;
 use Awcodes\FilamentGravatar\GravatarProvider;
@@ -23,7 +25,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use App\Filament\Pages\Event;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -38,19 +39,15 @@ class AdminPanelProvider extends PanelProvider
             // ->defaultAvatarProvider(GravatarProvider::class)
             ->plugins([
                 // GravatarPlugin::make(),
-
-            ])
-            ->plugin(
                 FilamentFullCalendarPlugin::make()
-
                     ->selectable()
                     ->editable()
-
+                    ->plugins([])
                     ->config([
                         'dayMaxEvents' => true,
                         'moreLinkClick' => 'day',
                     ])
-            )
+            ])
             ->colors([
                 'primary' => Color::Violet,
             ])
@@ -65,8 +62,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Lexify::class,
-
+                LexifyWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

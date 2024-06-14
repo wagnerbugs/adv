@@ -55,4 +55,17 @@ class Client extends Model
     {
         return $this->hasMany(Process::class);
     }
+
+    public function getNameAttribute()
+    {
+        if ($this->type === ClientTypeEnum::INDIVIDUAL) {
+            return $this->individual->name;
+        }
+
+        if ($this->type === ClientTypeEnum::COMPANY) {
+            return $this->company->company;
+        }
+
+        return null;
+    }
 }
