@@ -87,6 +87,7 @@ class LatestChatsWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        return  auth()->user()->hasPermissionTo('widget_latest_chats');
+        // return  auth()->user()->hasPermissionTo('widget_latest_chats');
+        return  true;
     }
 }
