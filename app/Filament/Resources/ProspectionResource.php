@@ -829,7 +829,7 @@ class ProspectionResource extends Resource
                                             ->content(function (Prospection $record): HtmlString {
                                                 $notes = collect($record->annotations);
                                                 $notesList = $notes->map(function ($note) {
-                                                    return '<span class="text-gray-500">' . Carbon::parse($note['date'])->format('d/m/Y H:i')  . ' - Por: ' . $note['author'] . ' - ' . $note['annotation'] . '</span>';
+                                                    return '<span class="text-gray-400">' . Carbon::parse($note['date'])->format('d/m/Y H:i')  . ' - Por: ' . $note['author'] . ' - ' . $note['annotation'] . '</span>';
                                                 })->implode('<br>'); // Implode with line break for HTML
 
                                                 return new HtmlString($notesList);
