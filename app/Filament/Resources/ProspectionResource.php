@@ -851,7 +851,7 @@ class ProspectionResource extends Resource
                                                     ->default(auth()->user()->name)
                                                     ->disabled()
                                                     ->dehydrated(),
-                                                Forms\Components\Textarea::make('annotation')
+                                                Forms\Components\RichEditor::make('annotation')
                                                     ->label('Nota')
                                                     ->required()
                                                     ->placeholder('Anotação...'),
