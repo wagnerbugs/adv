@@ -14,9 +14,13 @@
     <div class="flex -space-x-4 rtl:space-x-reverse">
         @foreach ($users as $user)
             @php
-                $avatar = $user->profile && $user->profile->avatar ? asset('storage/' . $user->profile->avatar) : 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $user->name);
+                $avatar =
+                    $user->profile && $user->profile->avatar
+                        ? asset('storage/' . $user->profile->avatar)
+                        : 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $user->name);
             @endphp
-            <img class="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800" src="{{ $avatar }}" alt="{{ $user->name }}" title="{{ $user->name }}">
+            <img class="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800" src="{{ $avatar }}" title="{{ $user->name }}"
+                alt="{{ $user->name }}">
         @endforeach
     </div>
 </div>

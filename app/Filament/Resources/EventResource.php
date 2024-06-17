@@ -26,7 +26,7 @@ class EventResource extends Resource
 
     protected static ?string $pluralModelLabel = 'teste';
 
-    protected static bool $isDiscovered = true;
+    protected static bool $isDiscovered = false;
 
 
     public static function form(Form $form): Form

@@ -17,7 +17,9 @@
     <div class="">
         <div class="bg-secondary-200 h-1.5 rounded-full dark:bg-gray-700">
             @if (!is_null($batch))
-                <div class="bg-primary-600 h-1.5 rounded-full text-sm" style="width: {{ $batch->progress() }}%"><small>{{ $batch->progress() }}%</small></div>
+                <div class="bg-primary-600 h-1.5 rounded-full text-sm" style="width: {{ $batch->progress() }}%">
+                    <small>{{ $batch->progress() }}%</small>
+                </div>
             @endif
         </div>
     </div>

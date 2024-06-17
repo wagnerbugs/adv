@@ -307,6 +307,7 @@ class EventsWidget extends FullCalendarWidget
 
     public function eventDidMount(): string
     {
+        $this->dispatch('event-changed');
         return <<<JS
             function({ event, timeText, isStart, isEnd, isMirror, isPast, isFuture, isToday, el, view }){
                 el.setAttribute("x-tooltip", "tooltip");

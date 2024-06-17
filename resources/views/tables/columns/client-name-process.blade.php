@@ -8,7 +8,8 @@
             <div class="flex">
                 <div class="flex max-w-max">
                     <div class="fi-ta-text-item fi-color-custom fi-color-primary inline-flex items-center gap-1.5">
-                        <span class="fi-ta-text-item-label text-custom-600 dark:text-custom-400 text-sm font-semibold leading-6"
+                        <span
+                            class="fi-ta-text-item-label text-custom-600 dark:text-custom-400 text-sm font-semibold leading-6"
                             style="--c-400:var(--primary-400);--c-600:var(--primary-600);">{{ $getRecord()->client->individual->name }}</span>
                     </div>
                 </div>
@@ -20,7 +21,8 @@
             <div class="flex">
                 <div class="flex max-w-max">
                     <div class="fi-ta-text-item fi-color-custom fi-color-primary inline-flex items-center gap-1.5">
-                        <span class="fi-ta-text-item-label text-custom-600 dark:text-custom-400 text-sm font-semibold leading-6"
+                        <span
+                            class="fi-ta-text-item-label text-custom-600 dark:text-custom-400 text-sm font-semibold leading-6"
                             style="--c-400:var(--primary-400);--c-600:var(--primary-600);">{{ $getRecord()->client->company->company }}</span>
                     </div>
                 </div>
