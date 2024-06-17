@@ -66,6 +66,7 @@ class MyEventsPage extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasPermissionTo('app_my_events');
+        // return auth()->user()->hasPermissionTo('app_my_events');
+        return true;
     }
 }
