@@ -75,8 +75,7 @@ class ClientCompanyResource extends Resource
                                                 RawJs::make(
                                                     <<<'JS'
                                                         $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                    JS
-                                                    ,
+                                                    JS,
                                                 ),
                                             ),
 
@@ -118,8 +117,7 @@ class ClientCompanyResource extends Resource
                                                     RawJs::make(
                                                         <<<'JS'
                                                             $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                        JS
-                                                        ,
+                                                        JS,
                                                     ),
                                                 ),
 
@@ -142,8 +140,7 @@ class ClientCompanyResource extends Resource
                                                     RawJs::make(
                                                         <<<'JS'
                                                             $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                        JS
-                                                        ,
+                                                        JS,
                                                     ),
                                                 )
                                                 ->required()
@@ -193,7 +190,7 @@ class ClientCompanyResource extends Resource
                                     ->columns(3)
                                     ->schema([
                                         Forms\Components\TextInput::make('zipcode')->label('CEP')->mask('99999-999')->suffixAction(
-                                            fn($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                            fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
                                                 ->icon('heroicon-m-globe-alt')
                                                 ->action(function () use ($state, $set) {
                                                     $state = preg_replace('/[^0-9]/', '', $state);
@@ -233,7 +230,7 @@ class ClientCompanyResource extends Resource
                                                     ->columns(4)
                                                     ->schema([
                                                         Forms\Components\TextInput::make('zipcode')->label('CEP')->columnSpan(1)->mask('99999-999')->suffixAction(
-                                                            fn($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                                            fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
                                                                 ->icon('heroicon-m-globe-alt')
                                                                 ->action(function () use ($state, $set) {
                                                                     $state = preg_replace('/[^0-9]/', '', $state);
@@ -375,9 +372,15 @@ class ClientCompanyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([Tables\Columns\ImageColumn::make('image')->label('Logo'), Tables\Columns\TextColumn::make('fantasy_name')->color('primary')->label('Empresa')->searchable()->sortable()->description(fn(ClientCompany $record): string => $record->client->document), Tables\Columns\TextColumn::make('company_size')->label('Natureza Jurídica')->searchable()->sortable()->description(fn(ClientCompany $record): string => $record->legal_nature), Tables\Columns\TextColumn::make('phone')->label('Telefone')->icon('heroicon-m-phone')->iconColor('primary')->searchable(), Tables\Columns\TextColumn::make('email')->label('Email')->icon('heroicon-m-at-symbol')->iconColor('primary')->searchable(), Tables\Columns\ToggleColumn::make('is_active')->label('Ativo')])
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')->label('Logo'),
+                Tables\Columns\TextColumn::make('fantasy_name')->color('primary')->label('Empresa')->searchable()->sortable()->description(fn (ClientCompany $record): string => $record->client->document), Tables\Columns\TextColumn::make('company_size')->label('Natureza Jurídica')->searchable()->sortable()->description(fn (ClientCompany $record): string => $record->legal_nature),
+                Tables\Columns\TextColumn::make('phone')->label('Telefone')->icon('heroicon-m-phone')->iconColor('primary')->searchable(),
+                Tables\Columns\TextColumn::make('email')->label('Email')->icon('heroicon-m-at-symbol')->iconColor('primary')->searchable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Ativo')
+            ])
             ->defaultSort('id', 'desc')
-            ->filters([Tables\Filters\Filter::make('is_active')->label('Clientes ativos')->query(fn(Builder $query): Builder => $query->where('is_active', true)), Tables\Filters\Filter::make('company_size')->label('Tipo de empresa')->query(fn(Builder $query): Builder => $query->where('company_size', 'Matriz'))])
+            ->filters([Tables\Filters\Filter::make('is_active')->label('Clientes ativos')->query(fn (Builder $query): Builder => $query->where('is_active', true)), Tables\Filters\Filter::make('company_size')->label('Tipo de empresa')->query(fn (Builder $query): Builder => $query->where('company_size', 'Matriz'))])
             ->actions([Tables\Actions\ActionGroup::make([Tables\Actions\EditAction::make(), Tables\Actions\ViewAction::make()->label('Contatos')])->button()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
