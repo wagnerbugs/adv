@@ -318,6 +318,7 @@ class EventsWidget extends FullCalendarWidget
 
     public static function canView(): bool
     {
-        return  auth()->user()->hasPermissionTo('widget_events');
+        // return  auth()->user()->hasPermissionTo('widget_events');
+        return  true;
     }
 }
