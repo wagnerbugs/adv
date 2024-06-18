@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -129,7 +128,6 @@ class ClientResource extends Resource
                     ->dateTime()
                     ->sortable(),
 
-
             ])
             ->defaultSort('id', 'desc')
 
@@ -165,7 +163,7 @@ class ClientResource extends Resource
                             if ($record->type == ClientTypeEnum::COMPANY) {
                                 return route('filament.admin.resources.processes.create', ['client_id' => $record->company->id]);
                             } else {
-                                return route('filament.admin.resources.processes.create',  ['client_id' => $record->individual->id]);
+                                return route('filament.admin.resources.processes.create', ['client_id' => $record->individual->id]);
                             }
                         }),
 
@@ -180,7 +178,7 @@ class ClientResource extends Resource
                             } elseif ($record->type === ClientTypeEnum::COMPANY && $record->company) {
                                 $record->company->update(['is_active' => true]);
                             }
-                        })
+                        }),
                 ])->button(),
 
             ])

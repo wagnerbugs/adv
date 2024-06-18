@@ -88,7 +88,7 @@ class BankResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('short_name')
                     ->label('Nome Abreviado')
-                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">' . $state . '</span>'))
+                    ->formatStateUsing(fn (string $state): HtmlString => new HtmlString('<span style="text-transform:uppercase">'.$state.'</span>'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
                     ->label('Website')

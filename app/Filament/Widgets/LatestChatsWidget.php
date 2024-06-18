@@ -2,26 +2,21 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Tables;
-use App\Models\Process;
-use Filament\Tables\Table;
+use App\Filament\Resources\ProcessChatResource;
 use App\Models\ProcessChat;
+use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ProcessResource;
-use App\Filament\Resources\ProcessChatResource;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Database\Eloquent\Builder;
 
 class LatestChatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-
-
     public function table(Table $table): Table
     {
-
 
         return $table
             ->query(ProcessChatResource::getEloquentQuery())
@@ -47,6 +42,7 @@ class LatestChatsWidget extends BaseWidget
                         if (strlen($state) <= $column->getCharacterLimit()) {
                             return null;
                         }
+
                         return $state;
                     })
                     ->searchable(
@@ -70,7 +66,6 @@ class LatestChatsWidget extends BaseWidget
                     ->sortable()
                     ->dateTime(),
 
-
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
@@ -88,6 +83,6 @@ class LatestChatsWidget extends BaseWidget
     public static function canView(): bool
     {
         // return  auth()->user()->hasPermissionTo('widget_latest_chats');
-        return  true;
+        return true;
     }
 }

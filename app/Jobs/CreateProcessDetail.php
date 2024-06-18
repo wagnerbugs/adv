@@ -2,16 +2,16 @@
 
 namespace App\Jobs;
 
-use Carbon\Carbon;
 use App\Helpers\Helper;
 use App\Models\ProcessDetail;
+use App\Services\CNJ\Procedural\ProceduralService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\CNJ\Procedural\ProceduralService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 
 class CreateProcessDetail implements ShouldQueue
 {

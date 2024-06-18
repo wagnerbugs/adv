@@ -5,6 +5,7 @@ namespace App\Services\CNJ\Process\Entities;
 class ProcessSubject
 {
     public int $subject_code;
+
     public string $subject_name;
 
     public function __construct(array $data)

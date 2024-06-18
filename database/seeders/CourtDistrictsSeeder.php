@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\CourtDistrict;
 use App\Traits\CapitalizeTrait;
-use League\Csv\Reader;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use League\Csv\Reader;
 
 class CourtDistrictsSeeder extends Seeder
 {
     use CapitalizeTrait;
+
     /**
      * Run the database seeds.
      */

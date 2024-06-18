@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\ProcessResource\Pages;
 
-use Filament\Actions;
+use App\Filament\Resources\ProcessResource;
 use App\Models\ProcessChat;
+use Filament\Actions;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\ProcessResource;
 
 class EditProcess extends EditRecord
 {

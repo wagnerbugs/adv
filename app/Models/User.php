@@ -4,17 +4,17 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use Filament\Panel;
-use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Traits\HasRoles;
-use Filament\Models\Contracts\HasAvatar;
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
@@ -51,7 +51,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'password' => 'hashed',
     ];
 
-
     protected static function booted()
     {
         static::created(function ($user) {
@@ -63,11 +62,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
                 'user_id' => $user->id,
             ]);
 
-            Log::info('User created ' . $user->name . '. By ' . auth()->user()->name);
+            Log::info('User created '.$user->name.'. By '.auth()->user()->name);
         });
 
         static::updated(function ($user) {
-            Log::info('User updated ' . $user->name . '. By ' . auth()->user()->name);
+            Log::info('User updated '.$user->name.'. By '.auth()->user()->name);
         });
     }
 
@@ -84,7 +83,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function getFilamentAvatarUrl(): ?string
     {
         if ($this->profile->avatar === null) {
-            return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
+            return 'https://ui-avatars.com/api/?name='.str_replace(' ', '+', $this->name);
         }
 
         return Storage::url($this->profile->avatar);

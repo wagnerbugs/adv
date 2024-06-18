@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum TaskPriorityEnum: string implements HasLabel, HasColor, HasIcon
+enum TaskPriorityEnum: string implements HasColor, HasIcon, HasLabel
 {
     case LOW = 'low';
     case MEDIUM = 'medium';

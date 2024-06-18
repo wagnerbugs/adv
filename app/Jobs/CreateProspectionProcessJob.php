@@ -2,30 +2,28 @@
 
 namespace App\Jobs;
 
-use Exception;
-use Throwable;
 use App\Models\CourtState;
-use App\Models\Prospection;
+use App\Models\ProspectionProcess;
+use App\Services\CNJ\Process\ProcessService;
+use App\Traits\ProcessNumberParser;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use App\Models\ProspectionProcess;
-use App\Traits\ProcessNumberParser;
-use App\Services\CnpjWs\CnpjWsService;
-use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\CNJ\Process\ProcessService;
-use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
-use Carbon\Carbon;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CreateProspectionProcessJob implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ProcessNumberParser;
+    use Batchable, Dispatchable, InteractsWithQueue, ProcessNumberParser, Queueable, SerializesModels;
 
     public $tries = 5;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected $prospectionID, protected string $process)
@@ -45,10 +43,10 @@ class CreateProspectionProcessJob implements ShouldQueue
         $service = new ProcessService();
         $responses = $service->prospections()->getProcess("api_publica_{$sigla}", $this->process);
 
-        if (!is_array($responses) || empty($responses)) {
+        if (! is_array($responses) || empty($responses)) {
             $recipient = auth()->user();
             Notification::make()
-                ->title("Nenhum processo encontrado")
+                ->title('Nenhum processo encontrado')
                 ->body("Adicionar manualmente o processo: {$this->process}")
                 ->sendToDatabase($recipient);
         }

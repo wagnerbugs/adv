@@ -20,7 +20,6 @@ class ChatbotHistory extends Model
         'step' => ChatbotStepsEnum::class,
     ];
 
-
     public function chatbotUser(): BelongsTo
     {
         return $this->belongsTo(ChatbotUser::class);

@@ -2,25 +2,27 @@
 
 namespace App\Jobs;
 
-use Throwable;
-use Carbon\Carbon;
 use App\Helpers\Helper;
+use App\Models\ProcessMovement;
+use App\Services\CNJ\Procedural\ProceduralService;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use App\Models\ProcessMovement;
-use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\CNJ\Procedural\ProceduralService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CreateProcessMovement implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 5;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected $detailId, protected $movement)

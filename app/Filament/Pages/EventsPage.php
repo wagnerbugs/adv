@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use Carbon\Carbon;
 use App\Models\Event;
+use Carbon\Carbon;
 use Filament\Pages\Page;
 use Livewire\Attributes\On;
 

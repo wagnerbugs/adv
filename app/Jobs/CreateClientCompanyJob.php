@@ -3,24 +3,25 @@
 namespace App\Jobs;
 
 use App\Models\Client;
+use App\Services\CnpjWs\CnpjWsService;
+use App\Services\CnpjWs\Entities\Company;
+use App\Services\CnpjWs\Entities\CompanyError;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Log;
-use App\Services\CnpjWs\CnpjWsService;
-use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Services\CnpjWs\Entities\Company;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\CnpjWs\Entities\CompanyError;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class CreateClientCompanyJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected Client $client, protected string $document)

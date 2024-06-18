@@ -2,24 +2,26 @@
 
 namespace App\Jobs;
 
-use Throwable;
 use App\Helpers\Helper;
+use App\Models\ProcessSubject;
+use App\Services\CNJ\Procedural\ProceduralService;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use App\Models\ProcessSubject;
-use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\CNJ\Procedural\ProceduralService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CreateProcessSubject implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 5;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected $detailId, protected $subject)

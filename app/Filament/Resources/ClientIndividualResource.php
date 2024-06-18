@@ -2,29 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Carbon\Carbon;
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use App\Models\Client;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
 use App\Enums\DocumentTypeEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Models\ClientIndividual;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
-use Illuminate\Support\HtmlString;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Enums\TreatmentPronounEnum;
 use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Filament\Notifications\Notification;
 use App\Filament\Resources\ClientIndividualResource\Pages;
 use App\Filament\Resources\ClientResource\Pages\CreateClient;
+use App\Models\Bank;
+use App\Models\ClientIndividual;
+use Carbon\Carbon;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 
 class ClientIndividualResource extends Resource
 {
@@ -238,7 +237,7 @@ class ClientIndividualResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -311,7 +310,7 @@ class ClientIndividualResource extends Resource
                                                                                     }
 
                                                                                     try {
-                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                                         $data = $response->json();
 
                                                                                         $set('street', $data['street']);
@@ -374,7 +373,7 @@ class ClientIndividualResource extends Resource
                                                     ->label('Banco')
                                                     ->columnSpan(3)
                                                     ->options(Bank::all()->map(function ($bank) {
-                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                        return strtoupper($bank->compe.' - '.$bank->long_name);
                                                     }))
                                                     ->searchable(),
                                                 Forms\Components\TextInput::make('bank_agency')
@@ -401,11 +400,12 @@ class ClientIndividualResource extends Resource
                                                         $filesList = '';
                                                         foreach ($files as $note) {
 
-                                                            $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
+                                                            $filesList .= $note['title'].' - <a class="text-violet-500 hover:text-violet-600" href="'.Storage::url($note['file']).'" target="_blank">'.$note['file'].'</a></br>';
 
                                                             return new HtmlString($filesList);
                                                         }
                                                     }
+
                                                     return new HtmlString('Nenhum arquivo anexado');
                                                 }
                                             ),
@@ -442,11 +442,12 @@ class ClientIndividualResource extends Resource
                                                         $noteList = '';
                                                         foreach ($notes as $note) {
 
-                                                            $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
+                                                            $noteList .= Carbon::parse($note['date']).' - '.$note['author'].' - <span class="text-violet-500">'.$note['annotation'].'</span></br>';
 
                                                             return new HtmlString($noteList);
                                                         }
                                                     }
+
                                                     return new HtmlString('Nenhuma anotação registrada');
                                                 }
                                             ),

@@ -2,35 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-use Filament\Tables\Table;
-use App\Models\Prospection;
-use Filament\Support\RawJs;
-use App\Enums\MaritalStatusEnum;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
-use Illuminate\Support\HtmlString;
-use App\Enums\TreatmentPronounEnum;
-use App\Enums\ProspectionStatusEnum;
-use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Http;
+use App\Enums\MaritalStatusEnum;
 use App\Enums\ProspectionReactionEnum;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
-use Leandrocfe\FilamentPtbrFormFields\Document;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Enums\ProspectionStatusEnum;
+use App\Enums\TreatmentPronounEnum;
 use App\Filament\Resources\ProspectionResource\Pages;
-use ValentinMorice\FilamentJsonColumn\FilamentJsonColumn;
-use App\Filament\Resources\ProspectionResource\RelationManagers;
+use App\Models\Prospection;
 use App\Models\ProspectionCompany;
 use App\Models\ProspectionProcess;
 use Carbon\Carbon;
-use Filament\Forms\Components\Repeater;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\HtmlString;
+use Leandrocfe\FilamentPtbrFormFields\Document;
+use ValentinMorice\FilamentJsonColumn\FilamentJsonColumn;
 
 class ProspectionResource extends Resource
 {
@@ -110,7 +103,6 @@ class ProspectionResource extends Resource
                                                     ->dehydrated(),
                                             ]),
 
-
                                     ]),
 
                                 Forms\Components\Tabs\Tab::make('Processo')
@@ -140,38 +132,37 @@ class ProspectionResource extends Resource
                                                                             ->label('')
                                                                             ->content(
                                                                                 fn (ProspectionProcess $record): HtmlString => new HtmlString(
-                                                                                    'Processo: <strong class="text-violet-500">' .  $record->process
-                                                                                        . '</strong>'
+                                                                                    'Processo: <strong class="text-violet-500">'.$record->process
+                                                                                        .'</strong>'
                                                                                 )
                                                                             ),
 
-
                                                                         Forms\Components\Placeholder::make('prospect_process_number_date_autation')
                                                                             ->label('')
-                                                                            ->content(fn (ProspectionProcess $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">' .  Carbon::parse($record->dataAjuizamento)->format('d/m/Y H:i:s') . '</strong>')),
+                                                                            ->content(fn (ProspectionProcess $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">'.Carbon::parse($record->dataAjuizamento)->format('d/m/Y H:i:s').'</strong>')),
 
                                                                         Forms\Components\Placeholder::make('judging_organ')
                                                                             ->label('')
                                                                             ->content(
-                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">' . $record->orgaoJulgador['nome'] . '</strong>')
+                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">'.$record->orgaoJulgador['nome'].'</strong>')
                                                                             ),
 
                                                                         Forms\Components\Placeholder::make('class_name')
                                                                             ->label('')
                                                                             ->content(
-                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">' . $record->classe['nome'] . '</strong>')
+                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">'.$record->classe['nome'].'</strong>')
                                                                             ),
 
                                                                         Forms\Components\Placeholder::make('process_api_id')
                                                                             ->label('')
                                                                             ->content(
-                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('ID: <strong class="text-violet-500">' . $record->process_api_id . '</strong>')
+                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('ID: <strong class="text-violet-500">'.$record->process_api_id.'</strong>')
                                                                             ),
 
                                                                         Forms\Components\Placeholder::make('tribunal')
                                                                             ->label('')
                                                                             ->content(
-                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Tribunal: <strong class="text-violet-500">' . $record->tribunal . ' - ' . $record->grau . '</strong>')
+                                                                                fn (ProspectionProcess $record): HtmlString => new HtmlString('Tribunal: <strong class="text-violet-500">'.$record->tribunal.' - '.$record->grau.'</strong>')
                                                                             ),
 
                                                                     ]),
@@ -185,7 +176,7 @@ class ProspectionResource extends Resource
                                                                                     $subjects = $record->assuntos;
                                                                                     $subjectList = '<ul>';
                                                                                     foreach ($subjects as $subject) {
-                                                                                        $subjectList .=  '<li>' . $subject['codigo'] . ' - <span class="text-violet-500 font-bold">' . $subject['nome'] . '</span></li>';
+                                                                                        $subjectList .= '<li>'.$subject['codigo'].' - <span class="text-violet-500 font-bold">'.$subject['nome'].'</span></li>';
                                                                                     }
                                                                                     $subjectList .= '</ul>';
 
@@ -207,8 +198,8 @@ class ProspectionResource extends Resource
                                                                                     $moviments = $record->movimentos;
                                                                                     $movimentsList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Data</th><th scope="col" class="px-6 py-3">Código</th><th scope="col" class="px-6 py-3">Movimento</th></tr></thead><tbody>';
                                                                                     foreach ($moviments as $moviment) {
-                                                                                        $movimentsList .=  '
-                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . Carbon::parse($moviment['dataHora'])->format('d/m/Y H:i:s') . '</th><td class="px-6 py-4">' . $moviment['codigo'] . '</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">' . $moviment['nome'] . '</td></tr>';
+                                                                                        $movimentsList .= '
+                                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.Carbon::parse($moviment['dataHora'])->format('d/m/Y H:i:s').'</th><td class="px-6 py-4">'.$moviment['codigo'].'</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">'.$moviment['nome'].'</td></tr>';
                                                                                     }
                                                                                     $movimentsList .= '</tbody></table></div>';
 
@@ -219,9 +210,6 @@ class ProspectionResource extends Resource
                                                             ]),
 
                                                     ]),
-
-
-
 
                                             ]),
                                     ]),
@@ -334,6 +322,7 @@ class ProspectionResource extends Resource
                                                                                     // Se houver apenas um telefone, transforma em array
                                                                                     return [$telefones];
                                                                                 }
+
                                                                                 return $telefones;
                                                                             })
                                                                             ->afterStateHydrated(function ($state, callable $set) {
@@ -381,6 +370,7 @@ class ProspectionResource extends Resource
                                                                                     // Se houver apenas um telefone, transforma em array
                                                                                     return [$telefones];
                                                                                 }
+
                                                                                 return $telefones;
                                                                             })
                                                                             ->afterStateHydrated(function ($state, callable $set) {
@@ -419,7 +409,7 @@ class ProspectionResource extends Resource
                                                                         Forms\Components\Repeater::make('emails')
                                                                             ->label('')
                                                                             ->schema([
-                                                                                Forms\Components\TextInput::make('email')
+                                                                                Forms\Components\TextInput::make('email'),
                                                                             ]),
                                                                     ]),
                                                             ]),
@@ -466,7 +456,7 @@ class ProspectionResource extends Resource
                                                                                                                     }
 
                                                                                                                     try {
-                                                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                                                                         $data = $response->json();
 
                                                                                                                         $set('logradouro', $data['street']);
@@ -574,7 +564,6 @@ class ProspectionResource extends Resource
                                                                     ->columns(3)
                                                                     ->schema([
 
-
                                                                         Document::make('cnpj')
                                                                             ->label('Nome')
                                                                             ->cnpj()
@@ -643,6 +632,7 @@ class ProspectionResource extends Resource
                                                                             ->label('Situacao Cadastral')
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
                                                                                 $situacao = $record->situacao_cadastral;
+
                                                                                 return new HtmlString($situacao);
                                                                             }),
 
@@ -658,12 +648,13 @@ class ProspectionResource extends Resource
                                                                                     $atividadePrimaria = $record->atividade_principal;
                                                                                     $descricao = $atividadePrimaria['descricao'];
                                                                                     $subclasse = $atividadePrimaria['subclasse'];
-                                                                                    return new HtmlString($descricao . ' - ' . $subclasse);
+
+                                                                                    return new HtmlString($descricao.' - '.$subclasse);
                                                                                 }
+
                                                                                 return new HtmlString('Não definido');
                                                                             }),
-                                                                    ])
-
+                                                                    ]),
 
                                                             ]),
                                                     ]),
@@ -686,23 +677,20 @@ class ProspectionResource extends Resource
                                                                                 if ($record->socios) {
                                                                                     $socios = json_decode($record->socios, true);
 
-
-
                                                                                     $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Sócio</th><th scope="col" class="px-6 py-3">Data de entrada</th><th scope="col" class="px-6 py-3">Idade</th><th scope="col" class="px-6 py-3">Cargo</th></tr></thead><tbody>';
                                                                                     foreach ($socios as $socio) {
-                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $socio['nome'] . ' - <small>' . $socio['cpf_cnpj_socio'] . '</small></th><td class="px-6 py-4">' . Carbon::parse($socio['data_entrada'])->format('d/m/Y') . '</td><td class="px-6 py-4">' . $socio['faixa_etaria'] . '</td><td class="px-6 py-4">' . $socio['qualificacao_socio']['descricao'] . '</td></tr>';
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.$socio['nome'].' - <small>'.$socio['cpf_cnpj_socio'].'</small></th><td class="px-6 py-4">'.Carbon::parse($socio['data_entrada'])->format('d/m/Y').'</td><td class="px-6 py-4">'.$socio['faixa_etaria'].'</td><td class="px-6 py-4">'.$socio['qualificacao_socio']['descricao'].'</td></tr>';
                                                                                     }
 
                                                                                     $content .= '</tbody></table></div>';
 
-
                                                                                     return new HtmlString($content);
                                                                                 }
+
                                                                                 return new HtmlString('Não definido');
                                                                             }),
 
                                                                     ]),
-
 
                                                             ]),
                                                     ]),
@@ -726,14 +714,14 @@ class ProspectionResource extends Resource
 
                                                                                     $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Descrição</th><th scope="col" class="px-6 py-3">Classe</th></tr></thead><tbody>';
                                                                                     foreach ($atividades as $atividade) {
-                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $atividade['descricao'] . '</small></th><td class="px-6 py-4">' . $atividade['subclasse'] . '</td></tr>';
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.$atividade['descricao'].'</small></th><td class="px-6 py-4">'.$atividade['subclasse'].'</td></tr>';
                                                                                     }
 
                                                                                     $content .= '</tbody></table></div>';
 
-
                                                                                     return new HtmlString($content);
                                                                                 }
+
                                                                                 return new HtmlString('Não definido');
                                                                             }),
                                                                     ]),
@@ -755,12 +743,12 @@ class ProspectionResource extends Resource
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
                                                                                 $tipo = $record['tipo_logradouro'];
                                                                                 $numero = $record['numero'];
-                                                                                $logradouro = $tipo . ' ' . $record['logradouro'] . ', ' . $numero;
+                                                                                $logradouro = $tipo.' '.$record['logradouro'].', '.$numero;
                                                                                 $complemento = $record['complemento'];
                                                                                 $bairro = $record['bairro'];
                                                                                 $cep = $record['cep'];
 
-                                                                                return new HtmlString($logradouro . ' - ' . $complemento . ' - ' . $bairro . ' - ' . $cep);
+                                                                                return new HtmlString($logradouro.' - '.$complemento.' - '.$bairro.' - '.$cep);
                                                                             }),
 
                                                                         Forms\Components\Placeholder::make('telefones')
@@ -772,8 +760,7 @@ class ProspectionResource extends Resource
                                                                                 $telefone2 = $record['telefone2'];
                                                                                 $email = $record['email'];
 
-
-                                                                                return new HtmlString($ddd1 . ' ' . $telefone1 . ' - ' . $ddd2 . ' ' . $telefone2 . ' - ' . $email);
+                                                                                return new HtmlString($ddd1.' '.$telefone1.' - '.$ddd2.' '.$telefone2.' - '.$email);
                                                                             }),
 
                                                                     ]),
@@ -796,20 +783,19 @@ class ProspectionResource extends Resource
                                                                             ->content(function (ProspectionCompany $record): HtmlString {
                                                                                 if ($record->inscricoes_estaduais) {
 
-
                                                                                     $inscricoes = $record->inscricoes_estaduais;
 
                                                                                     $content = '<div class="relative overflow-x-auto"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Ativo?</th><th scope="col" class="px-6 py-3">Inscrição</th></tr></thead><tbody>';
                                                                                     foreach ($inscricoes as $inscricao) {
                                                                                         $ativo = $inscricao['ativo'] ? 'Sim' : 'Não';
-                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . $ativo . '</small></th><td class="px-6 py-4">' . $inscricao['inscricao_estadual'] . ' - ' . $inscricao['estado']['sigla'] . '</td></tr>';
+                                                                                        $content .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.$ativo.'</small></th><td class="px-6 py-4">'.$inscricao['inscricao_estadual'].' - '.$inscricao['estado']['sigla'].'</td></tr>';
                                                                                     }
 
                                                                                     $content .= '</tbody></table></div>';
 
-
                                                                                     return new HtmlString($content);
                                                                                 }
+
                                                                                 return new HtmlString('Não definido');
                                                                             }),
                                                                     ]),
@@ -829,7 +815,7 @@ class ProspectionResource extends Resource
                                             ->content(function (Prospection $record): HtmlString {
                                                 $notes = collect($record->annotations);
                                                 $notesList = $notes->map(function ($note) {
-                                                    return '<span class="text-gray-400">' . Carbon::parse($note['date'])->format('d/m/Y H:i')  . ' - Por: ' . $note['author'] . ' - ' . $note['annotation'] . '</span>';
+                                                    return '<span class="text-gray-400">'.Carbon::parse($note['date'])->format('d/m/Y H:i').' - Por: '.$note['author'].' - '.$note['annotation'].'</span>';
                                                 })->implode('<br>'); // Implode with line break for HTML
 
                                                 return new HtmlString($notesList);
@@ -869,7 +855,7 @@ class ProspectionResource extends Resource
                                             ->content(function (Prospection $record): HtmlString {
                                                 $attachments = collect($record->attachments);
                                                 $filesList = $attachments->map(function ($attachment) {
-                                                    return '<a href="/storage/' . $attachment['file'] . '" class="text-violet-500 hover:text-violet-700 font-bold uppercase" target="_blank">' . $attachment['title'] . ' - ' . $attachment['file'] . '</a>';
+                                                    return '<a href="/storage/'.$attachment['file'].'" class="text-violet-500 hover:text-violet-700 font-bold uppercase" target="_blank">'.$attachment['title'].' - '.$attachment['file'].'</a>';
                                                 })->implode('<br>'); // Implode with line break for HTML
 
                                                 return new HtmlString($filesList);

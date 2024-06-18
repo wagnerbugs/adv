@@ -2,26 +2,27 @@
 
 namespace App\Jobs;
 
-use Throwable;
-use Carbon\Carbon;
 use App\Models\Prospection;
+use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
+use App\Traits\CapitalizeTrait;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use App\Traits\CapitalizeTrait;
-use App\Services\CnpjWs\CnpjWsService;
-use Illuminate\Queue\SerializesModels;
-use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CreateProspectionIndividualJob implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CapitalizeTrait;
+    use Batchable, CapitalizeTrait, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected Prospection $prospection, protected string $cpf)
@@ -40,7 +41,7 @@ class CreateProspectionIndividualJob implements ShouldQueue
         $responseContent = $response['response']['content'];
         $nomeConteudo = $responseContent['nome']['conteudo'];
 
-        if (!empty($nomeConteudo['data_nascimento'])) {
+        if (! empty($nomeConteudo['data_nascimento'])) {
             $birth_date = Carbon::createFromFormat('d/m/Y', $nomeConteudo['data_nascimento']);
             $formatted_date = $birth_date->format('Y-m-d');
         }
@@ -53,7 +54,7 @@ class CreateProspectionIndividualJob implements ShouldQueue
             'outras_grafias' => json_encode($nomeConteudo['outras_grafias'], true),
             'data_nascimento' => $formatted_date,
             'outras_datas_nascimento' => json_encode($nomeConteudo['outras_datas_nascimento'], true),
-            'pessoa_exposta_publicamente' =>  json_encode($nomeConteudo['pessoa_exposta_publicamente'], true),
+            'pessoa_exposta_publicamente' => json_encode($nomeConteudo['pessoa_exposta_publicamente'], true),
             'idade' => $nomeConteudo['idade'],
             'signo' => $nomeConteudo['signo'],
             'obito' => $nomeConteudo['obito'],

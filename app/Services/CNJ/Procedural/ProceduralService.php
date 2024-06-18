@@ -5,8 +5,8 @@ namespace App\Services\CNJ\Procedural;
 use App\Services\CNJ\Procedural\Endpoints\Classes;
 use App\Services\CNJ\Procedural\Endpoints\Movements;
 use App\Services\CNJ\Procedural\Endpoints\Subjects;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Http;
 
 /**
  * PDPJ - Módulo de consulta às tabelas processuais unificadas
@@ -24,8 +24,6 @@ class ProceduralService
 
     /**
      * Returns a new instance of the Classes class with the current instance of ProceduralService as its parameter.
-     *
-     * @return Classes
      */
     public function classes(): Classes
     {
@@ -34,8 +32,6 @@ class ProceduralService
 
     /**
      * Returns a new instance of the Subjects class with the current instance of ProceduralService as its parameter.
-     *
-     * @return Subjects
      */
     public function subjects(): Subjects
     {
@@ -44,8 +40,6 @@ class ProceduralService
 
     /**
      * Returns a new instance of the Movements class with the current instance of ProceduralService as its parameter.
-     *
-     * @return Movements
      */
     public function movements(): Movements
     {

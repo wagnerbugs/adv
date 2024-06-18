@@ -21,7 +21,7 @@ return [
     ],
 
     'zapi' => [
-        'base_url' => env('ZAPI_BASE_URL') . '/instances/' . env('ZAPI_INSTANCE') . '/token/' . env('ZAPI_TOKEN'),
+        'base_url' => env('ZAPI_BASE_URL').'/instances/'.env('ZAPI_INSTANCE').'/token/'.env('ZAPI_TOKEN'),
         'token_secure' => env('ZAPI_TOKEN_SECURE'),
     ],
 

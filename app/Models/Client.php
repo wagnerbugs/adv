@@ -22,7 +22,6 @@ class Client extends Model
         'type' => ClientTypeEnum::class,
     ];
 
-
     protected static function booted()
     {
         static::created(function ($client) {
@@ -33,11 +32,11 @@ class Client extends Model
                 $client->company()->create();
             }
 
-            Log::info('Client created ' . $client->document . '. By ' . auth()->user()->name);
+            Log::info('Client created '.$client->document.'. By '.auth()->user()->name);
         });
 
         static::updated(function ($user) {
-            Log::info('Client updated ' . $user->document . '. By ' . auth()->user()->name);
+            Log::info('Client updated '.$user->document.'. By '.auth()->user()->name);
         });
     }
 

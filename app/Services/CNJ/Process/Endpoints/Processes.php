@@ -9,20 +9,20 @@ class Processes extends BaseEndpoint
     /**
      * Retrieves a process from the API using the given URL and process number.
      *
-     * @param string $url The URL of the API endpoint.
-     * @param string $process The process number to search for.
+     * @param  string  $url  The URL of the API endpoint.
+     * @param  string  $process  The process number to search for.
      * @return Process[] An array of Process instances.
      */
     public function getProcess(string $url, string $process)
     {
         $response = $this->service->api->post(
-            $url . '/_search',
+            $url.'/_search',
             [
                 'query' => [
                     'match' => [
-                        'numeroProcesso' => $process
-                    ]
-                ]
+                        'numeroProcesso' => $process,
+                    ],
+                ],
             ]
         )->json();
 

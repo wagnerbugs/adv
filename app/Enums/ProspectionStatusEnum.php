@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ProspectionStatusEnum: int implements HasLabel, HasColor
+enum ProspectionStatusEnum: int implements HasColor, HasLabel
 {
     case PENDING = 1;
     case APPROVED = 2;

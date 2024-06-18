@@ -2,13 +2,13 @@
 
 namespace App\Enums;
 
-use Illuminate\Support\Collection;
-use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Illuminate\Support\Collection;
 use Mokhosh\FilamentKanban\Concerns\IsKanbanStatus;
 
-enum TaskStatusesEnum: string implements HasLabel, HasColor, HasIcon
+enum TaskStatusesEnum: string implements HasColor, HasIcon, HasLabel
 {
     use IsKanbanStatus;
 
@@ -18,7 +18,7 @@ enum TaskStatusesEnum: string implements HasLabel, HasColor, HasIcon
 
     public static function statuses(): Collection
     {
-        return collect(static::kanbanCases())
+        return collect(self::kanbanCases())
             ->map(function (self $item) {
                 return [
                     'id' => $item->getId(),
@@ -29,7 +29,7 @@ enum TaskStatusesEnum: string implements HasLabel, HasColor, HasIcon
 
     public static function kanbanCases(): array
     {
-        return static::cases();
+        return self::cases();
     }
 
     public function getId(): string
@@ -45,7 +45,6 @@ enum TaskStatusesEnum: string implements HasLabel, HasColor, HasIcon
             self::DONE => 'Feito',
         };
     }
-
 
     public static function getValues(): array
     {

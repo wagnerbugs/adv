@@ -2,9 +2,9 @@
 
 namespace App\Services\ApiBrasil\CPF\Endpoints;
 
-use App\Exceptions\InvalidCpfException;
-use App\Exceptions\ApiBrasilRequestException;
 use App\Exceptions\ApiBrasilErrorResponseException;
+use App\Exceptions\ApiBrasilRequestException;
+use App\Exceptions\InvalidCpfException;
 
 class Prospections extends BaseEndpoint
 {
@@ -12,7 +12,7 @@ class Prospections extends BaseEndpoint
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
-        if (!$this->isValidCpf($cpf)) {
+        if (! $this->isValidCpf($cpf)) {
             throw new InvalidCpfException();
         }
 

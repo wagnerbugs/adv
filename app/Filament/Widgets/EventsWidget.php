@@ -2,29 +2,27 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Forms;
-use App\Models\User;
-use App\Models\Event;
-use Filament\Actions;
 use App\Models\Client;
-use App\Models\Process;
+use App\Models\Event;
 use App\Models\EventTag;
-use Filament\Forms\Form;
+use App\Models\Process;
+use App\Models\User;
 use Filament\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
-use App\Filament\Resources\EventResource;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Builder;
-use Saade\FilamentFullCalendar\Actions\EditAction;
-use Saade\FilamentFullCalendar\Actions\ViewAction;
+use Illuminate\Database\Eloquent\Model;
 use Saade\FilamentFullCalendar\Actions\CreateAction;
 use Saade\FilamentFullCalendar\Actions\DeleteAction;
+use Saade\FilamentFullCalendar\Actions\EditAction;
+use Saade\FilamentFullCalendar\Actions\ViewAction;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class EventsWidget extends FullCalendarWidget
 {
     protected static ?int $sort = 4;
 
-    public Model | string | null $model = Event::class;
+    public Model|string|null $model = Event::class;
 
     public function fetchEvents(array $fetchInfo): array
     {
@@ -81,7 +79,7 @@ class EventsWidget extends FullCalendarWidget
 
                             if ($colors) {
                                 foreach ($colors as $color) {
-                                    $colorList[$color->id] = '<span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 rounded-full me-1.5 flex-shrink-0" style="background-color:' . $color->color . '"></span>' . $color->title . '</span>';
+                                    $colorList[$color->id] = '<span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 rounded-full me-1.5 flex-shrink-0" style="background-color:'.$color->color.'"></span>'.$color->title.'</span>';
                                 }
                             }
 
@@ -108,7 +106,7 @@ class EventsWidget extends FullCalendarWidget
                                     Forms\Components\Toggle::make('is_private')
                                         ->label('Uso privado?')
                                         ->default(false),
-                                ])
+                                ]),
                         ])
                         ->editOptionForm([
                             Forms\Components\Hidden::make('user_id')
@@ -125,6 +123,7 @@ class EventsWidget extends FullCalendarWidget
                         ])
                         ->createOptionUsing(function (array $data): int {
                             $color = EventTag::create($data);
+
                             return $color->id;
                         })
                         ->allowHtml(),
@@ -161,7 +160,7 @@ class EventsWidget extends FullCalendarWidget
                                         if ($processes) {
                                             foreach ($processes as $process) {
 
-                                                $processesList[$process->id] = '<span class="text-sm font-medium me-3">' . $process->client->name . '</span><br><span class="text-gray-400 text-xs me-3">' . $process->process . '</span>';
+                                                $processesList[$process->id] = '<span class="text-sm font-medium me-3">'.$process->client->name.'</span><br><span class="text-gray-400 text-xs me-3">'.$process->process.'</span>';
                                             }
                                         }
 
@@ -200,7 +199,7 @@ class EventsWidget extends FullCalendarWidget
 
                                         if ($clients) {
                                             foreach ($clients as $client) {
-                                                $clientsList[$client->id] = '<span class="text-sm font-medium me-3">' . $client->name . '</span><br><span class="text-gray-400 text-xs me-3">' . $client->document . '</span>';
+                                                $clientsList[$client->id] = '<span class="text-sm font-medium me-3">'.$client->name.'</span><br><span class="text-gray-400 text-xs me-3">'.$client->document.'</span>';
                                             }
                                         }
 
@@ -308,7 +307,8 @@ class EventsWidget extends FullCalendarWidget
     public function eventDidMount(): string
     {
         $this->dispatch('event-changed');
-        return <<<JS
+
+        return <<<'JS'
             function({ event, timeText, isStart, isEnd, isMirror, isPast, isFuture, isToday, el, view }){
                 el.setAttribute("x-tooltip", "tooltip");
                 el.setAttribute("x-data", "{ tooltip: '"+event.title+"' }");
@@ -319,6 +319,6 @@ class EventsWidget extends FullCalendarWidget
     public static function canView(): bool
     {
         // return  auth()->user()->hasPermissionTo('widget_events');
-        return  true;
+        return true;
     }
 }

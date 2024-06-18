@@ -34,10 +34,8 @@ class MyEventsPage extends Page
 
         $this->events = Event::with('tags')
             ->where(function ($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->orWhere(function ($query) {
-                        $query->whereJsonContains('professionals', auth()->user()->id);
-                    });
+                $query->whereJsonContains('professionals', auth()->user()->id)
+                    ->orWhere('user_id', auth()->user()->id);
             })
             ->where('starts_at', '>=', $startOfToday)
             ->where('ends_at', '<=', $endOfMonth)

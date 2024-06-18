@@ -7,13 +7,13 @@ class Movements extends BaseEndpoint
     /**
      * Retrieves the classes associated with a given movement.
      *
-     * @param int $movement The ID of the movement.
+     * @param  int  $movement  The ID of the movement.
      * @return array The JSON response containing the classes.
      */
     public function get(int $movement)
     {
         return $this->service->api->get(
-            'movimentos/?codigo=' . $movement
+            'movimentos/?codigo='.$movement
         )->json();
     }
 }

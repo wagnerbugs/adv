@@ -5,23 +5,41 @@ namespace App\Services\CNJ\Process\Entities;
 class Process
 {
     public string $process_api_id; //ID do processo
+
     public string $class_code; //Código da classe
+
     public string $class_name; //Nome da classe
+
     public string $numeroProcesso; //Número do processo
+
     public string $sistema_codigo; //Código do sistema
+
     public string $sistema_nome;
+
     public string $formato_codigo;
+
     public string $formato_nome;
+
     public string $tribunal;
+
     public string $last_modification_date; //Data da última alteração
+
     public string $grade; //Grau
+
     public string $data_consulta; //Data da consulta
+
     public string $publish_date; //Data de publicação
+
     public ?array $movements; //Movimentos
+
     public int $secrecy_level; //Nível de sigilo
+
     public string $orgaoJulgador_codigoMunicipioIBGE; //Código do município
+
     public string $judging_code; //Código do órgão Julgador
+
     public string $judging_name;
+
     public ?array $subjects;
 
     public function __construct(array $data)

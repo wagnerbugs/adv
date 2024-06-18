@@ -2,28 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Carbon\Carbon;
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Enums\GenderEnum;
-use App\Helpers\CboHelper;
-use App\Models\Occupation;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
 use App\Enums\DocumentTypeEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Models\OccupationFamily;
-use Filament\Resources\Resource;
 use App\Enums\EducationLevelEnum;
 use App\Enums\EmploymentTypeEnum;
-use Illuminate\Support\Facades\Http;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\GenderEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Filament\Resources\UserResource\Pages;
+use App\Helpers\CboHelper;
+use App\Models\Occupation;
+use App\Models\OccupationFamily;
+use App\Models\User;
 use App\Models\UserProfile;
+use Carbon\Carbon;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\HtmlString;
 
 class UserResource extends Resource
@@ -202,7 +202,7 @@ class UserResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -270,7 +270,6 @@ class UserResource extends Resource
                                                             ->options(EmploymentTypeEnum::class),
                                                     ]),
 
-
                                                 Forms\Components\Section::make()
                                                     ->schema([
                                                         Forms\Components\Repeater::make('cbos')
@@ -307,7 +306,7 @@ class UserResource extends Resource
                                                                             ->columnSpanFull()
                                                                             ->live('onBlur', true)
                                                                             ->options(Occupation::where('is_active', true)->get()->mapWithKeys(function ($occupation) {
-                                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
+                                                                                return [$occupation->code => $occupation->code.' - '.$occupation->description];
                                                                             }))
                                                                             ->searchable()
                                                                             ->required()
@@ -367,8 +366,9 @@ class UserResource extends Resource
                                                     if ($notes) {
                                                         $noteList = '';
                                                         foreach ($notes as $note) {
-                                                            $noteList .= '<a href="/storage/' . $note->path . '" class="text-violet-500 hover:text-violet-600" target="_blank">' . Carbon::parse($note->created_at)->format('d/m/Y') . ' - '  . $note->name . ' - ' . $note->path . '</a><br/>';
+                                                            $noteList .= '<a href="/storage/'.$note->path.'" class="text-violet-500 hover:text-violet-600" target="_blank">'.Carbon::parse($note->created_at)->format('d/m/Y').' - '.$note->name.' - '.$note->path.'</a><br/>';
                                                         }
+
                                                         return new HtmlString($noteList);
                                                     }
 
@@ -412,10 +412,12 @@ class UserResource extends Resource
                                                             if ($notes) {
                                                                 $noteList = '';
                                                                 foreach (array_reverse($notes) as $note) {
-                                                                    $noteList .= Carbon::parse($note['date'])->format('d/m/Y') . ' - '  . $note['author'] . ' - ' . $note['annotation'] . '<br/>';
+                                                                    $noteList .= Carbon::parse($note['date'])->format('d/m/Y').' - '.$note['author'].' - '.$note['annotation'].'<br/>';
                                                                 }
+
                                                                 return new HtmlString($noteList);
                                                             }
+
                                                             return new HtmlString('Sem anotações');
                                                         }
                                                     ),

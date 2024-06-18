@@ -2,19 +2,15 @@
 
 namespace App\Filament\Resources\ProspectionResource\Pages;
 
-use Filament\Actions;
-use App\Models\CourtState;
-use Filament\Actions\Action;
-use App\Jobs\CreateProspectionJob;
-use App\Traits\ProcessNumberParser;
-use App\Services\CnpjWs\CnpjWsService;
-use Filament\Notifications\Notification;
-use App\Jobs\CreateProspectionCompanyJob;
-use App\Jobs\CreateProspectionProcessJob;
-use Filament\Resources\Pages\CreateRecord;
-use App\Jobs\CreateProspectionIndividualJob;
-use App\Services\CNJ\Process\ProcessService;
 use App\Filament\Resources\ProspectionResource;
+use App\Jobs\CreateProspectionCompanyJob;
+use App\Jobs\CreateProspectionIndividualJob;
+use App\Jobs\CreateProspectionProcessJob;
+use App\Models\CourtState;
+use App\Services\CNJ\Process\ProcessService;
+use App\Traits\ProcessNumberParser;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateProspection extends CreateRecord
 {
@@ -37,8 +33,8 @@ class CreateProspection extends CreateRecord
 
     protected function beforeCreate(): void
     {
-        $prospection =  $this->form->getLivewire()->data['process'];
-        if (!empty($prospection)) {
+        $prospection = $this->form->getLivewire()->data['process'];
+        if (! empty($prospection)) {
             $number = preg_replace('/[^0-9]/', '', $prospection);
             $process_parser = $this->processNumberParser($number);
 
@@ -68,7 +64,7 @@ class CreateProspection extends CreateRecord
 
             $recipient = auth()->user();
             Notification::make()
-                ->title("Pesquisa de dados em andamento.")
+                ->title('Pesquisa de dados em andamento.')
                 ->body("Pesquisando CNPJ: {$prospection->cnpj}")
                 ->sendToDatabase($recipient);
 
@@ -81,20 +77,19 @@ class CreateProspection extends CreateRecord
 
             $recipient = auth()->user();
             Notification::make()
-                ->title("Pesquisa de dados em andamento.")
+                ->title('Pesquisa de dados em andamento.')
                 ->body("Pesquisando CPF: {$prospection->cpf}")
                 ->sendToDatabase($recipient);
 
             CreateProspectionIndividualJob::dispatch($prospection, $cpf);
         }
 
-
         if ($prospection->process !== null) {
             $process = preg_replace('/[^0-9]/', '', $prospection->process);
 
             $recipient = auth()->user();
             Notification::make()
-                ->title("Pesquisa de dados em andamento.")
+                ->title('Pesquisa de dados em andamento.')
                 ->body("Pesquisando Processo: {$prospection->process}")
                 ->sendToDatabase($recipient);
 

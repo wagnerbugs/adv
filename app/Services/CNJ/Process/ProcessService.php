@@ -1,11 +1,11 @@
 <?php
 
-namespace  App\Services\CNJ\Process;
+namespace App\Services\CNJ\Process;
 
 use App\Services\CNJ\Process\Endpoints\Processes;
 use App\Services\CNJ\Process\Endpoints\Prospections;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Http;
 
 /**
  * PDPJ - Módulo de consulta às tabelas processuais unificadas

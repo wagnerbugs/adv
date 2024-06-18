@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\CourtState;
-use League\Csv\Reader;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use League\Csv\Reader;
 
 class CourtStatesSeeder extends Seeder
 {

@@ -2,31 +2,31 @@
 
 namespace App\Filament\Resources;
 
-use Exception;
-use Carbon\Carbon;
-use Filament\Forms;
-use App\Models\Bank;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
-use App\Models\ClientCompany;
 use App\Enums\DocumentTypeEnum;
-use Filament\Infolists\Infolist;
-use Filament\Resources\Resource;
-use Illuminate\Support\HtmlString;
 use App\Enums\TypeOfBankAccountEnum;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ClientCompanyResource\Pages;
+use App\Filament\Resources\ClientCompanyResource\RelationManagers\ProcessesRelationManager;
+use App\Filament\Resources\ClientResource\Pages\CreateClient;
+use App\Models\Bank;
+use App\Models\ClientCompany;
+use Carbon\Carbon;
+use Exception;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
+use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Leandrocfe\FilamentPtbrFormFields\Money;
-use Filament\Infolists\Components\RepeatableEntry;
-use App\Filament\Resources\ClientCompanyResource\Pages;
-use App\Filament\Resources\ClientResource\Pages\CreateClient;
-use App\Filament\Resources\ClientCompanyResource\RelationManagers\ProcessesRelationManager;
 
 class ClientCompanyResource extends Resource
 {
@@ -199,7 +199,7 @@ class ClientCompanyResource extends Resource
                                                     }
 
                                                     try {
-                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                         $data = $response->json();
 
                                                         $set('street', $data['street']);
@@ -239,7 +239,7 @@ class ClientCompanyResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -281,7 +281,7 @@ class ClientCompanyResource extends Resource
                                             ->columnSpan(3)
                                             ->options(
                                                 Bank::all()->map(function ($bank) {
-                                                    return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                    return strtoupper($bank->compe.' - '.$bank->long_name);
                                                 }),
                                             )
                                             ->searchable(),
@@ -299,7 +299,7 @@ class ClientCompanyResource extends Resource
                                         if ($files) {
                                             $filesList = '';
                                             foreach ($files as $note) {
-                                                $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
+                                                $filesList .= $note['title'].' - <a class="text-violet-500 hover:text-violet-600" href="'.Storage::url($note['file']).'" target="_blank">'.$note['file'].'</a></br>';
 
                                                 return new HtmlString($filesList);
                                             }
@@ -324,11 +324,12 @@ class ClientCompanyResource extends Resource
                                         if ($notes) {
                                             $noteList = '';
                                             foreach ($notes as $note) {
-                                                $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
+                                                $noteList .= Carbon::parse($note['date']).' - '.$note['author'].' - <span class="text-violet-500">'.$note['annotation'].'</span></br>';
 
                                                 return new HtmlString($noteList);
                                             }
                                         }
+
                                         return new HtmlString('Nenhuma anotação registrada');
                                     }),
 
@@ -377,7 +378,7 @@ class ClientCompanyResource extends Resource
                 Tables\Columns\TextColumn::make('fantasy_name')->color('primary')->label('Empresa')->searchable()->sortable()->description(fn (ClientCompany $record): string => $record->client->document), Tables\Columns\TextColumn::make('company_size')->label('Natureza Jurídica')->searchable()->sortable()->description(fn (ClientCompany $record): string => $record->legal_nature),
                 Tables\Columns\TextColumn::make('phone')->label('Telefone')->icon('heroicon-m-phone')->iconColor('primary')->searchable(),
                 Tables\Columns\TextColumn::make('email')->label('Email')->icon('heroicon-m-at-symbol')->iconColor('primary')->searchable(),
-                Tables\Columns\ToggleColumn::make('is_active')->label('Ativo')
+                Tables\Columns\ToggleColumn::make('is_active')->label('Ativo'),
             ])
             ->defaultSort('id', 'desc')
             ->filters([Tables\Filters\Filter::make('is_active')->label('Clientes ativos')->query(fn (Builder $query): Builder => $query->where('is_active', true)), Tables\Filters\Filter::make('company_size')->label('Tipo de empresa')->query(fn (Builder $query): Builder => $query->where('company_size', 'Matriz'))])

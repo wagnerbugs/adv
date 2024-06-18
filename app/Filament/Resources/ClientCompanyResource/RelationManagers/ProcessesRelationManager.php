@@ -2,17 +2,13 @@
 
 namespace App\Filament\Resources\ClientCompanyResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Tables;
-use Pages\EditProcess;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ProcessResource;
 use App\Models\Process;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Table;
 
 class ProcessesRelationManager extends RelationManager
 {

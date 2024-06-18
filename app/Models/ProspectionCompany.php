@@ -67,7 +67,6 @@ class ProspectionCompany extends Model
         'atividades_secundarias' => 'array',
     ];
 
-
     public function prospection(): BelongsTo
     {
         return $this->belongsTo(Prospection::class);

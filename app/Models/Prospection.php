@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Log;
-use App\Enums\ProspectionStatusEnum;
 use App\Enums\ProspectionReactionEnum;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\ProspectionStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Log;
 
 class Prospection extends Model
 {
@@ -36,7 +36,6 @@ class Prospection extends Model
         'reaction' => ProspectionReactionEnum::class,
     ];
 
-
     protected static function booted(): void
     {
         static::created(function ($prospection) {
@@ -48,7 +47,7 @@ class Prospection extends Model
                 'prospection_id' => $prospection->id,
             ]);
 
-            Log::info('User created ' . $prospection->name . '. By ' . auth()->user()->name);
+            Log::info('User created '.$prospection->name.'. By '.auth()->user()->name);
         });
     }
 

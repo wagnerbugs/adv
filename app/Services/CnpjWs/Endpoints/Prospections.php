@@ -9,7 +9,7 @@ class Prospections extends BaseEndpoint
         $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
 
         return $this->service->api
-            ->get('cnpj/' . $cnpj)
+            ->get('cnpj/'.$cnpj)
             ->json();
     }
 }

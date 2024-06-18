@@ -2,32 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use Carbon\Carbon;
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use App\Models\Court;
+use App\Enums\ClientTypeEnum;
+use App\Filament\Resources\ProcessResource\Pages;
 use App\Models\Client;
 use App\Models\Process;
-use Filament\Forms\Form;
-use App\Models\CourtState;
-use Filament\Tables\Table;
-use Filament\Support\RawJs;
-use App\Enums\ClientTypeEnum;
-use App\Models\CourtDistrict;
-use App\Models\ProcessDetail;
-use App\Models\ProcessSubject;
-use App\Models\ProcessMovement;
-use Filament\Resources\Resource;
-use App\Models\ProcessDetailChat;
-use Illuminate\Support\HtmlString;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Leandrocfe\FilamentPtbrFormFields\Money;
-use App\Filament\Resources\ProcessResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ProcessResource\RelationManagers;
 use App\Models\ProcessChat;
+use App\Models\ProcessDetail;
+use App\Models\ProcessMovement;
+use App\Models\ProcessSubject;
+use App\Models\User;
+use Carbon\Carbon;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class ProcessResource extends Resource
 {
@@ -47,8 +37,6 @@ class ProcessResource extends Resource
     {
         return static::getModel()::count();
     }
-
-
 
     public static function form(Form $form): Form
     {
@@ -91,11 +79,6 @@ class ProcessResource extends Resource
                             ]),
                     ]),
 
-
-
-
-
-
                 Forms\Components\Group::make()
                     ->visibleOn('edit')
                     ->columnSpan(3)
@@ -133,9 +116,10 @@ class ProcessResource extends Resource
                                                                     ->content(
                                                                         function (ProcessDetail $record): string {
                                                                             $client = Client::find($record->process->client_id);
+
                                                                             return $client->individual
-                                                                                ? $client->individual->name . ' (' . $client->document . ')'
-                                                                                : $client->company->company . ' (' . $client->document . ')';
+                                                                                ? $client->individual->name.' ('.$client->document.')'
+                                                                                : $client->company->company.' ('.$client->document.')';
                                                                         }
                                                                     ),
 
@@ -156,17 +140,16 @@ class ProcessResource extends Resource
 
                                                                 Forms\Components\Placeholder::make('client_process_number')
                                                                     ->label('')
-                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString('Nº do processo: <strong class="text-violet-500">' . $record->process->process . '</strong>')),
-
+                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString('Nº do processo: <strong class="text-violet-500">'.$record->process->process.'</strong>')),
 
                                                                 Forms\Components\Placeholder::make('client_process_number_date_autation')
                                                                     ->label('')
-                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">' .  Carbon::parse($record->publish_date)->format('d/m/Y H:i:s') . '</strong>')),
+                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">'.Carbon::parse($record->publish_date)->format('d/m/Y H:i:s').'</strong>')),
 
                                                                 Forms\Components\Placeholder::make('judging_organ')
                                                                     ->label('')
                                                                     ->content(
-                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">' . $record->judging_name . '</strong>')
+                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">'.$record->judging_name.'</strong>')
                                                                     ),
 
                                                                 Forms\Components\Placeholder::make('class_name')
@@ -175,12 +158,12 @@ class ProcessResource extends Resource
                                                                     ->hintIcon(
                                                                         'heroicon-m-information-circle',
                                                                         tooltip: fn (ProcessDetail $record): string => (
-                                                                            $record->rule . ' - ' . $record->article . ' - ' . $record->class_description
+                                                                            $record->rule.' - '.$record->article.' - '.$record->class_description
                                                                         )
                                                                     )
                                                                     ->hintColor('warning')
                                                                     ->content(
-                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">' . $record->class_name . '</strong>')
+                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">'.$record->class_name.'</strong>')
                                                                     ),
                                                             ]),
 
@@ -195,7 +178,7 @@ class ProcessResource extends Resource
                                                                             $subjects = ProcessSubject::where('process_detail_id', $record->id)->get();
                                                                             $subjectList = '<ul>';
                                                                             foreach ($subjects as $subject) {
-                                                                                $subjectList .=  '<li>' . $subject->code . ' - <span class="text-violet-500 font-bold">' . $subject->name . '</span> (' . $subject->rule . ' - ' . $subject->article . ')</li>';
+                                                                                $subjectList .= '<li>'.$subject->code.' - <span class="text-violet-500 font-bold">'.$subject->name.'</span> ('.$subject->rule.' - '.$subject->article.')</li>';
                                                                             }
                                                                             $subjectList .= '</ul>';
 
@@ -218,8 +201,8 @@ class ProcessResource extends Resource
                                                                             $moviments = ProcessMovement::where('process_detail_id', $record->id)->orderBy('date', 'desc')->get();
                                                                             $movimentsList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Data</th><th scope="col" class="px-6 py-3">Código</th><th scope="col" class="px-6 py-3">Movimento</th></tr></thead><tbody>';
                                                                             foreach ($moviments as $moviment) {
-                                                                                $movimentsList .=  '
-                                                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . Carbon::parse($moviment->date)->format('d/m/Y H:i:s') . '</th><td class="px-6 py-4">' . $moviment->code . '</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">' . $moviment->name . '</td></tr>';
+                                                                                $movimentsList .= '
+                                                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.Carbon::parse($moviment->date)->format('d/m/Y H:i:s').'</th><td class="px-6 py-4">'.$moviment->code.'</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">'.$moviment->name.'</td></tr>';
                                                                             }
                                                                             $movimentsList .= '</tbody></table></div>';
 
@@ -256,7 +239,6 @@ class ProcessResource extends Resource
                                                 //             ->content(
                                                 //                 function (ProcessDetail $record): HtmlString {
                                                 //                     if ($record->annotations) {
-
 
                                                 //                         $chats = $record->annotations;
                                                 //                         $chatList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Data</th><th scope="col" class="px-6 py-3">Código</th><th scope="col" class="px-6 py-3">test</th></tr></thead><tbody>';
@@ -316,17 +298,18 @@ class ProcessResource extends Resource
                                             $historiesList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Autor</th><th scope="col" class="px-6 py-3">Registro</th><th scope="col" class="px-6 py-3">Data</th></tr></thead><tbody>';
                                             if ($histories) {
                                                 foreach ($histories as $history) {
-                                                    $historiesList .=  '
-                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><img src="/storage/' . $history->user->profile->avatar . '" class="w-8 h-8 rounded-full" /></th><td class="px-6 py-4">' . $history->message . '</td><td class="px-6 py-4 text-gray-900 dark:text-white text-xs">' . Carbon::parse($history->created_at)->format('d/m/Y H:i:s') . '</td></tr>';
+                                                    $historiesList .= '
+                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><img src="/storage/'.$history->user->profile->avatar.'" class="w-8 h-8 rounded-full" /></th><td class="px-6 py-4">'.$history->message.'</td><td class="px-6 py-4 text-gray-900 dark:text-white text-xs">'.Carbon::parse($history->created_at)->format('d/m/Y H:i:s').'</td></tr>';
                                                 }
                                                 $historiesList .= '</tbody></table></div>';
+
                                                 return new HtmlString($historiesList);
                                             }
 
                                             return new HtmlString('Sem histórico');
                                         }
-                                    )
-                            ])
+                                    ),
+                            ]),
                     ]),
             ]);
     }

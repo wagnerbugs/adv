@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Services\CNJ\Procedural\ProceduralService;
 use App\Services\CNJ\Process\ProcessService;
 use Illuminate\Console\Command;
 

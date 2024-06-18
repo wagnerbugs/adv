@@ -3,16 +3,13 @@
 namespace App\Filament\Resources\ClientResource\Pages;
 
 use App\Enums\ClientTypeEnum;
-use App\Traits\CapitalizeTrait;
+use App\Filament\Resources\ClientResource;
 use App\Jobs\CreateClientCompanyJob;
 use App\Jobs\CreateClientIndividualJob;
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\CapitalizeTrait;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\ClientResource;
 use Filament\Resources\Pages\CreateRecord;
-use App\Services\ApiBrasil\CPF\ApiBrasilCPFService;
-use App\Services\ApiBrasil\CPF\Entities\Individual;
-
+use Illuminate\Database\Eloquent\Model;
 
 class CreateClient extends CreateRecord
 {
@@ -34,7 +31,7 @@ class CreateClient extends CreateRecord
 
             $recipient = auth()->user();
             Notification::make()
-                ->title("Cadastro de cliente em andamento.")
+                ->title('Cadastro de cliente em andamento.')
                 ->body("Cadastrando o CNPJ: {$client->document}")
                 ->sendToDatabase($recipient);
 
@@ -44,7 +41,7 @@ class CreateClient extends CreateRecord
 
             $recipient = auth()->user();
             Notification::make()
-                ->title("Cadastro de cliente em andamento.")
+                ->title('Cadastro de cliente em andamento.')
                 ->body("Cadastrando o CNPJ: {$client->document}")
                 ->sendToDatabase($recipient);
 

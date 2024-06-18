@@ -69,7 +69,6 @@ class ClientCompany extends Model
         'addresses' => 'array',
     ];
 
-
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);

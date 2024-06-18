@@ -2,17 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use App\Models\Event;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EventResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\EventResource\RelationManagers;
+use App\Models\Event;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 
 class EventResource extends Resource
 {
@@ -27,7 +24,6 @@ class EventResource extends Resource
     protected static ?string $pluralModelLabel = 'teste';
 
     protected static bool $isDiscovered = false;
-
 
     public static function form(Form $form): Form
     {
@@ -76,7 +72,7 @@ class EventResource extends Resource
                         Forms\Components\Toggle::make('is_audience')
                             ->label('É audiência?')
                             ->required(),
-                    ])
+                    ]),
             ]);
     }
 

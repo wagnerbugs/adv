@@ -2,34 +2,15 @@
 
 namespace App\Filament\Resources\ProcessResource\Pages;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\Court;
-use Filament\Actions;
-use App\Helpers\Helper;
-use App\Models\Process;
-use Filament\Forms\Form;
-use Illuminate\Bus\Batch;
-use App\Models\CourtState;
-use Illuminate\Http\Request;
-use App\Models\CourtDistrict;
-use App\Models\ProcessDetail;
-use App\Models\ProcessSubject;
-use App\Events\UpdateMovements;
-use App\Models\ProcessMovement;
-use App\Jobs\CreateProcessDetail;
-use App\Jobs\CreateProcessSubject;
-
-use App\Jobs\CreateProcessMovement;
-use App\Traits\ProcessNumberParser;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Database\Eloquent\Model;
-use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
-use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\ProcessResource;
+use App\Jobs\CreateProcessDetail;
+use App\Models\CourtState;
 use App\Services\CNJ\Process\ProcessService;
-use App\Services\CNJ\Procedural\ProceduralService;
+use App\Traits\ProcessNumberParser;
+use Exception;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateProcess extends CreateRecord
 {
@@ -44,7 +25,7 @@ class CreateProcess extends CreateRecord
 
     protected function beforeCreate(): void
     {
-        $process =  $this->form->getLivewire()->data['process'];
+        $process = $this->form->getLivewire()->data['process'];
         $number = preg_replace('/[^0-9]/', '', $process);
         $process_parser = $this->processNumberParser($number);
 
@@ -95,7 +76,7 @@ class CreateProcess extends CreateRecord
         $service = new ProcessService();
         $responses = $service->processes()->getProcess("api_publica_{$sigla}", $number);
 
-        if (!is_array($responses) || empty($responses)) {
+        if (! is_array($responses) || empty($responses)) {
             throw new Exception('Invalid response format or no results found');
         }
 

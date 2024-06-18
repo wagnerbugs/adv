@@ -2,9 +2,6 @@
 
 namespace App\Services\ApiBrasil\CPF\Endpoints;
 
-use App\Exceptions\ApiBrasilErrorResponseException;
-use App\Exceptions\ApiBrasilRequestException;
-use App\Exceptions\InvalidCpfException;
 use App\Services\ApiBrasil\CPF\Entities\Individual;
 
 class Individuals extends BaseEndpoint

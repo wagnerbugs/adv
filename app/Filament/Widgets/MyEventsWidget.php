@@ -2,24 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Forms;
-use App\Models\User;
-use App\Models\Event;
-use Filament\Actions;
 use App\Models\Client;
-use App\Models\Process;
+use App\Models\Event;
 use App\Models\EventTag;
-use Filament\Forms\Form;
+use App\Models\Process;
+use App\Models\User;
 use Filament\Actions\Action;
-use Illuminate\Support\HtmlString;
-use App\Filament\Pages\MyEventsPage;
-use Illuminate\Database\Eloquent\Model;
-use App\Filament\Resources\EventResource;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Builder;
-use Saade\FilamentFullCalendar\Actions\EditAction;
-use Saade\FilamentFullCalendar\Actions\ViewAction;
+use Illuminate\Database\Eloquent\Model;
 use Saade\FilamentFullCalendar\Actions\CreateAction;
 use Saade\FilamentFullCalendar\Actions\DeleteAction;
+use Saade\FilamentFullCalendar\Actions\EditAction;
+use Saade\FilamentFullCalendar\Actions\ViewAction;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class MyEventsWidget extends FullCalendarWidget
@@ -93,7 +89,7 @@ class MyEventsWidget extends FullCalendarWidget
 
                             if ($colors) {
                                 foreach ($colors as $color) {
-                                    $colorList[$color->id] = '<span class="me-3 flex items-center text-sm font-medium text-gray-900 dark:text-white"><span class="me-1.5 flex h-2.5 w-2.5 flex-shrink-0 rounded-full" style="background-color:' . $color->color . '"></span>' . $color->title . '</span>';
+                                    $colorList[$color->id] = '<span class="me-3 flex items-center text-sm font-medium text-gray-900 dark:text-white"><span class="me-1.5 flex h-2.5 w-2.5 flex-shrink-0 rounded-full" style="background-color:'.$color->color.'"></span>'.$color->title.'</span>';
                                 }
                             }
 
@@ -117,6 +113,7 @@ class MyEventsWidget extends FullCalendarWidget
                         ->editOptionForm([Forms\Components\Hidden::make('user_id')->required(), Forms\Components\TextInput::make('title')->label('Título da Tag')->maxLength(255)->required(), Forms\Components\ColorPicker::make('color')->label('Cor')->required()])
                         ->createOptionUsing(function (array $data): int {
                             $color = EventTag::create($data);
+
                             return $color->id;
                         })
                         ->allowHtml(),
@@ -145,10 +142,10 @@ class MyEventsWidget extends FullCalendarWidget
                                         foreach ($processes as $process) {
                                             $processesList[$process->id] =
                                                 '
-                                                <span class="me-3 text-sm font-medium">' .
-                                                $process->client->name .
-                                                '</span><br><span class="me-3 text-xs text-gray-400">' .
-                                                $process->process .
+                                                <span class="me-3 text-sm font-medium">'.
+                                                $process->client->name.
+                                                '</span><br><span class="me-3 text-xs text-gray-400">'.
+                                                $process->process.
                                                 '</span>';
                                         }
                                     }
@@ -187,7 +184,7 @@ class MyEventsWidget extends FullCalendarWidget
 
                                     if ($clients) {
                                         foreach ($clients as $client) {
-                                            $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">' . $client->name . '</span><br><span class="me-3 text-xs text-gray-400">' . $client->document . '</span>';
+                                            $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">'.$client->name.'</span><br><span class="me-3 text-xs text-gray-400">'.$client->document.'</span>';
                                         }
                                     }
 
@@ -270,7 +267,8 @@ class MyEventsWidget extends FullCalendarWidget
     public function eventDidMount(): string
     {
         $this->dispatch('event-changed');
-        return <<<JS
+
+        return <<<'JS'
             function({ event, timeText, isStart, isEnd, isMirror, isPast, isFuture, isToday, el, view }){
 
                 el.setAttribute("x-tooltip", "tooltip");

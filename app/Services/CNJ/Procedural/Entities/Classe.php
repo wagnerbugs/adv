@@ -5,10 +5,15 @@ namespace App\Services\CNJ\Procedural\Entities;
 class Classe
 {
     public string $class_description;
+
     public ?string $nature;
+
     public ?string $active_pole;
+
     public ?string $passive_pole;
+
     public ?string $rule;
+
     public ?string $article;
 
     public function __construct(array $data)

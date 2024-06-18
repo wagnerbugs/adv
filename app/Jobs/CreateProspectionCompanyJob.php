@@ -2,24 +2,26 @@
 
 namespace App\Jobs;
 
-use Throwable;
 use App\Models\Prospection;
-use Illuminate\Bus\Batchable;
-use Illuminate\Bus\Queueable;
 use App\Services\CnpjWs\CnpjWsService;
 use Carbon\Carbon;
-use Illuminate\Queue\SerializesModels;
 use Filament\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Bus\Batchable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class CreateProspectionCompanyJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
+
     public $backoff = 5;
+
     public $timeout = 120;
 
     public function __construct(protected Prospection $prospection, protected string $cnpj)

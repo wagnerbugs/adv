@@ -2,26 +2,26 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Task;
-use App\Models\User;
-use App\Models\Client;
-use App\Models\Process;
 use App\Enums\TaskPriorityEnum;
 use App\Enums\TaskStatusesEnum;
+use App\Models\Client;
+use App\Models\Process;
+use App\Models\Task;
+use App\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\ColorPicker;
-use Illuminate\Support\Collection;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Mokhosh\FilamentKanban\Pages\KanbanBoard;
 
 class TaskKanban extends KanbanBoard
@@ -43,6 +43,14 @@ class TaskKanban extends KanbanBoard
     public bool $disableEditModal = false;
 
     protected bool $editModalSlideOver = true;
+
+    protected static string $view = 'filament-kanban::kanban-board';
+
+    protected static string $headerView = 'filament-kanban::kanban-header';
+
+    protected static string $recordView = 'kanban.records';
+
+    protected static string $statusView = 'filament-kanban::kanban-status';
 
     protected function records(): Collection
     {
@@ -80,7 +88,7 @@ class TaskKanban extends KanbanBoard
         Task::setNewOrder($orderedIds);
     }
 
-    protected function getEditModalFormSchema(null|int $recordId): array
+    protected function getEditModalFormSchema(?int $recordId): array
     {
         return [];
     }
@@ -139,10 +147,10 @@ class TaskKanban extends KanbanBoard
                                                 foreach ($processes as $process) {
                                                     $processesList[$process->id] =
                                                         '
-                                                <span class="me-3 text-sm font-medium">' .
-                                                        $process->client->name .
-                                                        '</span><br><span class="me-3 text-xs text-gray-400">' .
-                                                        $process->process .
+                                                <span class="me-3 text-sm font-medium">'.
+                                                        $process->client->name.
+                                                        '</span><br><span class="me-3 text-xs text-gray-400">'.
+                                                        $process->process.
                                                         '</span>';
                                                 }
                                             }
@@ -181,7 +189,7 @@ class TaskKanban extends KanbanBoard
 
                                             if ($clients) {
                                                 foreach ($clients as $client) {
-                                                    $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">' . $client->name . '</span><br><span class="me-3 text-xs text-gray-400">' . $client->document . '</span>';
+                                                    $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">'.$client->name.'</span><br><span class="me-3 text-xs text-gray-400">'.$client->document.'</span>';
                                                 }
                                             }
 
@@ -243,10 +251,10 @@ class TaskKanban extends KanbanBoard
 
                                             Toggle::make('is_urgent')
                                                 ->label('Urgente?'),
-                                        ])
+                                        ]),
                                 ]),
                         ]),
-                ])
+                ]),
         ];
     }
 }

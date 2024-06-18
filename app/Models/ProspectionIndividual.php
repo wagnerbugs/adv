@@ -5,11 +5,9 @@ namespace App\Models;
 use App\Enums\EducationLevelEnum;
 use App\Enums\MaritalStatusEnum;
 use App\Enums\TreatmentPronounEnum;
-use Exception;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProspectionIndividual extends Model
 {
@@ -83,7 +81,6 @@ class ProspectionIndividual extends Model
         'marital_status' => MaritalStatusEnum::class,
         'education_level' => EducationLevelEnum::class,
     ];
-
 
     public function prospection(): BelongsTo
     {
