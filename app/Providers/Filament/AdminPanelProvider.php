@@ -2,29 +2,32 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\LexifyWidget;
-use Awcodes\FilamentGravatar\GravatarPlugin;
-use Awcodes\FilamentGravatar\GravatarProvider;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Filament\PanelProvider;
+use Filament\Facades\Filament;
+use Filament\Support\Colors\Color;
+use Illuminate\Support\HtmlString;
+use Filament\Support\Enums\MaxWidth;
+use App\Filament\Widgets\LexifyWidget;
+use Filament\Http\Middleware\Authenticate;
+use Awcodes\FilamentGravatar\GravatarPlugin;
+use Awcodes\FilamentGravatar\GravatarProvider;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AdminPanelProvider extends PanelProvider
 {
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -33,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('LEXIFY')
             ->brandLogo(asset('images/lexify-logo.svg'))
+            ->favicon(asset('favicon-16x16.png'))
             // ->defaultAvatarProvider(GravatarProvider::class)
             ->plugins([
                 // GravatarPlugin::make(),
