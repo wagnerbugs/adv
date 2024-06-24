@@ -40,6 +40,8 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -138,6 +140,7 @@ class UserResource extends Resource
 
                                                 Forms\Components\Repeater::make('phones')
                                                     ->label('Telefones')
+                                                    ->itemLabel(fn (array $state): ?string => $state['number'] ?? null)
                                                     ->columns(3)
                                                     ->collapsed()
                                                     ->grid(2)
@@ -162,6 +165,12 @@ class UserResource extends Resource
 
                                                 Forms\Components\Repeater::make('documents')
                                                     ->label('Documentos')
+                                                    ->itemLabel(
+                                                        fn (array $state): ?string =>
+                                                        isset($state['type']) && isset($state['number'])
+                                                            ? DocumentTypeEnum::from($state['type'])->getLabel() . ' - ' . $state['number']
+                                                            : null
+                                                    )
                                                     ->columns(2)
                                                     ->collapsed()
                                                     ->grid(3)
@@ -202,7 +211,7 @@ class UserResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -274,6 +283,7 @@ class UserResource extends Resource
                                                     ->schema([
                                                         Forms\Components\Repeater::make('cbos')
                                                             ->label('Registro de ocupações')
+                                                            ->itemLabel(fn (array $state): ?string => $state['code'] . ' - ' . $state['occupation'] ?? null)
                                                             ->columnSpanFull()
                                                             ->collapsed()
                                                             ->addActionLabel('Registrar mudança de ocupação')
@@ -306,7 +316,7 @@ class UserResource extends Resource
                                                                             ->columnSpanFull()
                                                                             ->live('onBlur', true)
                                                                             ->options(Occupation::where('is_active', true)->get()->mapWithKeys(function ($occupation) {
-                                                                                return [$occupation->code => $occupation->code.' - '.$occupation->description];
+                                                                                return [$occupation->code => $occupation->code . ' - ' . $occupation->description];
                                                                             }))
                                                                             ->searchable()
                                                                             ->required()
@@ -331,6 +341,7 @@ class UserResource extends Resource
                                                     ->schema([
                                                         Forms\Components\Repeater::make('salaries')
                                                             ->label('Registro de salários')
+                                                            ->itemLabel(fn (array $state): ?string => 'R$ ' . number_format($state['amount'], 2, ',', '.') ?? null)
                                                             ->columnSpanFull()
                                                             ->collapsed()
                                                             ->grid(2)
@@ -366,7 +377,7 @@ class UserResource extends Resource
                                                     if ($notes) {
                                                         $noteList = '';
                                                         foreach ($notes as $note) {
-                                                            $noteList .= '<a href="/storage/'.$note->path.'" class="text-violet-500 hover:text-violet-600" target="_blank">'.Carbon::parse($note->created_at)->format('d/m/Y').' - '.$note->name.' - '.$note->path.'</a><br/>';
+                                                            $noteList .= '<a href="/storage/' . $note->path . '" class="text-violet-500 hover:text-violet-600" target="_blank">' . Carbon::parse($note->created_at)->format('d/m/Y') . ' - ' . $note->name . ' - ' . $note->path . '</a><br/>';
                                                         }
 
                                                         return new HtmlString($noteList);
@@ -378,6 +389,7 @@ class UserResource extends Resource
 
                                         Forms\Components\Repeater::make('attachments')
                                             ->label('Arquivos')
+                                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
                                             ->relationship('attachments')
                                             ->collapsed()
                                             ->grid(2)
@@ -388,9 +400,6 @@ class UserResource extends Resource
                                                     ->maxLength(255),
                                                 Forms\Components\FileUpload::make('path')
                                                     ->label('Arquivo')
-                                                    ->openable()
-                                                    ->downloadable()
-                                                    ->previewable()
                                                     ->maxSize('5120')
                                                     ->directory('employees'),
                                             ]),
@@ -412,7 +421,7 @@ class UserResource extends Resource
                                                             if ($notes) {
                                                                 $noteList = '';
                                                                 foreach (array_reverse($notes) as $note) {
-                                                                    $noteList .= Carbon::parse($note['date'])->format('d/m/Y').' - '.$note['author'].' - '.$note['annotation'].'<br/>';
+                                                                    $noteList .= Carbon::parse($note['date'])->format('d/m/Y') . ' - ' . $note['author'] . ' - ' . $note['annotation'] . '<br/>';
                                                                 }
 
                                                                 return new HtmlString($noteList);
@@ -424,6 +433,7 @@ class UserResource extends Resource
 
                                                 Forms\Components\Repeater::make('annotations')
                                                     ->label('Anotações')
+                                                    // ->itemLabel(fn (array $state): ?string => $state['annotation'] ?? null)
                                                     ->columns(2)
                                                     ->collapsed()
                                                     ->addActionLabel('Adicionar anotação')

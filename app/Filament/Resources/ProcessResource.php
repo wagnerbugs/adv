@@ -29,7 +29,9 @@ class ProcessResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Processos';
 
-    protected static ?string $navigationGroup = 'CLIENTES';
+    protected static ?string $navigationGroup = 'CADASTROS';
+
+    protected static ?string $navigationParentItem = 'Clientes';
 
     protected static ?int $navigationSort = 2;
 
@@ -89,6 +91,7 @@ class ProcessResource extends Resource
 
                                 Forms\Components\Repeater::make('details')
                                     ->label('Processo')
+                                    ->itemLabel(fn (array $state): ?string => $state['process_api_id'] ?? null)
                                     ->addable(false)
                                     ->deletable(false)
                                     // ->reorderable(true)
@@ -118,8 +121,8 @@ class ProcessResource extends Resource
                                                                             $client = Client::find($record->process->client_id);
 
                                                                             return $client->individual
-                                                                                ? $client->individual->name.' ('.$client->document.')'
-                                                                                : $client->company->company.' ('.$client->document.')';
+                                                                                ? $client->individual->name . ' (' . $client->document . ')'
+                                                                                : $client->company->company . ' (' . $client->document . ')';
                                                                         }
                                                                     ),
 
@@ -140,16 +143,16 @@ class ProcessResource extends Resource
 
                                                                 Forms\Components\Placeholder::make('client_process_number')
                                                                     ->label('')
-                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString('Nº do processo: <strong class="text-violet-500">'.$record->process->process.'</strong>')),
+                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString('Nº do processo: <strong class="text-violet-500">' . $record->process->process . '</strong>')),
 
                                                                 Forms\Components\Placeholder::make('client_process_number_date_autation')
                                                                     ->label('')
-                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">'.Carbon::parse($record->publish_date)->format('d/m/Y H:i:s').'</strong>')),
+                                                                    ->content(fn (ProcessDetail $record): HtmlString => new HtmlString(' Data de autuação: <strong class="text-violet-500">' . Carbon::parse($record->publish_date)->format('d/m/Y H:i:s') . '</strong>')),
 
                                                                 Forms\Components\Placeholder::make('judging_organ')
                                                                     ->label('')
                                                                     ->content(
-                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">'.$record->judging_name.'</strong>')
+                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Órgão Julgador: <strong class="text-violet-500">' . $record->judging_name . '</strong>')
                                                                     ),
 
                                                                 Forms\Components\Placeholder::make('class_name')
@@ -158,12 +161,12 @@ class ProcessResource extends Resource
                                                                     ->hintIcon(
                                                                         'heroicon-m-information-circle',
                                                                         tooltip: fn (ProcessDetail $record): string => (
-                                                                            $record->rule.' - '.$record->article.' - '.$record->class_description
+                                                                            $record->rule . ' - ' . $record->article . ' - ' . $record->class_description
                                                                         )
                                                                     )
                                                                     ->hintColor('warning')
                                                                     ->content(
-                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">'.$record->class_name.'</strong>')
+                                                                        fn (ProcessDetail $record): HtmlString => new HtmlString('Classe da ação: <strong class="text-violet-500">' . $record->class_name . '</strong>')
                                                                     ),
                                                             ]),
 
@@ -178,7 +181,7 @@ class ProcessResource extends Resource
                                                                             $subjects = ProcessSubject::where('process_detail_id', $record->id)->get();
                                                                             $subjectList = '<ul>';
                                                                             foreach ($subjects as $subject) {
-                                                                                $subjectList .= '<li>'.$subject->code.' - <span class="text-violet-500 font-bold">'.$subject->name.'</span> ('.$subject->rule.' - '.$subject->article.')</li>';
+                                                                                $subjectList .= '<li>' . $subject->code . ' - <span class="text-violet-500 font-bold">' . $subject->name . '</span> (' . $subject->rule . ' - ' . $subject->article . ')</li>';
                                                                             }
                                                                             $subjectList .= '</ul>';
 
@@ -202,7 +205,7 @@ class ProcessResource extends Resource
                                                                             $movimentsList = '<div class="relative overflow-x-auto shadow-md sm:rounded-lg"><table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"><tr><th scope="col" class="px-6 py-3">Data</th><th scope="col" class="px-6 py-3">Código</th><th scope="col" class="px-6 py-3">Movimento</th></tr></thead><tbody>';
                                                                             foreach ($moviments as $moviment) {
                                                                                 $movimentsList .= '
-                                                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">'.Carbon::parse($moviment->date)->format('d/m/Y H:i:s').'</th><td class="px-6 py-4">'.$moviment->code.'</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">'.$moviment->name.'</td></tr>';
+                                                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">' . Carbon::parse($moviment->date)->format('d/m/Y H:i:s') . '</th><td class="px-6 py-4">' . $moviment->code . '</td><td class="px-6 py-4 text-gray-900 dark:text-white font-bold">' . $moviment->name . '</td></tr>';
                                                                             }
                                                                             $movimentsList .= '</tbody></table></div>';
 
@@ -299,7 +302,7 @@ class ProcessResource extends Resource
                                             if ($histories) {
                                                 foreach ($histories as $history) {
                                                     $historiesList .= '
-                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><img src="/storage/'.$history->user->profile->avatar.'" class="w-8 h-8 rounded-full" /></th><td class="px-6 py-4">'.$history->message.'</td><td class="px-6 py-4 text-gray-900 dark:text-white text-xs">'.Carbon::parse($history->created_at)->format('d/m/Y H:i:s').'</td></tr>';
+                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"><th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><img src="/storage/' . $history->user->profile->avatar . '" class="w-8 h-8 rounded-full" /></th><td class="px-6 py-4">' . $history->message . '</td><td class="px-6 py-4 text-gray-900 dark:text-white text-xs">' . Carbon::parse($history->created_at)->format('d/m/Y H:i:s') . '</td></tr>';
                                                 }
                                                 $historiesList .= '</tbody></table></div>';
 

@@ -38,11 +38,17 @@ class ClientCompanyResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pessoa Jurídica';
 
-    protected static ?string $navigationGroup = 'CLIENTES';
+    protected static ?string $navigationGroup = 'CADASTROS';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationParentItem = 'Clientes';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'company';
+
+    protected static bool $isGloballySearchable = false;
+
+
 
     public static function getNavigationBadge(): ?string
     {
@@ -199,7 +205,7 @@ class ClientCompanyResource extends Resource
                                                     }
 
                                                     try {
-                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                         $data = $response->json();
 
                                                         $set('street', $data['street']);
@@ -239,7 +245,7 @@ class ClientCompanyResource extends Resource
                                                                     }
 
                                                                     try {
-                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/'.$state);
+                                                                        $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
                                                                         $data = $response->json();
 
                                                                         $set('street', $data['street']);
@@ -281,7 +287,7 @@ class ClientCompanyResource extends Resource
                                             ->columnSpan(3)
                                             ->options(
                                                 Bank::all()->map(function ($bank) {
-                                                    return strtoupper($bank->compe.' - '.$bank->long_name);
+                                                    return strtoupper($bank->compe . ' - ' . $bank->long_name);
                                                 }),
                                             )
                                             ->searchable(),
@@ -299,7 +305,7 @@ class ClientCompanyResource extends Resource
                                         if ($files) {
                                             $filesList = '';
                                             foreach ($files as $note) {
-                                                $filesList .= $note['title'].' - <a class="text-violet-500 hover:text-violet-600" href="'.Storage::url($note['file']).'" target="_blank">'.$note['file'].'</a></br>';
+                                                $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
 
                                                 return new HtmlString($filesList);
                                             }
@@ -324,7 +330,7 @@ class ClientCompanyResource extends Resource
                                         if ($notes) {
                                             $noteList = '';
                                             foreach ($notes as $note) {
-                                                $noteList .= Carbon::parse($note['date']).' - '.$note['author'].' - <span class="text-violet-500">'.$note['annotation'].'</span></br>';
+                                                $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
 
                                                 return new HtmlString($noteList);
                                             }
@@ -382,7 +388,11 @@ class ClientCompanyResource extends Resource
             ])
             ->defaultSort('id', 'desc')
             ->filters([Tables\Filters\Filter::make('is_active')->label('Clientes ativos')->query(fn (Builder $query): Builder => $query->where('is_active', true)), Tables\Filters\Filter::make('company_size')->label('Tipo de empresa')->query(fn (Builder $query): Builder => $query->where('company_size', 'Matriz'))])
-            ->actions([Tables\Actions\ActionGroup::make([Tables\Actions\EditAction::make(), Tables\Actions\ViewAction::make()->label('Contatos')])->button()])
+            ->actions([
+
+                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('Contatos')
+            ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 

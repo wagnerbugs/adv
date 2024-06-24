@@ -21,12 +21,14 @@ class ListClients extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            StatsOverview::class,
-        ];
-    }
+
+
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         StatsOverview::class,
+    //     ];
+    // }
 
     public function getTabs(): array
     {

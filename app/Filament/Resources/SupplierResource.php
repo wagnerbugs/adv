@@ -2,223 +2,239 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\DocumentTypeEnum;
-use App\Enums\EducationLevelEnum;
-use App\Enums\GenderEnum;
-use App\Enums\MaritalStatusEnum;
-use App\Enums\TreatmentPronounEnum;
-use App\Enums\TypeOfBankAccountEnum;
-use App\Filament\Resources\ClientIndividualResource\Pages;
-use App\Filament\Resources\ClientResource\Pages\CreateClient;
-use App\Models\Bank;
-use App\Models\ClientIndividual;
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
+use App\Models\Bank;
 use Filament\Tables;
+use Filament\Forms\Set;
+use App\Models\Supplier;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Enums\ClientTypeEnum;
+use Filament\Resources\Resource;
+use App\Enums\TypeOfBankAccountEnum;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Leandrocfe\FilamentPtbrFormFields\Document;
+use App\Filament\Resources\SupplierResource\Pages;
+use Leandrocfe\FilamentPtbrFormFields\PhoneNumber;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SupplierResource\RelationManagers;
+use App\Traits\CapitalizeTrait;
 
-class ClientIndividualResource extends Resource
+class SupplierResource extends Resource
 {
-    protected static ?string $model = ClientIndividual::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-users';
+    use CapitalizeTrait;
 
-    protected static ?string $modelLabel = 'Pessoa Física';
+    protected static ?string $model = Supplier::class;
 
-    protected static ?string $pluralModelLabel = 'Pessoa Física';
+    protected static ?string $modelLabel = 'Fornecedor';
+
+    protected static ?string $pluralModelLabel = 'Fornecedores';
+
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     protected static ?string $navigationGroup = 'CADASTROS';
 
-    protected static ?string $navigationParentItem = 'Clientes';
-
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationLabel = 'Fornecedores';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static bool $isGloballySearchable = false;
+    protected static ?int $navigationSort = 2;
+
+    protected static bool $isGloballySearchable = true;
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'document'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Phone' => $record->phone,
+            'E-mail' => $record->email,
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(3)
+            ->columns(5)
             ->schema([
                 Forms\Components\Group::make()
-                    ->columnSpan(2)
+                    ->columnSpan(4)
                     ->schema([
 
-                        Forms\Components\Tabs::make('Tabs')
+                        Forms\Components\Tabs::make()
                             ->tabs([
 
-                                Forms\Components\Tabs\Tab::make('Dados pessoais')
+                                Forms\Components\Tabs\Tab::make('Fornecedor')
+                                    ->columns(3)
                                     ->schema([
 
-                                        Forms\Components\Section::make()
+                                        Forms\Components\Fieldset::make()
                                             ->columns(3)
                                             ->schema([
-                                                Forms\Components\Select::make('title')
-                                                    ->label('Título')
-                                                    ->columnSpan(1)
-                                                    ->options(TreatmentPronounEnum::class),
+                                                Forms\Components\Select::make('type')
+                                                    ->label('Tipo de fornecedor')
+                                                    ->visibleOn('create')
+                                                    ->options(ClientTypeEnum::class)
+                                                    ->default(ClientTypeEnum::COMPANY)
+                                                    ->required(),
+
+                                                Document::make('document')
+                                                    ->label('CPF/CNPJ')
+                                                    ->required()
+                                                    ->dynamic()
+                                                    ->suffixAction(
+                                                        fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CNPJ')
+                                                            ->icon('heroicon-m-globe-alt')
+                                                            ->action(
+                                                                function () use ($state, $set) {
+                                                                    $state = preg_replace('/[^0-9]/', '', $state);
+                                                                    if (strlen($state) != 14) {
+                                                                        Notification::make()
+                                                                            ->danger()
+                                                                            ->title('Digite um CNPJ válido')
+                                                                            ->send();
+                                                                    }
+
+                                                                    try {
+                                                                        $response = Http::get('https://publica.cnpj.ws/cnpj/' . $state);
+                                                                        $data = $response->json();
+
+                                                                        $phone = $data['estabelecimento']['ddd1'] . $data['estabelecimento']['telefone1'];
+                                                                        $street = $data['estabelecimento']['tipo_logradouro'] . ' ' . $data['estabelecimento']['logradouro'];
+
+                                                                        $set('name', $data['razao_social']);
+                                                                        $set('phone', $phone);
+                                                                        $set('email', $data['estabelecimento']['email']);
+                                                                        $set('zipcode', $data['estabelecimento']['cep']);
+                                                                        $set('street', $street);
+                                                                        $set('number', $data['estabelecimento']['numero']);
+                                                                        $set('complement', $data['estabelecimento']['complemento']);
+                                                                        $set('neighborhood', $data['estabelecimento']['bairro']);
+                                                                        $set('state', $data['estabelecimento']['estado']['sigla']);
+                                                                        $set('city', $data['estabelecimento']['cidade']['nome']);
+                                                                    } catch (Exception $e) {
+                                                                        Notification::make()
+                                                                            ->danger()
+                                                                            ->title($e->getMessage())
+                                                                            ->send();
+                                                                    }
+                                                                }
+                                                            )
+                                                    ),
 
                                                 Forms\Components\TextInput::make('name')
-                                                    ->label('Nome')
-                                                    ->columnSpan(2)
-                                                    ->disabled(),
+                                                    ->label('Nome do fornecedor')
+                                                    ->required()
+                                                    ->maxLength(255),
+
+                                            ]),
+
+                                        Forms\Components\Fieldset::make('Contato')
+                                            ->columns(3)
+                                            ->schema([
+
+                                                PhoneNumber::make('phone')
+                                                    ->label('Telefone'),
+                                                Forms\Components\TextInput::make('email')
+                                                    ->email()
+                                                    ->maxLength(255),
+                                                Forms\Components\TextInput::make('website')
+                                                    ->maxLength(255),
+                                            ])
+                                    ]),
+
+                                Forms\Components\Tabs\Tab::make('Outros dados')
+                                    ->schema([
+                                        Forms\Components\Repeater::make('phones')
+                                            ->grid(3)
+                                            ->label('Telefones')
+                                            ->itemLabel(fn (array $state): ?string => $state['phone'] ?? null)
+                                            ->collapsed()
+                                            ->schema([
+                                                PhoneNumber::make('phone')
+                                                    ->label('Telefone'),
+                                            ]),
+
+                                        Forms\Components\Repeater::make('emails')
+                                            ->grid(3)
+                                            ->label('E-mails')
+                                            ->itemLabel(fn (array $state): ?string => $state['email'] ?? null)
+                                            ->collapsed()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('email')
+                                                    ->label('E-mail')
+                                                    ->email(),
+                                            ]),
+
+                                        Forms\Components\Repeater::make('websites')
+                                            ->grid(3)
+                                            ->label('Websites')
+                                            ->itemLabel(fn (array $state): ?string => $state['website'] ?? null)
+                                            ->collapsed()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('website')
+                                                    ->label('Website')
+                                                    ->url(),
+                                            ]),
+
+                                        Forms\Components\Repeater::make('contacts')
+                                            ->grid(3)
+                                            ->label('Contatos')
+                                            ->itemLabel(fn (array $state): ?string => $state['sector'] ?? null)
+                                            ->collapsed()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sector')
+                                                    ->label('Setor'),
+
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label('Nome'),
+
+                                                PhoneNumber::make('phone')
+                                                    ->label('Telefone'),
 
                                                 Forms\Components\TextInput::make('email')
                                                     ->label('E-mail')
                                                     ->email(),
-
-                                                Forms\Components\TextInput::make('phone')
-                                                    ->label('Telefone')
-                                                    ->mask(RawJs::make(<<<'JS'
-                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                    JS)),
-
-                                                Forms\Components\TextInput::make('website')
-                                                    ->label('Website/Rede Social')
-                                                    ->placeholder('https://www.site.com')
-                                                    ->url(),
-                                            ]),
-                                        Forms\Components\Section::make()
-                                            ->columns(4)
-                                            ->schema([
-                                                Forms\Components\Select::make('gender')
-                                                    ->label('Gênero')
-                                                    ->options(GenderEnum::class),
-
-                                                Forms\Components\DatePicker::make('birth_date')
-                                                    ->label('Data de nascimento'),
-
-                                                Forms\Components\Select::make('marital_status')
-                                                    ->label('Estado Civil')
-                                                    ->options(MaritalStatusEnum::class),
-
-                                                Forms\Components\Select::make('education_level')
-                                                    ->label('Escolaridade')
-                                                    ->options(EducationLevelEnum::class),
-
-                                                Forms\Components\TextInput::make('birth_place')
-                                                    ->label('Naturalidade')
-                                                    ->helperText('Ex: São Paulo - SP')
-                                                    ->columnSpan(2),
-
-                                                Forms\Components\TextInput::make('nationality')
-                                                    ->label('Nacionalidade')
-                                                    ->helperText('Ex: Brasil')
-                                                    ->columnSpan(2),
-                                            ]),
-                                        Forms\Components\Fieldset::make('Filiação')
-                                            ->columns(2)
-                                            ->schema([
-                                                Forms\Components\TextInput::make('mother_name')
-                                                    ->label('Nome da mãe'),
-                                                Forms\Components\TextInput::make('father_name')
-                                                    ->label('Nome do pai'),
                                             ]),
 
-                                    ]),
-                                Forms\Components\Tabs\Tab::make('Dados adicionais')
-                                    ->schema([
-
-                                        Forms\Components\Fieldset::make('Ocupação')
-                                            ->columns(2)
+                                        Forms\Components\Repeater::make('attachments')
+                                            ->grid(3)
+                                            ->label('Arquivos')
                                             ->schema([
-                                                Forms\Components\TextInput::make('workplace')
-                                                    ->label('Empresa'),
-                                                Forms\Components\TextInput::make('ocupation')
-                                                    ->label('Profissão'),
+                                                Forms\Components\FileUpload::make('attachment')
+                                                    ->label('Arquivo')
+                                                    ->downloadable()
+                                                    ->previewable()
+                                                    ->directory('suppliers/attachments'),
                                             ]),
 
-                                        Forms\Components\Repeater::make('phones')
-                                            ->label('Telefones')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
+                                        Forms\Components\Repeater::make('annotations')
+                                            ->grid(3)
+                                            ->label('Anotações')
                                             ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'whatsapp' => 'Whatsapp',
-                                                        'residential' => 'Residencial',
-                                                        'commercial' => 'Comercial',
-                                                        'cellphone' => 'Celular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->mask(RawJs::make(<<<'JS'
-                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
-                                                    JS))
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                            ]),
-
-                                        Forms\Components\Repeater::make('emails')
-                                            ->label('E-mails adicionais')
-                                            ->columns(3)
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options([
-                                                        'professional' => 'Profissional',
-                                                        'particular' => 'Particular',
-                                                    ])
-                                                    ->required()
-                                                    ->columnSpan(1),
-                                                Forms\Components\TextInput::make('email')
-                                                    ->label('E-mail')
-                                                    ->email()
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                            ]),
-
-                                        Forms\Components\Repeater::make('websites')
-                                            ->label('Websites adicionais')
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->schema([
-                                                Forms\Components\TextInput::make('link')
-                                                    ->label('Link')
-                                                    ->helperText('Ex: https://google.com')
-                                                    ->url()
-                                                    ->required(),
-                                            ]),
-
-                                        Forms\Components\Repeater::make('documents')
-                                            ->label('Documentos')
-                                            ->columns(2)
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->addActionLabel('Adicionar novo documento')
-                                            ->schema([
-                                                Forms\Components\Select::make('type')
-                                                    ->label('Tipo')
-                                                    ->options(DocumentTypeEnum::class)
-                                                    ->required(),
-                                                Forms\Components\TextInput::make('number')
-                                                    ->label('Número')
-                                                    ->placeholder('1234567890')
-                                                    ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
-                                                    ->required(),
+                                                Forms\Components\Hidden::make('author')
+                                                    ->default(auth()->user()->name),
+                                                Forms\Components\Hidden::make('date')
+                                                    ->default(Carbon::now()->toDateTimeString()),
+                                                Forms\Components\Textarea::make('annotation')
+                                                    ->label('Anotação'),
                                             ]),
                                     ]),
+
                                 Forms\Components\Tabs\Tab::make('Endereço')
                                     ->schema([
                                         Forms\Components\Group::make()
@@ -362,7 +378,6 @@ class ClientIndividualResource extends Resource
 
                                             ]),
                                     ]),
-
                                 Forms\Components\Tabs\Tab::make('Dados bancários')
                                     ->schema([
 
@@ -392,115 +407,20 @@ class ClientIndividualResource extends Resource
                                             ]),
 
                                     ]),
-                                Forms\Components\Tabs\Tab::make('Arquivos')
-                                    ->schema([
-
-                                        Forms\Components\Placeholder::make('attachments_placeholder')
-                                            ->label('Anexos')
-                                            ->content(
-                                                function (ClientIndividual $record): HtmlString {
-                                                    $files = $record->attachments;
-                                                    if ($files) {
-                                                        $filesList = '';
-                                                        foreach ($files as $note) {
-
-                                                            $filesList .= $note['title'] . ' - <a class="text-violet-500 hover:text-violet-600" href="' . Storage::url($note['file']) . '" target="_blank">' . $note['file'] . '</a></br>';
-
-                                                            return new HtmlString($filesList);
-                                                        }
-                                                    }
-
-                                                    return new HtmlString('Nenhum arquivo anexado');
-                                                }
-                                            ),
-
-                                        Forms\Components\Repeater::make('attachments')
-                                            ->label('Arquivos')
-                                            ->collapsed()
-                                            ->grid(2)
-                                            ->addActionLabel('Anexar arquivo')
-                                            ->schema([
-                                                Forms\Components\TextInput::make('title')
-                                                    ->label('Título do arquivo')
-                                                    ->placeholder('Descrição curta do documento')
-                                                    ->maxLength(255),
-                                                Forms\Components\FileUpload::make('file')
-                                                    ->label('Arquivo')
-                                                    ->openable()
-                                                    ->downloadable()
-                                                    ->previewable()
-                                                    ->maxSize('5120')
-                                                    ->directory('clients/files'),
-                                            ]),
-                                    ]),
-
-                                Forms\Components\Tabs\Tab::make('Anotações')
-                                    ->schema([
-
-                                        Forms\Components\Placeholder::make('annotation_placeholder')
-                                            ->label('Anotações')
-                                            ->content(
-                                                function (ClientIndividual $record): HtmlString {
-                                                    $notes = $record->annotations;
-                                                    if ($notes) {
-                                                        $noteList = '';
-                                                        foreach ($notes as $note) {
-
-                                                            $noteList .= Carbon::parse($note['date']) . ' - ' . $note['author'] . ' - <span class="text-violet-500">' . $note['annotation'] . '</span></br>';
-
-                                                            return new HtmlString($noteList);
-                                                        }
-                                                    }
-
-                                                    return new HtmlString('Nenhuma anotação registrada');
-                                                }
-                                            ),
-
-                                        Forms\Components\Repeater::make('annotations')
-                                            ->label('Anotações')
-                                            ->columns(2)
-                                            ->collapsed()
-                                            ->deletable(false)
-                                            ->addActionLabel('Adicionar anotação')
-                                            ->schema([
-                                                Forms\Components\Hidden::make('date')
-                                                    ->label('Data')
-                                                    ->default(Carbon::now()),
-                                                Forms\Components\Hidden::make('author')
-                                                    ->label('Autor')
-                                                    ->default(auth()->user()->name),
-                                                Forms\Components\Textarea::make('annotation')
-                                                    ->label('Nota')
-                                                    ->required()
-                                                    ->placeholder('Anotação...')
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ]),
                             ]),
                     ]),
-
                 Forms\Components\Group::make()
-                    ->columns(1)
                     ->schema([
-
                         Forms\Components\Section::make()
                             ->schema([
-
                                 Forms\Components\FileUpload::make('image')
-                                    ->label('Foto')
-                                    ->image()
-                                    ->imageEditor()
-                                    ->imageEditorAspectRatios([
-                                        '1:1',
-                                    ])
-                                    ->directory('clients/images'),
-
-                                Forms\Components\Fieldset::make('Status')
-                                    ->schema([
-                                        Forms\Components\Toggle::make('is_active')
-                                            ->label('Ativo')
-                                            ->default(true),
-                                    ]),
+                                    ->label('Logo')
+                                    ->avatar()
+                                    ->directory('suppliers'),
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label('Ativo?')
+                                    ->default(true)
+                                    ->required(),
                             ]),
                     ]),
             ]);
@@ -511,40 +431,40 @@ class ClientIndividualResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->label('Logo'),
 
-                    ->label('Imagem'),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Tipo de fornecedor')
+                    ->badge(),
+
+                Tables\Columns\TextColumn::make('document')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nome')
-                    ->color('primary')
-                    ->searchable()
-                    ->sortable()
-                    ->description(fn (ClientIndividual $record): string => $record->client->document),
+                    ->label('Fornecedor')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Telefone')
-                    ->icon('heroicon-m-phone')
-                    ->iconColor('primary')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('E-mail')
-                    ->icon('heroicon-m-at-symbol')
-                    ->iconColor('primary')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('city')
-                    ->label('Cidade')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('state')
-                    ->label('UF')
                     ->searchable(),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Ativo?'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])
@@ -568,10 +488,9 @@ class ClientIndividualResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClientIndividuals::route('/'),
-            // 'create' => Pages\CreateClientIndividual::route('/create'),
-            'create' => CreateClient::route('/create'),
-            'edit' => Pages\EditClientIndividual::route('/{record}/edit'),
+            'index' => Pages\ListSuppliers::route('/'),
+            'create' => Pages\CreateSupplier::route('/create'),
+            'edit' => Pages\EditSupplier::route('/{record}/edit'),
         ];
     }
 }

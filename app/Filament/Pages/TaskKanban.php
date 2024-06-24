@@ -147,10 +147,10 @@ class TaskKanban extends KanbanBoard
                                                 foreach ($processes as $process) {
                                                     $processesList[$process->id] =
                                                         '
-                                                <span class="me-3 text-sm font-medium">' .
-                                                        $process->client->name .
-                                                        '</span><br><span class="me-3 text-xs text-gray-400">' .
-                                                        $process->process .
+                                                <span class="me-3 text-sm font-medium">'.
+                                                        $process->client->name.
+                                                        '</span><br><span class="me-3 text-xs text-gray-400">'.
+                                                        $process->process.
                                                         '</span>';
                                                 }
                                             }
@@ -189,7 +189,7 @@ class TaskKanban extends KanbanBoard
 
                                             if ($clients) {
                                                 foreach ($clients as $client) {
-                                                    $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">' . $client->name . '</span><br><span class="me-3 text-xs text-gray-400">' . $client->document . '</span>';
+                                                    $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">'.$client->name.'</span><br><span class="me-3 text-xs text-gray-400">'.$client->document.'</span>';
                                                 }
                                             }
 

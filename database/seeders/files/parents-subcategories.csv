@@ -1,0 +1,57 @@
+ENUM,PARENT_ID,NAME
+1,1,Venda de produtos ou serviços
+1,2,Receitas de aplicações e rendimentos financeiros
+1,3,Ajuste de caixa
+2,4,Salários de advogados
+2,4,Salários de assistentes jurídicos
+2,4,Salários de pessoal administrativo
+2,4,Contribuições previdenciárias
+2,4,Planos de saúde e odontológico
+2,4,Vale-refeição e vale-transporte
+2,4,13º salário e férias
+2,5,Consultorias jurídicas externas
+2,5,Honorários de peritos e especialistas
+2,5,Serviços contábeis
+2,5,Serviços de TI (Tecnologia da Informação)
+2,6,Aluguel do escritório
+2,6,Condomínio
+2,6,Contas de água e energia elétrica
+2,6,Telefonia fixa e móvel
+2,6,Internet e outros serviços de comunicação
+2,6,Limpeza e conservação
+2,6,Manutenção de equipamentos
+2,6,Segurança
+2,7,Material de escritório
+2,7,Equipamentos de escritório
+2,7,Assinaturas de revistas e periódicos jurídicos
+2,7,Livros e materiais de consulta
+2,7,Software de gestão jurídica e licenças
+2,8,Publicidade em mídia impressa e digital
+2,8,Custos com site e redes sociais
+2,8,Brindes e materiais promocionais
+2,8,Eventos e patrocínios
+2,9,Deslocamentos e viagens a trabalho
+2,9,Hospedagem em viagens
+2,9,Reembolsos de quilometragem
+2,9,Alimentação durante viagens
+2,10,Cursos e workshops
+2,10,Seminários e conferências
+2,10,Material de treinamento
+2,11,Taxas de inscrição em órgãos reguladores
+2,11,Custas processuais
+2,11,Honorários advocatícios
+2,11,Despesas com notificações e intimações
+2,12,Aquisição de hardware
+2,12,Manutenção de software
+2,12,Licenças de uso
+2,12,Segurança de TI (antivírus; firewalls)
+2,13,Serviços de motoboy e correios
+2,13,Serviços gráficos (impressões; encadernações)
+2,13,Armazenamento e gestão de arquivos físicos e digitais
+2,14,Provisões para contingências trabalhistas
+2,14,Provisões para contingências tributárias
+2,14,Provisões para devedores duvidosos
+2,15,Tarifas bancárias
+2,15,Juros sobre empréstimos
+2,15,Despesas com cartões de crédito corporativos
+3,16,Transferência entre contas

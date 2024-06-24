@@ -1,0 +1,17 @@
+ID,ENUM,NAME
+1,1,Receitas de vendas
+2,1,Receitas Financeiras
+3,1,Receitas Outros
+4,2,Despesas com Salários e Benefícios
+5,2,Despesas com Honorários Profissionais
+6,2,Despesas de Custos Operacionais
+7,2,Despesas de Escritório
+8,2,Despesas com Marketing e Publicidade
+9,2,Despesas com Transporte e Viagens
+10,2,Despesas com Treinamento e Desenvolvimento
+11,2,Despesas Jurídicas e Regulatórias
+12,2,Despesas com Tecnologia da Informação
+13,2,Despesas com Serviços Gerais
+14,2,Despesas com Provisões e Contingências
+15,2,Despesas Bancárias e Financeiras
+16,3,Tranferências

@@ -32,11 +32,11 @@ class Client extends Model
                 $client->company()->create();
             }
 
-            Log::info('Client created '.$client->document.'. By '.auth()->user()->name);
+            Log::info('Client created ' . $client->document . '. By ' . auth()->user()->name);
         });
 
         static::updated(function ($user) {
-            Log::info('Client updated '.$user->document.'. By '.auth()->user()->name);
+            Log::info('Client updated ' . $user->document . '. By ' . auth()->user()->name);
         });
     }
 
@@ -55,6 +55,11 @@ class Client extends Model
         return $this->hasMany(Process::class);
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(FinancialPayment::class);
+    }
+
     public function getNameAttribute()
     {
         if ($this->type === ClientTypeEnum::INDIVIDUAL) {
@@ -66,5 +71,31 @@ class Client extends Model
         }
 
         return null;
+    }
+
+    public function getIsActiveAttribute()
+    {
+        if ($this->type === ClientTypeEnum::INDIVIDUAL) {
+            return $this->individual->is_active;
+        }
+
+        if ($this->type === ClientTypeEnum::COMPANY) {
+            return $this->company->is_active;
+        }
+
+        return null;
+    }
+
+    public function setIsActiveAttribute($value)
+    {
+        if ($this->type === ClientTypeEnum::INDIVIDUAL) {
+            $this->individual->is_active = $value;
+            $this->individual->save();
+        }
+
+        if ($this->type === ClientTypeEnum::COMPANY) {
+            $this->company->is_active = $value;
+            $this->company->save();
+        }
     }
 }
