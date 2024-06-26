@@ -154,16 +154,14 @@ class ClientResource extends Resource
 
 
                 Action::make('Editar')
-                    ->icon('heroicon-m-pencil-square')
-                    ->url(function (Client $record): string {
-                        if ($record->type == ClientTypeEnum::COMPANY) {
-                            return route('filament.admin.resources.client-companies.edit', $record->company->id);
-                        } else if ($record->type == ClientTypeEnum::INDIVIDUAL) {
-                            return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
-                        } else {
-                            return route('filament.admin.resources.banks.index');
-                        }
-                    }),
+                    ->icon('heroicon-m-pencil-square'),
+                // ->url(function (Client $record): string {
+                //     if ($record->type == ClientTypeEnum::COMPANY) {
+                //         return route('filament.admin.resources.client-companies.edit', $record->company->id);
+                //     } else {
+                //         return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
+                //     }
+                // }),
 
                 Action::make('payment')
                     ->label('Pagamentos')
