@@ -121,8 +121,8 @@ class ClientResource extends Resource
                 //     ->searchable()
                 //     ->sortable(),
 
-                Tables\Columns\ToggleColumn::make('is_active')
-                    ->label('Ativo'),
+                // Tables\Columns\ToggleColumn::make('is_active')
+                //     ->label('Ativo'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
