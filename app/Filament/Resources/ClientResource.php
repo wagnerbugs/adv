@@ -115,11 +115,11 @@ class ClientResource extends Resource
                     ->sortable()
                     ->badge(),
 
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Cliente')
-                    ->description(fn (Client $record): string => $record->document)
-                    ->searchable()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('name')
+                //     ->label('Cliente')
+                //     ->description(fn (Client $record): string => $record->document)
+                //     ->searchable()
+                //     ->sortable(),
 
                 Tables\Columns\ToggleColumn::make('is_active')
                     ->label('Ativo'),
