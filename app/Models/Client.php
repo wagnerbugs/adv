@@ -62,12 +62,12 @@ class Client extends Model
 
     public function getNameAttribute()
     {
-        if ($this->type === ClientTypeEnum::INDIVIDUAL) {
-            return $this->individual->name;
-        }
-
         if ($this->type === ClientTypeEnum::COMPANY) {
             return $this->company->company;
+        }
+
+        if ($this->type === ClientTypeEnum::INDIVIDUAL) {
+            return $this->individual->name;
         }
 
         return null;
