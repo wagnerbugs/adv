@@ -115,14 +115,14 @@ class ClientResource extends Resource
                     ->sortable()
                     ->badge(),
 
-                // Tables\Columns\TextColumn::make('name')
-                //     ->label('Cliente')
-                //     ->description(fn (Client $record): string => $record->document)
-                //     ->searchable()
-                //     ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Cliente')
+                    ->description(fn (Client $record): string => $record->document)
+                    ->searchable()
+                    ->sortable(),
 
-                // Tables\Columns\ToggleColumn::make('is_active')
-                //     ->label('Ativo'),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Ativo'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
@@ -154,14 +154,14 @@ class ClientResource extends Resource
 
 
                 Action::make('Editar')
-                    ->icon('heroicon-m-pencil-square'),
-                // ->url(function (Client $record): string {
-                //     if ($record->type == ClientTypeEnum::COMPANY) {
-                //         return route('filament.admin.resources.client-companies.edit', $record->company->id);
-                //     } else {
-                //         return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
-                //     }
-                // }),
+                    ->icon('heroicon-m-pencil-square')
+                    ->url(function (Client $record): string {
+                        if ($record->type == ClientTypeEnum::COMPANY) {
+                            return route('filament.admin.resources.client-companies.edit', $record->company->id);
+                        } else {
+                            return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
+                        }
+                    }),
 
                 Action::make('payment')
                     ->label('Pagamentos')
