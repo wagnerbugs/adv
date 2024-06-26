@@ -158,8 +158,10 @@ class ClientResource extends Resource
                     ->url(function (Client $record): string {
                         if ($record->type == ClientTypeEnum::COMPANY) {
                             return route('filament.admin.resources.client-companies.edit', $record->company->id);
-                        } else {
+                        } else if ($record->type == ClientTypeEnum::INDIVIDUAL) {
                             return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
+                        } else {
+                            return route('filament.admin.resources.banks.index');
                         }
                     }),
 
