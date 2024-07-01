@@ -89,7 +89,7 @@ class MyEventsWidget extends FullCalendarWidget
 
                             if ($colors) {
                                 foreach ($colors as $color) {
-                                    $colorList[$color->id] = '<span class="me-3 flex items-center text-sm font-medium text-gray-900 dark:text-white"><span class="me-1.5 flex h-2.5 w-2.5 flex-shrink-0 rounded-full" style="background-color:'.$color->color.'"></span>'.$color->title.'</span>';
+                                    $colorList[$color->id] = '<span class="me-3 flex items-center text-sm font-medium text-gray-900 dark:text-white"><span class="me-1.5 flex h-2.5 w-2.5 flex-shrink-0 rounded-full" style="background-color:' . $color->color . '"></span>' . $color->title . '</span>';
                                 }
                             }
 
@@ -142,10 +142,10 @@ class MyEventsWidget extends FullCalendarWidget
                                         foreach ($processes as $process) {
                                             $processesList[$process->id] =
                                                 '
-                                                <span class="me-3 text-sm font-medium">'.
-                                                $process->client->name.
-                                                '</span><br><span class="me-3 text-xs text-gray-400">'.
-                                                $process->process.
+                                                <span class="me-3 text-sm font-medium">' .
+                                                $process->client->name .
+                                                '</span><br><span class="me-3 text-xs text-gray-400">' .
+                                                $process->process .
                                                 '</span>';
                                         }
                                     }
@@ -184,7 +184,7 @@ class MyEventsWidget extends FullCalendarWidget
 
                                     if ($clients) {
                                         foreach ($clients as $client) {
-                                            $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">'.$client->name.'</span><br><span class="me-3 text-xs text-gray-400">'.$client->document.'</span>';
+                                            $clientsList[$client->id] = '<span class="me-3 text-sm font-medium">' . $client->name . '</span><br><span class="me-3 text-xs text-gray-400">' . $client->document . '</span>';
                                         }
                                     }
 
@@ -280,7 +280,7 @@ class MyEventsWidget extends FullCalendarWidget
 
     public static function canView(): bool
     {
-        // return auth()->user()->hasPermissionTo('widget_my_events');
-        return true;
+        return auth()->user()->hasPermissionTo('widget_my_events');
+        // return true;
     }
 }

@@ -27,7 +27,7 @@ class CPF extends Command
     public function handle()
     {
         $service = new ApiBrasilCPFService();
-        $response = $service->prospections()->getCPF('80538533072');
+        $response = $service->prospections()->getCPF('08150088130');
 
         dd($response);
     }

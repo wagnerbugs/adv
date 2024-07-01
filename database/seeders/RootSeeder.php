@@ -307,6 +307,12 @@ class RootSeeder extends Seeder
 
             // SUPPLIER
             'view_any_suppliers', 'view_suppliers', 'create_suppliers', 'update_suppliers', 'delete_suppliers',
+
+            // PAGES
+            'page_events', 'page_my_events', 'page_task_kanban',
+
+            // WIDGETS
+            'widget_events', 'widget_my_events', 'widget_latest_processes_chats',
         ];
 
         foreach ($permissions as $permission) {

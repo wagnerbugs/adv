@@ -43,7 +43,7 @@ class CreateProspectionProcessJob implements ShouldQueue
         $service = new ProcessService();
         $responses = $service->prospections()->getProcess("api_publica_{$sigla}", $this->process);
 
-        if (! is_array($responses) || empty($responses)) {
+        if (!is_array($responses) || empty($responses)) {
             $recipient = auth()->user();
             Notification::make()
                 ->title('Nenhum processo encontrado')

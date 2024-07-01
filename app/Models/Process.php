@@ -6,6 +6,7 @@ use App\Enums\ClientTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Process extends Model
@@ -13,7 +14,7 @@ class Process extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id',
+        'clients',
         'process',
         'process_number',
         'process_digit',
@@ -23,9 +24,13 @@ class Process extends Model
         'court_district_code',
     ];
 
-    public function client(): BelongsTo
+    protected $casts = [
+        'clients' => 'array'
+    ];
+
+    public function client(): BelongsToMany
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsToMany(Client::class);
     }
 
     public function details(): HasMany

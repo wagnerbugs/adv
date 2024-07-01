@@ -26,15 +26,15 @@ class CNJ extends Command
      */
     public function handle()
     {
-        // $service = new ProcessService();
-        // $response = $service->processes()
-        //     ->getProcess('api_publica_tjto', '50000046720058272711');
-
-        // dd($response);1116
-
         $service = new ProcessService();
-        $response = $service->prospections()->getProcess('api_publica_tjto', '50000046720058272711');
+        $response = $service->processes()
+            ->getProcess('api_publica_tjto', '50000046720058272711');
 
         dd($response);
+
+        // $service = new ProcessService();
+        // $response = $service->prospections()->getProcess('api_publica_tjto', '50000046720058272711');
+
+        // dd($response);
     }
 }

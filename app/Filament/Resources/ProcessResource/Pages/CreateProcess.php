@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ProcessResource\Pages;
 
 use App\Filament\Resources\ProcessResource;
+use App\Jobs\CreateClientProcessEprocJob;
 use App\Jobs\CreateProcessDetail;
 use App\Models\CourtState;
 use App\Services\CNJ\Process\ProcessService;
@@ -70,13 +71,12 @@ class CreateProcess extends CreateRecord
         ]);
 
         $court_state = CourtState::where('code', $process_parser['court_state_code'])->first();
-
         $sigla = strtolower($court_state->court);
 
         $service = new ProcessService();
         $responses = $service->processes()->getProcess("api_publica_{$sigla}", $number);
 
-        if (! is_array($responses) || empty($responses)) {
+        if (!is_array($responses) || empty($responses)) {
             throw new Exception('Invalid response format or no results found');
         }
 

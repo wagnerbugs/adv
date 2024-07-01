@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ProspectionResource\Pages;
 use App\Filament\Resources\ProspectionResource;
 use App\Jobs\CreateProspectionCompanyJob;
 use App\Jobs\CreateProspectionIndividualJob;
+use App\Jobs\CreateProspectionProcessEprocToJob;
 use App\Jobs\CreateProspectionProcessJob;
 use App\Models\CourtState;
 use App\Services\CNJ\Process\ProcessService;
@@ -31,29 +32,29 @@ class CreateProspection extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 
-    protected function beforeCreate(): void
-    {
-        $prospection = $this->form->getLivewire()->data['process'];
-        if (! empty($prospection)) {
-            $number = preg_replace('/[^0-9]/', '', $prospection);
-            $process_parser = $this->processNumberParser($number);
+    // protected function beforeCreate(): void
+    // {
+    //     $prospection = $this->form->getLivewire()->data['process'];
+    //     if (!empty($prospection)) {
+    //         $number = preg_replace('/[^0-9]/', '', $prospection);
+    //         $process_parser = $this->processNumberParser($number);
 
-            $court_state = CourtState::where('code', $process_parser['court_state_code'])->first();
-            $sigla = strtolower($court_state->court);
+    //         $court_state = CourtState::where('code', $process_parser['court_state_code'])->first();
+    //         $sigla = strtolower($court_state->court);
 
-            $service = new ProcessService();
-            $processes = $service->prospections()->getProcess("api_publica_{$sigla}", $number);
+    //         $service = new ProcessService();
+    //         $processes = $service->prospections()->getProcess("api_publica_{$sigla}", $number);
 
-            if (isset($processes['error'])) {
-                Notification::make()
-                    ->warning()
-                    ->title('Não foi possível localizar o processo')
-                    ->body('Por favor, adicione-o manualmente após a pesquisa.')
-                    ->persistent()
-                    ->send();
-            }
-        }
-    }
+    //         if (isset($processes['error'])) {
+    //             Notification::make()
+    //                 ->warning()
+    //                 ->title('Não foi possível localizar o processo')
+    //                 ->body('Por favor, adicione-o manualmente após a pesquisa.')
+    //                 ->persistent()
+    //                 ->send();
+    //         }
+    //     }
+    // }
 
     protected function afterCreate()
     {
@@ -85,7 +86,6 @@ class CreateProspection extends CreateRecord
         }
 
         if ($prospection->process !== null) {
-            $process = preg_replace('/[^0-9]/', '', $prospection->process);
 
             $recipient = auth()->user();
             Notification::make()
@@ -93,7 +93,17 @@ class CreateProspection extends CreateRecord
                 ->body("Pesquisando Processo: {$prospection->process}")
                 ->sendToDatabase($recipient);
 
-            CreateProspectionProcessJob::dispatch($prospection->id, $process);
+            $process = preg_replace('/[^0-9]/', '', $prospection->process);
+            $process_parser = $this->processNumberParser($process);
+
+            $court_state = CourtState::where('code', $process_parser['court_state_code'])->first();
+            $sigla = strtolower($court_state->court);
+
+            if ($sigla === 'tjto') {
+                CreateProspectionProcessEprocToJob::dispatch($prospection->id, $process);
+            } else {
+                CreateProspectionProcessJob::dispatch($prospection->id, $process);
+            }
         }
     }
 }

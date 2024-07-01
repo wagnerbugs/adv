@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained()->cascadeOnDelete();
+            $table->json('clients');
             $table->string('process')->unique();
             $table->string('process_number', 7)->nullable();
             $table->string('process_digit', 2)->nullable();

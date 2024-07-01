@@ -34,6 +34,10 @@ class ProcessDetail extends Model
         'subjects',
         'attachments',
         'annotations',
+        'magistrate',
+        'current_situation',
+        'parties_and_representatives',
+        'additional_information',
     ];
 
     protected $casts = [
@@ -42,6 +46,8 @@ class ProcessDetail extends Model
         'subjects' => 'array',
         'attachments' => 'array',
         'annotations' => 'array',
+        'parties_and_representatives' => 'array',
+        'additional_information' => 'array',
     ];
 
     public function process(): BelongsTo

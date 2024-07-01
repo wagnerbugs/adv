@@ -23,7 +23,7 @@ use App\Models\User;
                                 {{ $event->title }}
                                 @foreach ($event->tags as $tag)
                                 <span class="flex items-center text-[9px] uppercase bg-primary-100 text-primary-800 me-2 px-2.5 py-0.3 rounded dark:bg-primary-900 dark:text-primary-300 ms-3">
-                                    <span class="w-2 h-2 me-2 rounded-full" style="background-color: {{ $tag->color }};"></span>
+                                    <span class="w-2 h-2 me-2 rounded-full" style="background-color: {{ $tag->color }}"></span>
                                     {{ $tag->title }}
                                 </span>
                                 @endforeach

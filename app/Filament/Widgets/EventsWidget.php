@@ -17,10 +17,13 @@ use Saade\FilamentFullCalendar\Actions\DeleteAction;
 use Saade\FilamentFullCalendar\Actions\EditAction;
 use Saade\FilamentFullCalendar\Actions\ViewAction;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
+use Filament\Support\Enums\MaxWidth;
 
 class EventsWidget extends FullCalendarWidget
 {
     protected static ?int $sort = 4;
+
+    protected int | string | array $columnSpan = 'xl';
 
     public Model|string|null $model = Event::class;
 
@@ -79,7 +82,7 @@ class EventsWidget extends FullCalendarWidget
 
                             if ($colors) {
                                 foreach ($colors as $color) {
-                                    $colorList[$color->id] = '<span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 rounded-full me-1.5 flex-shrink-0" style="background-color:'.$color->color.'"></span>'.$color->title.'</span>';
+                                    $colorList[$color->id] = '<span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span class="flex w-2.5 h-2.5 rounded-full me-1.5 flex-shrink-0" style="background-color:' . $color->color . '"></span>' . $color->title . '</span>';
                                 }
                             }
 
@@ -160,7 +163,7 @@ class EventsWidget extends FullCalendarWidget
                                         if ($processes) {
                                             foreach ($processes as $process) {
 
-                                                $processesList[$process->id] = '<span class="text-sm font-medium me-3">'.$process->client->name.'</span><br><span class="text-gray-400 text-xs me-3">'.$process->process.'</span>';
+                                                $processesList[$process->id] = '<span class="text-sm font-medium me-3">' . $process->client->name . '</span><br><span class="text-gray-400 text-xs me-3">' . $process->process . '</span>';
                                             }
                                         }
 
@@ -199,7 +202,7 @@ class EventsWidget extends FullCalendarWidget
 
                                         if ($clients) {
                                             foreach ($clients as $client) {
-                                                $clientsList[$client->id] = '<span class="text-sm font-medium me-3">'.$client->name.'</span><br><span class="text-gray-400 text-xs me-3">'.$client->document.'</span>';
+                                                $clientsList[$client->id] = '<span class="text-sm font-medium me-3">' . $client->name . '</span><br><span class="text-gray-400 text-xs me-3">' . $client->document . '</span>';
                                             }
                                         }
 
@@ -318,7 +321,12 @@ class EventsWidget extends FullCalendarWidget
 
     public static function canView(): bool
     {
-        // return  auth()->user()->hasPermissionTo('widget_events');
-        return true;
+        return  auth()->user()->hasPermissionTo('widget_events');
+        // return true;
+    }
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::Large;
     }
 }

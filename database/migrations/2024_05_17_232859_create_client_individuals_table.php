@@ -27,7 +27,6 @@ return new class extends Migration
             $table->json('emails')->nullable();
             $table->string('website')->nullable();
             $table->json('websites')->nullable();
-
             $table->enum('gender', GenderEnum::getValues())->nullable();
             $table->date('birth_date')->nullable();
             $table->enum('marital_status', MaritalStatusEnum::getValues())->nullable();
@@ -39,8 +38,6 @@ return new class extends Migration
             $table->string('birth_place')->nullable();
             $table->string('workplace')->nullable();
             $table->string('ocupation')->nullable();
-            $table->json('attachments')->nullable();
-            $table->json('annotations')->nullable();
             $table->enum('type_account_bank', TypeOfBankAccountEnum::getValues())->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_agency')->nullable();

@@ -60,6 +60,16 @@ class Client extends Model
         return $this->hasMany(FinancialPayment::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ClientAttachment::class);
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(ClientNote::class);
+    }
+
     public function getNameAttribute()
     {
         if ($this->type === ClientTypeEnum::COMPANY) {

@@ -62,11 +62,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
                 'user_id' => $user->id,
             ]);
 
-            Log::info('User created '.$user->name.'. By '.auth()->user()->name);
+            Log::info('User created ' . $user->name . '. By ' . auth()->user()->name);
         });
 
         static::updated(function ($user) {
-            Log::info('User updated '.$user->name.'. By '.auth()->user()->name);
+            Log::info('User updated ' . $user->name . '. By ' . auth()->user()->name);
         });
     }
 
@@ -83,7 +83,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function getFilamentAvatarUrl(): ?string
     {
         if ($this->profile->avatar === null) {
-            return 'https://ui-avatars.com/api/?name='.str_replace(' ', '+', $this->name);
+            return 'https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $this->name);
         }
 
         return Storage::url($this->profile->avatar);
@@ -102,5 +102,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function attachments(): HasMany
     {
         return $this->hasMany(UserAttachment::class);
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(ClientNote::class);
     }
 }

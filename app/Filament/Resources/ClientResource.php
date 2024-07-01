@@ -2,25 +2,42 @@
 
 namespace App\Filament\Resources;
 
+use stdClass;
+use Exception;
 use Carbon\Carbon;
 use Filament\Forms;
+use App\Models\Bank;
 use Filament\Tables;
 use App\Models\Client;
 use App\Models\Process;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
+use App\Enums\GenderEnum;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
 use App\Enums\ClientTypeEnum;
+use App\Enums\DocumentTypeEnum;
+use App\Enums\MaritalStatusEnum;
 use App\Enums\PaymentMethodEnum;
+use App\Models\ClientIndividual;
 use App\Models\FinancialPayment;
 use Filament\Resources\Resource;
+use App\Enums\EducationLevelEnum;
+use Illuminate\Support\HtmlString;
+use App\Enums\TreatmentPronounEnum;
 use Filament\Tables\Actions\Action;
+use App\Enums\TypeOfBankAccountEnum;
+use Illuminate\Support\Facades\Http;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 use App\Filament\Resources\ClientResource\Pages;
+use App\Tables\Columns\Oie;
 
 class ClientResource extends Resource
 {
@@ -32,7 +49,7 @@ class ClientResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Clientes';
 
-    protected static ?string $navigationGroup = 'CADASTROS';
+    protected static ?string $navigationGroup = 'CLIENTES';
 
     protected static ?int $navigationSort = 2;
 
@@ -75,7 +92,8 @@ class ClientResource extends Resource
             ->schema([
 
                 Forms\Components\Group::make()
-                    ->columns(5)
+                    ->visibleOn('create')
+                    ->columns(4)
                     ->schema([
 
                         Forms\Components\Section::make()
@@ -96,13 +114,854 @@ class ClientResource extends Resource
                                     ->rule('cpf_ou_cnpj'),
                             ]),
                     ]),
+
+                Forms\Components\Grid::make()
+                    ->visibleOn('edit')
+                    ->columns(4)
+                    ->schema(fn (Get $get): array => match ((int)$get('type')) {
+                        1 => [
+                            Forms\Components\Group::make()
+                                ->columnSpan(3)
+                                ->schema([
+                                    Forms\Components\Tabs::make('Tabs')
+                                        ->tabs([
+
+                                            Forms\Components\Tabs\Tab::make('Dados pessoais')
+                                                ->schema([
+
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('individual')
+                                                        ->columns(3)
+                                                        ->schema([
+                                                            Forms\Components\Select::make('title')
+                                                                ->label('Título')
+                                                                ->columnSpan(1)
+                                                                ->options(TreatmentPronounEnum::class),
+
+                                                            Forms\Components\TextInput::make('name')
+                                                                ->label('Nome')
+                                                                ->columnSpan(2)
+                                                                ->disabled(),
+
+                                                            Forms\Components\TextInput::make('email')
+                                                                ->label('E-mail')
+                                                                ->email(),
+
+                                                            Forms\Components\TextInput::make('phone')
+                                                                ->label('Telefone')
+                                                                ->mask(
+                                                                    RawJs::make(<<<'JS'
+                                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                                    JS)
+                                                                ),
+
+                                                            Forms\Components\TextInput::make('website')
+                                                                ->label('Website/Rede Social')
+                                                                ->placeholder('https://www.site.com')
+                                                                ->url(),
+                                                        ]),
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('individual')
+                                                        ->columns(4)
+                                                        ->schema([
+                                                            Forms\Components\Select::make('gender')
+                                                                ->label('Gênero')
+                                                                ->options(GenderEnum::class),
+
+                                                            Forms\Components\DatePicker::make('birth_date')
+                                                                ->label('Data de nascimento'),
+
+                                                            Forms\Components\Select::make('marital_status')
+                                                                ->label('Estado Civil')
+                                                                ->options(MaritalStatusEnum::class),
+
+                                                            Forms\Components\Select::make('education_level')
+                                                                ->label('Escolaridade')
+                                                                ->options(EducationLevelEnum::class),
+
+                                                            Forms\Components\TextInput::make('birth_place')
+                                                                ->label('Naturalidade')
+                                                                ->helperText('Ex: São Paulo - SP')
+                                                                ->columnSpan(2),
+
+                                                            Forms\Components\TextInput::make('nationality')
+                                                                ->label('Nacionalidade')
+                                                                ->helperText('Ex: Brasil')
+                                                                ->columnSpan(2),
+                                                        ]),
+                                                    Forms\Components\Fieldset::make('Filiação')
+                                                        ->relationship('individual')
+                                                        ->columns(2)
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('mother_name')
+                                                                ->label('Nome da mãe'),
+                                                            Forms\Components\TextInput::make('father_name')
+                                                                ->label('Nome do pai'),
+                                                        ]),
+
+                                                ]),
+                                            Forms\Components\Tabs\Tab::make('Dados adicionais')
+                                                ->schema([
+
+                                                    Forms\Components\Fieldset::make('Ocupação')
+                                                        ->relationship('individual')
+                                                        ->columns(2)
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('workplace')
+                                                                ->label('Empresa'),
+                                                            Forms\Components\TextInput::make('ocupation')
+                                                                ->label('Profissão'),
+                                                        ]),
+
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('individual')
+                                                        ->schema([
+                                                            Forms\Components\Repeater::make('phones')
+                                                                ->label('Telefones')
+                                                                ->columns(3)
+                                                                ->collapsed()
+                                                                ->grid(2)
+                                                                ->schema([
+                                                                    Forms\Components\Select::make('type')
+                                                                        ->label('Tipo')
+                                                                        ->options([
+                                                                            'whatsapp' => 'Whatsapp',
+                                                                            'residential' => 'Residencial',
+                                                                            'commercial' => 'Comercial',
+                                                                            'cellphone' => 'Celular',
+                                                                        ])
+                                                                        ->required()
+                                                                        ->columnSpan(1),
+                                                                    Forms\Components\TextInput::make('number')
+                                                                        ->label('Número')
+                                                                        ->mask(RawJs::make(<<<'JS'
+                                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                                    JS))
+                                                                        ->required()
+                                                                        ->columnSpan(2),
+                                                                ]),
+
+                                                            Forms\Components\Repeater::make('emails')
+                                                                ->label('E-mails adicionais')
+                                                                ->columns(3)
+                                                                ->collapsed()
+                                                                ->grid(2)
+                                                                ->schema([
+                                                                    Forms\Components\Select::make('type')
+                                                                        ->label('Tipo')
+                                                                        ->options([
+                                                                            'professional' => 'Profissional',
+                                                                            'particular' => 'Particular',
+                                                                        ])
+                                                                        ->required()
+                                                                        ->columnSpan(1),
+                                                                    Forms\Components\TextInput::make('email')
+                                                                        ->label('E-mail')
+                                                                        ->email()
+                                                                        ->required()
+                                                                        ->columnSpan(2),
+                                                                ]),
+
+                                                            Forms\Components\Repeater::make('websites')
+                                                                ->label('Websites adicionais')
+                                                                ->collapsed()
+                                                                ->grid(2)
+                                                                ->schema([
+                                                                    Forms\Components\TextInput::make('link')
+                                                                        ->label('Link')
+                                                                        ->helperText('Ex: https://google.com')
+                                                                        ->url()
+                                                                        ->required(),
+                                                                ]),
+
+                                                            Forms\Components\Repeater::make('documents')
+                                                                ->label('Documentos')
+                                                                ->columns(2)
+                                                                ->collapsed()
+                                                                ->grid(2)
+                                                                ->addActionLabel('Adicionar novo documento')
+                                                                ->schema([
+                                                                    Forms\Components\Select::make('type')
+                                                                        ->label('Tipo')
+                                                                        ->options(DocumentTypeEnum::class)
+                                                                        ->required(),
+                                                                    Forms\Components\TextInput::make('number')
+                                                                        ->label('Número')
+                                                                        ->placeholder('1234567890')
+                                                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')
+                                                                        ->required(),
+                                                                ]),
+                                                        ]),
+                                                ]),
+                                            Forms\Components\Tabs\Tab::make('Endereço')
+                                                ->schema([
+                                                    Forms\Components\Group::make()
+                                                        ->relationship('individual')
+                                                        ->columns(3)
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('zipcode')
+                                                                ->label('CEP')
+                                                                ->mask('99999-999')
+                                                                ->suffixAction(
+                                                                    fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                                                        ->icon('heroicon-m-globe-alt')
+                                                                        ->action(
+                                                                            function () use ($state, $set) {
+                                                                                $state = preg_replace('/[^0-9]/', '', $state);
+                                                                                if (strlen($state) != 8) {
+                                                                                    Notification::make()
+                                                                                        ->danger()
+                                                                                        ->title('Digite um cep valido')
+                                                                                        ->send();
+                                                                                }
+
+                                                                                try {
+                                                                                    $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                    $data = $response->json();
+
+                                                                                    $set('street', $data['street']);
+                                                                                    $set('neighborhood', $data['neighborhood']);
+                                                                                    $set('city', $data['city']);
+                                                                                    $set('state', $data['state']);
+                                                                                    if (isset($data['location']['coordinates']['longitude'])) {
+                                                                                        $set('longitude', $data['location']['coordinates']['longitude']);
+                                                                                        $set('latitude', $data['location']['coordinates']['latitude']);
+                                                                                    }
+                                                                                } catch (Exception $e) {
+                                                                                    Notification::make()
+                                                                                        ->danger()
+                                                                                        ->title($e->getMessage())
+                                                                                        ->send();
+                                                                                }
+                                                                            }
+                                                                        )
+                                                                ),
+
+                                                            Forms\Components\Fieldset::make('Endereço')
+                                                                ->columnSpan(2)
+                                                                ->schema([
+                                                                    Forms\Components\TextInput::make('street')
+                                                                        ->label('Rua, Via, Avenida...'),
+                                                                    Forms\Components\TextInput::make('number')
+                                                                        ->label('Número'),
+                                                                    Forms\Components\TextInput::make('complement')
+                                                                        ->label('Complemento'),
+                                                                    Forms\Components\TextInput::make('neighborhood')
+                                                                        ->label('Bairro'),
+                                                                    Forms\Components\TextInput::make('city')
+                                                                        ->label('Cidade')
+                                                                        ->disabled()
+                                                                        ->dehydrated(),
+                                                                    Forms\Components\TextInput::make('state')
+                                                                        ->label('UF')
+                                                                        ->disabled()
+                                                                        ->dehydrated(),
+                                                                    Forms\Components\TextInput::make('longitude')
+                                                                        ->label('Longitude'),
+                                                                    Forms\Components\TextInput::make('latitude')
+                                                                        ->label('Latitude'),
+                                                                ]),
+
+                                                            Forms\Components\Repeater::make('addresses')
+                                                                ->label('Outros endereços')
+                                                                ->columnSpanFull()
+                                                                ->collapsed()
+                                                                ->addActionLabel('Registrar outros endereços relevantes')
+                                                                ->schema([
+                                                                    Forms\Components\Group::make()
+                                                                        ->columns(4)
+                                                                        ->schema([
+                                                                            Forms\Components\TextInput::make('zipcode')
+                                                                                ->label('CEP')
+                                                                                ->columnSpan(1)
+                                                                                ->mask('99999-999')
+                                                                                ->suffixAction(
+                                                                                    fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                                                                        ->icon('heroicon-m-globe-alt')
+                                                                                        ->action(
+                                                                                            function () use ($state, $set) {
+                                                                                                $state = preg_replace('/[^0-9]/', '', $state);
+                                                                                                if (strlen($state) != 8) {
+                                                                                                    Notification::make()
+                                                                                                        ->danger()
+                                                                                                        ->title('Digite um cep valido')
+                                                                                                        ->send();
+                                                                                                }
+
+                                                                                                try {
+                                                                                                    $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                                    $data = $response->json();
+
+                                                                                                    $set('street', $data['street']);
+                                                                                                    $set('neighborhood', $data['neighborhood']);
+                                                                                                    $set('city', $data['city']);
+                                                                                                    $set('state', $data['state']);
+                                                                                                    if (isset($data['location']['coordinates']['longitude'])) {
+                                                                                                        $set('longitude', $data['location']['coordinates']['longitude']);
+                                                                                                        $set('latitude', $data['location']['coordinates']['latitude']);
+                                                                                                    }
+                                                                                                } catch (Exception $e) {
+                                                                                                    Notification::make()
+                                                                                                        ->danger()
+                                                                                                        ->title($e->getMessage())
+                                                                                                        ->send();
+                                                                                                }
+                                                                                            }
+                                                                                        )
+                                                                                ),
+                                                                            Forms\Components\TextInput::make('street')
+                                                                                ->label('Rua, Via, Avenida...')
+                                                                                ->columnSpan(2),
+                                                                            Forms\Components\TextInput::make('number')
+                                                                                ->label('Número')
+                                                                                ->columnSpan(1),
+                                                                            Forms\Components\TextInput::make('complement')
+                                                                                ->label('Complemento'),
+                                                                            Forms\Components\TextInput::make('neighborhood')
+                                                                                ->label('Bairro'),
+                                                                            Forms\Components\TextInput::make('city')
+                                                                                ->label('Cidade')
+                                                                                ->disabled()
+                                                                                ->dehydrated(),
+                                                                            Forms\Components\TextInput::make('state')
+                                                                                ->label('UF')
+                                                                                ->disabled()
+                                                                                ->dehydrated(),
+                                                                            Forms\Components\TextInput::make('longitude')
+                                                                                ->label('Longitude'),
+                                                                            Forms\Components\TextInput::make('latitude')
+                                                                                ->label('Latitude'),
+                                                                        ]),
+
+                                                                ]),
+
+                                                        ]),
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('Dados bancários')
+                                                ->schema([
+
+                                                    Forms\Components\Fieldset::make('Conta bancária')
+                                                        ->relationship('individual')
+                                                        ->columns(4)
+                                                        ->schema([
+                                                            Forms\Components\Select::make('type_account_bank')
+                                                                ->label('Tipo de conta')
+                                                                ->columnSpan(1)
+                                                                ->options(TypeOfBankAccountEnum::class),
+                                                            Forms\Components\Select::make('bank_name')
+                                                                ->label('Banco')
+                                                                ->columnSpan(3)
+                                                                ->options(Bank::all()->map(function ($bank) {
+                                                                    return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                                }))
+                                                                ->searchable(),
+                                                            Forms\Components\TextInput::make('bank_agency')
+                                                                ->label('Agência')
+                                                                ->columnSpan(2),
+                                                            Forms\Components\TextInput::make('bank_account')
+                                                                ->label('Conta')
+                                                                ->columnSpan(2),
+                                                            Forms\Components\TextInput::make('pix')
+                                                                ->label('PIX')
+                                                                ->columnSpanFull(),
+                                                        ]),
+
+                                                ]),
+                                            Forms\Components\Tabs\Tab::make('Arquivos')
+                                                ->schema([
+
+                                                    Forms\Components\Repeater::make('attachments')
+                                                        ->label('Arquivos')
+                                                        ->collapsed()
+                                                        ->grid(2)
+                                                        ->addActionLabel('Anexar arquivo')
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('title')
+                                                                ->label('Título do arquivo')
+                                                                ->placeholder('Descrição curta do documento')
+                                                                ->maxLength(255),
+                                                            Forms\Components\FileUpload::make('file')
+                                                                ->label('Arquivo')
+                                                                ->multiple()
+                                                                ->openable()
+                                                                ->downloadable()
+                                                                ->previewable()
+                                                                ->maxSize('5120')
+                                                                ->directory('clients/files'),
+                                                        ]),
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('Anotações')
+                                                ->schema([
+
+                                                    Forms\Components\Repeater::make('notes')
+                                                        ->label('Anotações')
+                                                        ->collapsed()
+                                                        ->deletable(false)
+                                                        ->addActionLabel('Adicionar anotação')
+                                                        ->schema([
+                                                            Forms\Components\Hidden::make('user_id')
+                                                                ->label('Autor')
+                                                                ->default(auth()->user()->id),
+                                                            Forms\Components\RichEditor::make('note')
+                                                                ->label('Nota')
+                                                                ->required()
+                                                                ->placeholder('Anotação...')
+                                                                ->columnSpanFull(),
+                                                        ]),
+                                                ]),
+                                        ]),
+
+                                ]),
+                            Forms\Components\Group::make()
+                                ->relationship('individual')
+                                ->columns(1)
+                                ->schema([
+
+                                    Forms\Components\Section::make()
+                                        ->schema([
+
+                                            Forms\Components\Fieldset::make('Foto')
+                                                ->schema([
+
+                                                    Forms\Components\FileUpload::make('image')
+                                                        ->label('')
+                                                        ->avatar()
+                                                        ->directory('clients/images'),
+                                                ]),
+
+                                            Forms\Components\Fieldset::make('Status')
+                                                ->schema([
+                                                    Forms\Components\Toggle::make('is_active')
+                                                        ->label('Ativo')
+                                                        ->default(true),
+                                                ]),
+                                        ]),
+                                ]),
+                        ],
+                        2 => [
+                            Forms\Components\Group::make()
+                                ->columnSpan(3)
+                                ->schema([
+                                    Forms\Components\Tabs::make('Tabs')
+                                        ->contained(true)
+                                        ->tabs([
+                                            Forms\Components\Tabs\Tab::make('Empresa')
+                                                ->schema([
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('company')
+                                                        ->columns(6)
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('company')
+                                                                ->label('Empresa')
+                                                                ->columnSpan(3)
+                                                                ->disabled(),
+
+                                                            Forms\Components\TextInput::make('fantasy_name')
+                                                                ->label('Nome Fantasia')
+                                                                ->columnSpan(3)
+                                                                ->disabled(),
+
+                                                            Forms\Components\TextInput::make('email')
+                                                                ->label('E-mail')
+                                                                ->columnSpan(2)
+                                                                ->email(),
+
+                                                            Forms\Components\TextInput::make('phone')
+                                                                ->label('Telefone')
+                                                                ->columnSpan(2)
+                                                                ->mask(
+                                                                    RawJs::make(
+                                                                        <<<'JS'
+                                                                            $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                                        JS,
+                                                                    ),
+                                                                ),
+
+                                                            Forms\Components\TextInput::make('website')
+                                                                ->label('Website/Rede Social')
+                                                                ->columnSpan(2)
+                                                                ->placeholder('https://www.site.com')
+                                                                ->url(),
+
+                                                            Forms\Components\TextInput::make('company_size')
+                                                                ->label('Porte da empresa')
+                                                                ->columnSpan(2),
+
+                                                            Forms\Components\TextInput::make('legal_nature')
+                                                                ->label('Natureza Jurídica')
+                                                                ->columnSpan(2),
+
+                                                            Forms\Components\TextInput::make('type')
+                                                                ->label('Tipo')
+                                                                ->columnSpan(2),
+
+                                                            Money::make('share_capital')
+                                                                ->label('Capital social')
+                                                                ->columnSpan(2),
+
+
+                                                        ]),
+
+
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('CNPJ')
+                                                ->schema([
+
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('company')
+                                                        ->schema([
+
+                                                            Forms\Components\Fieldset::make('Estabelecimento')
+                                                                ->columns(2)
+                                                                ->schema([Forms\Components\TextInput::make('registration_status')->label('Situação Cadastral'), Forms\Components\DatePicker::make('registration_date')->label('Data de Cadastramento'), Forms\Components\DatePicker::make('activity_start_date')->label('Data de Início de Atividade'), Forms\Components\TextInput::make('main_activity')->label('Atividade primária')]),
+
+                                                            Forms\Components\Fieldset::make('Inscrições Estadual')
+                                                                ->columns(1)
+                                                                ->schema([
+                                                                    Forms\Components\Repeater::make('state_registrations')
+                                                                        ->label('')
+                                                                        ->itemLabel(fn (array $state): ?string => $state['inscricao_estadual'] . ' - ' . $state['estado']['sigla']  ?? null)
+                                                                        ->collapsed()
+                                                                        ->grid(2)
+                                                                        ->addable(false)
+                                                                        ->deletable(false)
+                                                                        ->schema([
+                                                                            Forms\Components\TextInput::make('inscricao_estadual')
+                                                                                ->label('Inscrição Estadual'),
+                                                                            Forms\Components\TextInput::make('atualizado_em')
+                                                                                ->label('Data de Cadastramento'),
+                                                                            Forms\Components\Toggle::make('ativo')
+                                                                                ->label('Ativo?'),
+                                                                            Forms\Components\TextInput::make('estado.sigla')
+                                                                                ->label('Atividade primária'),
+                                                                        ]),
+
+                                                                ]),
+
+                                                            Forms\Components\Fieldset::make('Sócios')
+                                                                ->columns(1)
+                                                                ->schema([
+                                                                    Forms\Components\Repeater::make('partners')
+                                                                        ->label('')
+                                                                        ->itemLabel(fn (array $state): ?string => $state['nome'] . ' - ' . $state['qualificacao_socio']['descricao']  ?? null)
+                                                                        ->collapsed()
+                                                                        ->grid(2)
+                                                                        ->addable(false)
+                                                                        ->deletable(false)
+                                                                        ->schema([
+                                                                            Forms\Components\TextInput::make('nome')
+                                                                                ->label('Nome'),
+                                                                            Forms\Components\TextInput::make('tipo')
+                                                                                ->label('Tipo'),
+                                                                            Forms\Components\TextInput::make('faixa_etaria')
+                                                                                ->label('Faixa etária'),
+                                                                            Forms\Components\TextInput::make('qualificacao_socio.descricao')
+                                                                                ->label('Qualificação'),
+                                                                        ]),
+                                                                ]),
+                                                        ]),
+                                                ]),
+                                            Forms\Components\Tabs\Tab::make('Dados adicionais')
+                                                ->schema([
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('company')
+                                                        ->schema([
+
+
+                                                            Forms\Components\Fieldset::make()
+                                                                ->schema([
+                                                                    Forms\Components\Repeater::make('contacts')
+                                                                        ->label('Contatos na empresa')
+                                                                        ->columnSpanFull()
+                                                                        ->columns(2)
+                                                                        ->grid(2)
+                                                                        ->collapsed()
+                                                                        ->schema([
+                                                                            Forms\Components\TextInput::make('sector')
+                                                                                ->label('Setor')
+                                                                                ->required(),
+
+                                                                            Forms\Components\TextInput::make('name')
+                                                                                ->label('Nome')
+                                                                                ->required(),
+
+                                                                            Forms\Components\TextInput::make('phone')
+                                                                                ->label('Número')
+                                                                                ->mask(
+                                                                                    RawJs::make(
+                                                                                        <<<'JS'
+                                                                                                        $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                                                                    JS,
+                                                                                    ),
+                                                                                ),
+
+                                                                            Forms\Components\TextInput::make('email')->label('E-mail'),
+                                                                        ]),
+                                                                ]),
+
+                                                            Forms\Components\Fieldset::make()->schema([
+                                                                Forms\Components\Repeater::make('phones')
+                                                                    ->label('Telefones')
+                                                                    ->columnSpanFull()
+                                                                    ->columns(3)
+                                                                    ->grid(2)
+                                                                    ->collapsed()
+                                                                    ->schema([
+                                                                        Forms\Components\Select::make('sector')->label('Setor')->columnSpan(1)->required(),
+                                                                        Forms\Components\TextInput::make('number')
+                                                                            ->label('Número')
+                                                                            ->mask(
+                                                                                RawJs::make(
+                                                                                    <<<'JS'
+                                                            $input.length >= 15 ? '(99) 99999-9999' : '(99) 9999-9999'
+                                                        JS,
+                                                                                ),
+                                                                            )
+                                                                            ->required()
+                                                                            ->columnSpan(2),
+                                                                    ]),
+                                                            ]),
+
+                                                            Forms\Components\Fieldset::make()->schema([
+                                                                Forms\Components\Repeater::make('emails')
+                                                                    ->label('E-mails adicionais')
+                                                                    ->columnSpanFull()
+                                                                    ->columns(3)
+                                                                    ->grid(2)
+                                                                    ->collapsed()
+                                                                    ->schema([Forms\Components\TextInput::make('sector')->label('Setor')->columnSpan(1)->required(), Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->columnSpan(2)]),
+                                                            ]),
+
+                                                            Forms\Components\Fieldset::make()->schema([
+                                                                Forms\Components\Repeater::make('websites')
+                                                                    ->label('Websites adicionais')
+                                                                    ->columnSpanFull()
+                                                                    ->columns(1)
+                                                                    ->grid(2)
+                                                                    ->collapsed()
+                                                                    ->schema([Forms\Components\TextInput::make('link')->label('Link')->helperText('Ex: https://google.com')->url()->required()]),
+                                                            ]),
+
+                                                            Forms\Components\Fieldset::make()
+                                                                ->schema([
+                                                                    Forms\Components\Repeater::make('documents')
+                                                                        ->label('Números de Documentos')
+                                                                        ->columnSpanFull()
+                                                                        ->columns(2)
+                                                                        ->grid(2)
+                                                                        ->collapsed()
+                                                                        ->addActionLabel('Adicionar novo documento')
+                                                                        ->schema([
+                                                                            Forms\Components\Select::make('type')
+                                                                                ->label('Tipo')
+                                                                                ->options(DocumentTypeEnum::class)
+                                                                                ->required(),
+                                                                            Forms\Components\TextInput::make('number')->label('Número')->placeholder('1234567890')->hintIcon('heroicon-m-question-mark-circle', tooltip: 'No caso de OAB, informe o número e a UF. Ex: 12345-SP')->required(),
+                                                                        ]),
+                                                                ]),
+                                                        ]),
+                                                ]),
+                                            Forms\Components\Tabs\Tab::make('Endereço')
+                                                ->schema([
+                                                    Forms\Components\Section::make()
+                                                        ->relationship('company')
+                                                        ->schema([
+
+
+                                                            Forms\Components\Group::make()
+                                                                ->columns(3)
+                                                                ->schema([
+                                                                    Forms\Components\TextInput::make('zipcode')->label('CEP')->mask('99999-999')->suffixAction(
+                                                                        fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                                                            ->icon('heroicon-m-globe-alt')
+                                                                            ->action(function () use ($state, $set) {
+                                                                                $state = preg_replace('/[^0-9]/', '', $state);
+                                                                                if (strlen($state) != 8) {
+                                                                                    Notification::make()->danger()->title('Digite um cep valido')->send();
+                                                                                }
+
+                                                                                try {
+                                                                                    $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                    $data = $response->json();
+
+                                                                                    $set('street', $data['street']);
+                                                                                    $set('neighborhood', $data['neighborhood']);
+                                                                                    $set('city', $data['city']);
+                                                                                    $set('state', $data['state']);
+                                                                                    if (isset($data['location']['coordinates']['longitude'])) {
+                                                                                        $set('longitude', $data['location']['coordinates']['longitude']);
+                                                                                        $set('latitude', $data['location']['coordinates']['latitude']);
+                                                                                    }
+                                                                                } catch (Exception $e) {
+                                                                                    Notification::make()->danger()->title($e->getMessage())->send();
+                                                                                }
+                                                                            }),
+                                                                    ),
+
+                                                                    Forms\Components\Fieldset::make('Endereço')
+                                                                        ->columnSpan(2)
+                                                                        ->schema([Forms\Components\TextInput::make('street')->label('Rua, Via, Avenida...'), Forms\Components\TextInput::make('number')->label('Número'), Forms\Components\TextInput::make('complement')->label('Complemento'), Forms\Components\TextInput::make('neighborhood')->label('Bairro'), Forms\Components\TextInput::make('city')->label('Cidade')->disabled()->dehydrated(), Forms\Components\TextInput::make('state')->label('UF')->disabled()->dehydrated(), Forms\Components\TextInput::make('longitude')->label('Longitude'), Forms\Components\TextInput::make('latitude')->label('Latitude')]),
+
+                                                                    Forms\Components\Repeater::make('addresses')
+                                                                        ->label('Outros endereços')
+                                                                        ->columnSpanFull()
+                                                                        ->collapsed()
+                                                                        ->addActionLabel('Registrar outros endereços relevantes')
+                                                                        ->schema([
+                                                                            Forms\Components\Group::make()
+                                                                                ->columns(4)
+                                                                                ->schema([
+                                                                                    Forms\Components\TextInput::make('zipcode')->label('CEP')->columnSpan(1)->mask('99999-999')->suffixAction(
+                                                                                        fn ($state, $set) => Forms\Components\Actions\Action::make('Buscar CEP')
+                                                                                            ->icon('heroicon-m-globe-alt')
+                                                                                            ->action(function () use ($state, $set) {
+                                                                                                $state = preg_replace('/[^0-9]/', '', $state);
+                                                                                                if (strlen($state) != 8) {
+                                                                                                    Notification::make()->danger()->title('Digite um cep valido')->send();
+                                                                                                }
+
+                                                                                                try {
+                                                                                                    $response = Http::get('https://brasilapi.com.br/api/cep/v2/' . $state);
+                                                                                                    $data = $response->json();
+
+                                                                                                    $set('street', $data['street']);
+                                                                                                    $set('neighborhood', $data['neighborhood']);
+                                                                                                    $set('city', $data['city']);
+                                                                                                    $set('state', $data['state']);
+                                                                                                    if (isset($data['location']['coordinates']['longitude'])) {
+                                                                                                        $set('longitude', $data['location']['coordinates']['longitude']);
+                                                                                                        $set('latitude', $data['location']['coordinates']['latitude']);
+                                                                                                    }
+                                                                                                } catch (Exception $e) {
+                                                                                                    Notification::make()->danger()->title($e->getMessage())->send();
+                                                                                                }
+                                                                                            }),
+                                                                                    ),
+                                                                                    Forms\Components\TextInput::make('street')->label('Rua, Via, Avenida...')->columnSpan(2),
+                                                                                    Forms\Components\TextInput::make('number')->label('Número')->columnSpan(1),
+                                                                                    Forms\Components\TextInput::make('complement')->label('Complemento'),
+                                                                                    Forms\Components\TextInput::make('neighborhood')->label('Bairro'),
+                                                                                    Forms\Components\TextInput::make('city')->label('Cidade')->disabled()->dehydrated(),
+                                                                                    Forms\Components\TextInput::make('state')->label('UF')->disabled()->dehydrated(),
+                                                                                    Forms\Components\TextInput::make('longitude')->label('Longitude'),
+                                                                                    Forms\Components\TextInput::make('latitude')->label('Latitude'),
+                                                                                ]),
+                                                                        ]),
+                                                                ]),
+                                                        ]),
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('Dados bancários')
+                                                ->schema([
+                                                    Forms\Components\Fieldset::make('Conta bancária')
+                                                        ->relationship('company')
+                                                        ->columns(4)
+                                                        ->schema([
+                                                            Forms\Components\Select::make('type_account_bank')
+                                                                ->label('Tipo de conta')
+                                                                ->columnSpan(1)
+                                                                ->options(TypeOfBankAccountEnum::class),
+                                                            Forms\Components\Select::make('bank_name')
+                                                                ->label('Banco')
+                                                                ->columnSpan(3)
+                                                                ->options(
+                                                                    Bank::all()->map(function ($bank) {
+                                                                        return strtoupper($bank->compe . ' - ' . $bank->long_name);
+                                                                    }),
+                                                                )
+                                                                ->searchable(),
+                                                            Forms\Components\TextInput::make('bank_agency')->label('Agência')->columnSpan(2),
+                                                            Forms\Components\TextInput::make('bank_account')->label('Conta')->columnSpan(2),
+                                                            Forms\Components\TextInput::make('pix')->label('PIX')->columnSpanFull(),
+                                                        ]),
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('Arquivos')
+                                                ->schema([
+
+                                                    Forms\Components\Repeater::make('attachments')
+                                                        ->relationship()
+                                                        ->label('Arquivos')
+                                                        ->itemLabel(fn (array $state): ?string => $state['title']  ?? null)
+                                                        ->collapsed()
+                                                        ->grid(2)
+                                                        ->addActionLabel('Anexar arquivo')
+                                                        ->schema([
+                                                            Forms\Components\TextInput::make('title')
+                                                                ->label('Título do arquivo')
+                                                                ->placeholder('Descrição curta do documento')
+                                                                ->maxLength(255),
+                                                            Forms\Components\FileUpload::make('path')
+                                                                ->label('Arquivo')
+                                                                ->multiple()
+                                                                ->openable()
+
+                                                                ->maxSize('5120')
+                                                                ->directory('clients/files')
+                                                        ]),
+
+                                                ]),
+
+                                            Forms\Components\Tabs\Tab::make('Anotações')
+                                                ->schema([
+                                                    Forms\Components\Repeater::make('notes')
+                                                        ->relationship()
+                                                        ->label('Anotações')
+                                                        // ->itemLabel(fn (array $state): ?string => $state['note']  ?? null)
+                                                        ->collapsed()
+                                                        ->deletable()
+                                                        ->addActionLabel('Adicionar anotação')
+                                                        ->schema([
+                                                            Forms\Components\Hidden::make('user_id')
+                                                                ->label('Autor')
+                                                                ->default(auth()->user()->id),
+                                                            Forms\Components\RichEditor::make('note')
+                                                                ->label('Anotação')
+                                                                ->required()
+                                                                ->fileAttachmentsDirectory('clients/notes')
+                                                                ->placeholder('Anotação...')
+                                                                ->columnSpanFull(),
+                                                        ]),
+                                                ]),
+                                        ]),
+                                ]),
+                            Forms\Components\Group::make()
+                                ->relationship('company')
+                                ->columns(1)
+                                ->schema([
+                                    Forms\Components\Section::make()->schema([
+                                        Forms\Components\Fieldset::make('Imagem')->schema([
+                                            Forms\Components\FileUpload::make('image')
+                                                ->label('')
+                                                ->columnSpanFull()
+                                                ->image()
+                                                ->imageEditor()
+                                                ->imageEditorAspectRatios(['1:1'])
+                                                ->directory('clients/images'),
+                                        ]),
+
+                                        Forms\Components\Fieldset::make('Status')->schema([Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true)]),
+                                    ]),
+                                ]),
+                        ],
+                        0 => []
+                    }),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->poll('12s')
             ->columns([
+
+                // Tables\Columns\TextColumn::make('index')
+                //     ->rowIndex()
+                //     ->label('#')
+                //     ->badge(),
 
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
@@ -115,8 +974,36 @@ class ClientResource extends Resource
                     ->sortable()
                     ->badge(),
 
+                // Tables\Columns\ViewColumn::make('cliente')
+                //     ->label('Cliente')
+                //     ->view('tables.columns.oie'),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Cliente')
+                    ->placeholder(new HtmlString('
+                        <div class="flex items-center  h-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 4">
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="0" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="1" begin="-.5"></animate>
+                                </rect>
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="25" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="2" begin="-.4"></animate>
+                                </rect>
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="50" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="3" begin="-.3"></animate>
+                                </rect>
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="75" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="4" begin="-.2"></animate>
+                                </rect>
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="100" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="5" begin="-.1"></animate>
+                                </rect>
+                                <rect fill="#7C3AED" stroke="#7C3AED" stroke-width="0" width="25" height="4" x="125" y="0">
+                                    <animate attributeName="opacity" calcMode="spline" dur="2" values="1;0;1;" keySplines=".5 0 .5 1;.5 0 .5 1" repeatCount="6" begin="0"></animate>
+                                </rect>
+                            </svg>
+                        </div>
+                    '))
                     ->description(fn (Client $record): string => $record->document)
                     ->searchable()
                     ->sortable(),
@@ -153,15 +1040,15 @@ class ClientResource extends Resource
             ->actions([
 
 
-                Action::make('Editar')
-                    ->icon('heroicon-m-pencil-square')
-                    ->url(function (Client $record): string {
-                        if ($record->type == ClientTypeEnum::COMPANY) {
-                            return route('filament.admin.resources.client-companies.edit', $record->company->id);
-                        } else {
-                            return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
-                        }
-                    }),
+                // Action::make('Editar')
+                //     ->icon('heroicon-m-pencil-square')
+                //     ->url(function (Client $record): string {
+                //         if ($record->type == ClientTypeEnum::COMPANY) {
+                //             return route('filament.admin.resources.client-companies.edit', $record->company->id);
+                //         } else {
+                //             return route('filament.admin.resources.client-individuals.edit', $record->individual->id);
+                //         }
+                //     }),
 
                 Action::make('payment')
                     ->label('Pagamentos')
@@ -317,7 +1204,7 @@ class ClientResource extends Resource
         return [
             'index' => Pages\ListClients::route('/'),
             'create' => Pages\CreateClient::route('/create'),
-            // 'edit' => Pages\EditClient::route('/{record}/edit'),
+            'edit' => Pages\EditClient::route('/{record}/edit'),
         ];
     }
 

@@ -34,6 +34,11 @@ return new class extends Migration
             $table->json('subjects')->nullable();
             $table->json('attachments')->nullable();
             $table->json('annotations')->nullable();
+
+            $table->string('magistrate')->nullable();
+            $table->string('current_situation')->nullable();
+            $table->json('parties_and_representatives')->nullable();
+            $table->json('additional_information')->nullable();
             $table->timestamps();
         });
     }

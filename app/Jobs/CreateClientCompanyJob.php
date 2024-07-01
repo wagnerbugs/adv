@@ -4,9 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Client;
 use App\Services\CnpjWs\CnpjWsService;
-use App\Services\CnpjWs\Entities\Company;
-use App\Services\CnpjWs\Entities\CompanyError;
-use Filament\Notifications\Notification;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,47 +32,30 @@ class CreateClientCompanyJob implements ShouldQueue
     public function handle(): void
     {
         $service = new CnpjWsService();
-        $company = $service->companies()->get($this->document);
+        $response = $service->prospections()->getCNPJ($this->document);
 
-        if ($company instanceof CompanyError) {
-            $recipient = auth()->user();
-            Notification::make()
-                ->danger()
-                ->title($company->title)
-                ->body($company->details)
-                ->sendToDatabase($recipient);
-
-            return;
-        }
-
-        if ($company instanceof Company) {
-
-            $this->client->company()->update([
-                'company' => $company->company,
-                'fantasy_name' => $company->fantasy_name,
-                'share_capital' => $company->share_capital,
-                'company_size' => $company->company_size,
-                'legal_nature' => $company->legal_nature,
-                'type' => $company->type,
-                'registration_status' => $company->registration_status,
-                'registration_date' => $company->registration_date,
-                'activity_start_date' => $company->activity_start_date,
-                'main_activity' => $company->main_activity,
-                'state_registration' => $company->state_registration,
-                'state_registration_location' => $company->state_registration_location,
-                'partner_name' => $company->partner_name,
-                'partner_type' => $company->partner_type,
-                'partner_qualification' => $company->partner_qualification,
-                'phone' => $company->phone,
-                'email' => $company->email,
-                'zipcode' => $company->zipcode,
-                'street' => $company->street,
-                'number' => $company->number,
-                'complement' => $company->complement,
-                'neighborhood' => $company->neighborhood,
-                'city' => $company->city,
-                'state' => $company->state,
-            ]);
-        }
+        $this->client->company()->update([
+            'company' => $response['razao_social'],
+            'fantasy_name' => $response['estabelecimento']['nome_fantasia'],
+            'share_capital' => $response['capital_social'],
+            'company_size' => $response['porte']['descricao'],
+            'legal_nature' => $response['natureza_juridica']['descricao'],
+            'type' => $response['estabelecimento']['tipo'],
+            'registration_status' => $response['estabelecimento']['situacao_cadastral'],
+            'registration_date' => $response['estabelecimento']['data_situacao_cadastral'],
+            'activity_start_date' => $response['estabelecimento']['data_inicio_atividade'],
+            'main_activity' => $response['estabelecimento']['atividade_principal']['descricao'],
+            'state_registrations' => $response['estabelecimento']['inscricoes_estaduais'],
+            'partners' => $response['socios'],
+            'phone' => $response['estabelecimento']['ddd1'] . $response['estabelecimento']['telefone1'],
+            'email' => $response['estabelecimento']['email'],
+            'zipcode' => $response['estabelecimento']['cep'],
+            'street' => $response['estabelecimento']['tipo_logradouro'] . ' ' . $response['estabelecimento']['logradouro'],
+            'number' => $response['estabelecimento']['numero'],
+            'complement' => $response['estabelecimento']['complemento'],
+            'neighborhood' => $response['estabelecimento']['bairro'],
+            'city' => $response['estabelecimento']['cidade']['nome'],
+            'state' => $response['estabelecimento']['estado']['sigla'],
+        ]);
     }
 }

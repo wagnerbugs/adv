@@ -2,10 +2,11 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Event;
 use Carbon\Carbon;
+use App\Models\Event;
 use Filament\Pages\Page;
 use Livewire\Attributes\On;
+use Filament\Support\Enums\MaxWidth;
 
 class EventsPage extends Page
 {
@@ -54,7 +55,12 @@ class EventsPage extends Page
 
     public static function canAccess(): bool
     {
-        // return  auth()->user()->hasPermissionTo('app_events');
-        return true;
+        return  auth()->user()->hasPermissionTo('page_events');
+        // return true;
+    }
+
+    public function getMaxContentWidth(): MaxWidth
+    {
+        return MaxWidth::SevenExtraLarge;
     }
 }

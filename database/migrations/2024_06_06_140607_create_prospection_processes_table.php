@@ -33,6 +33,13 @@ return new class extends Migration
             $table->integer('nivelSigilo')->nullable();
             $table->json('orgaoJulgador')->nullable();
             $table->json('assuntos')->nullable();
+
+            //versão eproc
+            $table->string('magistrate')->nullable();
+            $table->string('current_situation')->nullable();
+            $table->json('parties_and_representatives')->nullable();
+            $table->json('additional_information')->nullable();
+
             $table->timestamps();
         });
     }

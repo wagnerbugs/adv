@@ -34,23 +34,23 @@ class Company
 
     public ?string $state_registration_location;
 
-    public string $phone;
+    public ?string $phone;
 
     public ?string $email;
 
-    public string $zipcode;
+    public ?string $zipcode;
 
-    public string $street;
+    public ?string $street;
 
-    public string $number;
+    public ?string $number;
 
     public ?string $complement;
 
-    public string $neighborhood;
+    public ?string $neighborhood;
 
-    public string $city;
+    public ?string $city;
 
-    public string $state;
+    public ?string $state;
 
     public ?string $partner_name;
 
@@ -84,7 +84,7 @@ class Company
         $this->partner_type = $firstPartner['tipo'] ?? null;
         $this->partner_qualification = $firstPartner['qualificacao_socio']['descricao'] ?? null;
 
-        $this->phone = $this->formatPhone(data_get($data, 'estabelecimento.ddd1'), data_get($data, 'estabelecimento.telefone1'));
+        $this->phone = $this->formatPhone(data_get($data, 'estabelecimento.ddd1') ?? '', data_get($data, 'estabelecimento.telefone1') ?? '');
         $this->email = data_get($data, 'estabelecimento.email');
         $this->zipcode = data_get($data, 'estabelecimento.cep');
         $this->street = $this->capitalize($this->formatStreet(data_get($data, 'estabelecimento.tipo_logradouro'), data_get($data, 'estabelecimento.logradouro')));
@@ -95,13 +95,19 @@ class Company
         $this->state = data_get($data, 'estabelecimento.estado.sigla');
     }
 
-    private function formatPhone(string $ddd, string $phone): string
+    private function formatPhone(?string $ddd, ?string $phone): string
     {
+        if (empty($ddd) && empty($phone)) {
+            return '';
+        }
         return "($ddd) $phone";
     }
 
-    private function formatStreet(string $type, string $street): string
+    private function formatStreet(?string $type, ?string $street): string
     {
+        if (empty($type) && empty($street)) {
+            return '';
+        }
         return "$type $street";
     }
 

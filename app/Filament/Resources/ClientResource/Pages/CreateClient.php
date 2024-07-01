@@ -22,6 +22,11 @@ class CreateClient extends CreateRecord
         return static::getModel()::create($data);
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
     protected function afterCreate(): void
     {
         $client = $this->record;

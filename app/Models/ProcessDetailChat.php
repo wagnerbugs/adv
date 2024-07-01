@@ -14,6 +14,11 @@ class ProcessDetailChat extends Model
         'process_detail_id',
         'user_id',
         'message',
+        'files',
+    ];
+
+    protected $casts = [
+        'files' => 'array',
     ];
 
     public function detail(): BelongsTo

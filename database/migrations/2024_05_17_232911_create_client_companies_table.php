@@ -25,11 +25,9 @@ return new class extends Migration
             $table->date('registration_date')->nullable();
             $table->date('activity_start_date')->nullable();
             $table->string('main_activity')->nullable();
-            $table->string('state_registration')->nullable();
-            $table->string('state_registration_location')->nullable();
-            $table->string('partner_name')->nullable();
-            $table->string('partner_type')->nullable();
-            $table->string('partner_qualification')->nullable();
+            $table->json('secondary_activities')->nullable();
+            $table->json('state_registrations')->nullable();
+            $table->json('partners')->nullable();
             $table->string('phone')->nullable();
             $table->json('phones')->nullable();
             $table->string('email')->nullable();
@@ -37,8 +35,6 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->json('websites')->nullable();
             $table->json('contacts')->nullable();
-            $table->json('attachments')->nullable();
-            $table->json('annotations')->nullable();
             $table->enum('type_account_bank', TypeOfBankAccountEnum::getValues())->nullable();
             $table->string('bank_name')->nullable();
             $table->string('bank_agency')->nullable();

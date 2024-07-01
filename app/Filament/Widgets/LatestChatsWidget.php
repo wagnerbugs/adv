@@ -45,20 +45,20 @@ class LatestChatsWidget extends BaseWidget
 
                         return $state;
                     })
-                    ->searchable(
-                        query: function (Builder $query, string $search): Builder {
-                            return $query
-                                ->with(['user', 'process'])
-                                ->where(function ($query) use ($search) {
-                                    $query->whereHas('user', function ($query) use ($search) {
-                                        $query->where('name', 'like', "%{$search}%");
-                                    })
-                                        ->orWhereHas('process', function ($query) use ($search) {
-                                            $query->where('process', 'like', "%{$search}%");
-                                        });
-                                });
-                        }
-                    )
+                    // ->searchable(
+                    //     query: function (Builder $query, string $search): Builder {
+                    //         return $query
+                    //             ->with(['user', 'process'])
+                    //             ->where(function ($query) use ($search) {
+                    //                 $query->whereHas('user', function ($query) use ($search) {
+                    //                     $query->where('name', 'like', "%{$search}%");
+                    //                 })
+                    //                     ->orWhereHas('process', function ($query) use ($search) {
+                    //                         $query->where('process', 'like', "%{$search}%");
+                    //                     });
+                    //             });
+                    //     }
+                    // )
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -82,7 +82,7 @@ class LatestChatsWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        // return  auth()->user()->hasPermissionTo('widget_latest_chats');
-        return true;
+        return  auth()->user()->hasPermissionTo('widget_latest_processes_chats');
+        // return true;
     }
 }

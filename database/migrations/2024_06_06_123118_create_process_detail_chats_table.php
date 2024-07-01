@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('process_detail_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->text('message');
+            $table->json('files')->nullable();
             $table->timestamps();
         });
     }

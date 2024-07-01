@@ -14,6 +14,11 @@ class ProcessChat extends Model
         'process_id',
         'user_id',
         'message',
+        'files',
+    ];
+
+    protected $casts = [
+        'files' => 'array',
     ];
 
     public function process(): BelongsTo

@@ -14,30 +14,26 @@ class ClientCompany extends Model
 
     protected $fillable = [
         'client_id',
-        'company', //
-        'fantasy_name', //
-        'share_capital', //
-        'company_size', //
-        'legal_nature', //
-        'type', //
-        'registration_status', //
-        'registration_date', //
-        'activity_start_date', //
-        'main_activity', //
-        'state_registration',
-        'state_registration_location',
-        'partner_name',
-        'partner_type',
-        'partner_qualification',
-        'phone', //
+        'company',
+        'fantasy_name',
+        'share_capital',
+        'company_size',
+        'legal_nature',
+        'type',
+        'registration_status',
+        'registration_date',
+        'activity_start_date',
+        'main_activity',
+        'secondary_activities',
+        'state_registrations',
+        'partners',
+        'phone',
         'phones',
-        'email', //
+        'email',
         'emails',
-        'website', //
+        'website',
         'websites',
         'contacts',
-        'attachments',
-        'annotations',
         'type_account_bank',
         'bank_name',
         'bank_agency',
@@ -58,13 +54,13 @@ class ClientCompany extends Model
     ];
 
     protected $casts = [
+        'secondary_activities' => 'array',
+        'state_registrations' => 'array',
         'partners' => 'array',
         'phones' => 'array',
         'emails' => 'array',
         'websites' => 'array',
         'contacts' => 'array',
-        'attachments' => 'array',
-        'annotations' => 'array',
         'type_account_bank' => TypeOfBankAccountEnum::class,
         'addresses' => 'array',
     ];

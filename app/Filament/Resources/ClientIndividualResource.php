@@ -45,6 +45,10 @@ class ClientIndividualResource extends Resource
 
     protected static bool $isGloballySearchable = false;
 
+    protected static bool $isDiscovered = false;
+
+
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
